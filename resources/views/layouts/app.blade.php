@@ -8,17 +8,20 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#0164CA',
+                        primary: {
+                            DEFAULT: '#0164CA',
+                            dark: '#0150A8',
+                        },
                         secondary: '#F7D558',
                     },
                     fontFamily: {
-                        sans: ['Poppins', 'sans-serif'],
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
                     }
                 }
             }
@@ -26,7 +29,7 @@
     </script>
     <style>
         [x-cloak] { display: none !important; }
-        body { font-family: 'Poppins', sans-serif; }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -55,6 +58,14 @@
                         </svg>
                         Beranda
                     </a>
+                    <a href="{{ route('cms.opd.index') }}"
+                       class="flex items-center gap-3 px-4 py-2.5 rounded-full text-sm font-medium transition-colors
+                              {{ request()->routeIs('cms.opd.*') ? 'bg-white/20 text-white' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                        Data OPD
+                    </a>
                 </div>
             </nav>
 
@@ -73,7 +84,7 @@
         </aside>
 
         <!-- Main Content -->
-        <div class="flex-1 ml-64">
+        <div class="flex-1 ml-64" style="background-color: #F5F5F5">
             <!-- Top Header -->
             <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-10">
                 <div>

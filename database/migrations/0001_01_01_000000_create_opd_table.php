@@ -14,7 +14,7 @@ return new class () extends Migration {
             $table->id();
             $table->string('n_opd');
             $table->text('alamat')->nullable();
-            $table->string('status')->default('active');
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
     }

@@ -1,65 +1,71 @@
 # Zona Integritas - AI Coding Instructions
 
 ## Project Overview
-Laravel 12 web application running on PHP 8.2+ with Tailwind CSS 4 and Vite 7. The project is in early development stage with standard Laravel scaffolding.
+Laravel 12 CMS untuk pengisian kuesioner Zona Integritas (WBK/WBBM) Tangerang Selatan. Menggunakan Tailwind CSS via CDN dengan design minimalist modern.
 
 ## Tech Stack
-- **Backend:** Laravel 12, PHP 8.2+
-- **Frontend:** Tailwind CSS 4 (via `@tailwindcss/vite`), Vite 7
-- **Database:** SQLite by default (configurable via `.env`)
-- **Testing:** PHPUnit 11, Pest-compatible structure
+- **Backend:** Laravel 12, PHP 8.2+, MySQL
+- **Frontend:** Tailwind CSS (CDN), Poppins font
+- **Database:** MySQL (configured in `.env`)
+
+## Design Guidelines
+- **Primary color:** `#0164CA` (sidebar, buttons)
+- **Secondary color:** `#F7D558` (accents)
+- **NO shadows** on buttons/cards - use borders instead
+- **NO gradients** - flat colors only
+- Rounded-full for navigation items, rounded-lg for cards
 
 ## Development Commands
 ```bash
-# Full project setup (install deps, generate key, migrate, build assets)
-composer setup
-
-# Start development (runs server, queue worker, and Vite concurrently)
-composer dev
-
-# Run tests with fresh config
-composer test
+composer setup    # Full setup (deps, key, migrate, build)
+composer dev      # Start server + queue + vite
+composer test     # Run tests
+php artisan migrate:fresh  # Reset database
 ```
 
-## Project Structure Patterns
+## Project Structure
 
 ### Controllers
-Place in `app/Http/Controllers/`. Extend the base `Controller` class:
+CMS controllers in `app/Http/Controllers/Cms/`:
 ```php
-namespace App\Http\Controllers;
-class ExampleController extends Controller { }
+namespace App\Http\Controllers\Cms;
+use App\Http\Controllers\Controller;
 ```
 
-### Models
-Place in `app/Models/`. Use `HasFactory` and `Notifiable` traits for user-related models. Define `$fillable`, `$hidden`, and `casts()` method for attribute handling.
+### Database Tables
+- `tm_opd` - Master OPD (n_opd, alamat, status)
+- `users` - Users with role enum (admin, operator, verifikator), linked to tm_opd via opd_id
 
-### Migrations
-Naming: `YYYY_MM_DD_HHMMSS_description.php` in `database/migrations/`. Use anonymous class syntax:
-```php
-return new class extends Migration { }
+### Views Structure
+```
+resources/views/
+├── layouts/app.blade.php    # Main CMS layout with sidebar
+└── cms/
+    ├── dashboard.blade.php
+    └── [module]/            # index, create, edit views
 ```
 
-### Views
-Blade templates in `resources/views/`. Use `@vite(['resources/css/app.css', 'resources/js/app.js'])` for asset loading.
+### Layout Pattern
+All CMS views extend `layouts.app`:
+```blade
+@extends('layouts.app')
+@section('title', 'Page Title')
+@section('page-title', 'Header Title')
+@section('content')
+    {{-- Content here --}}
+@endsection
+```
 
-## Tailwind CSS 4 Configuration
-- Uses new CSS-based config in `resources/css/app.css` with `@theme` directive
-- Custom font: 'Instrument Sans' defined in `--font-sans`
-- Source paths configured via `@source` directives
+### Route Naming
+Routes use `cms.` prefix: `cms.dashboard`, `cms.opd.index`, etc.
 
 ## Key Files
-- [routes/web.php](routes/web.php) - Web routes
-- [app/Providers/AppServiceProvider.php](app/Providers/AppServiceProvider.php) - Service bindings and bootstrapping
-- [vite.config.js](vite.config.js) - Vite + Tailwind plugin configuration
-- [resources/css/app.css](resources/css/app.css) - Tailwind CSS entry point with theme config
+- [resources/views/layouts/app.blade.php](resources/views/layouts/app.blade.php) - Main layout with sidebar
+- [routes/web.php](routes/web.php) - All routes (dashboard at `/`)
+- [database/migrations/](database/migrations/) - tm_opd and users tables
 
-## Testing Conventions
-- Feature tests: `tests/Feature/` - for HTTP endpoint testing
-- Unit tests: `tests/Unit/` - for isolated logic testing
-- Extend `Tests\TestCase` for all tests
-- Use `RefreshDatabase` trait when testing database interactions
-
-## Environment
-- Local development uses Laragon on Windows
-- Default database is SQLite at `database/database.sqlite`
-- Queue worker runs with `--tries=1` in dev mode
+## UI Components Pattern
+- Cards: `bg-white border border-gray-200 rounded-lg p-6`
+- Buttons primary: `bg-primary text-white px-4 py-2 rounded-lg`
+- Form inputs: `border border-gray-300 rounded-lg px-4 py-2 w-full`
+- Active nav: `bg-white/20 text-white rounded-full`
