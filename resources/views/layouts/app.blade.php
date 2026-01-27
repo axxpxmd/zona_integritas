@@ -40,11 +40,11 @@
 
         /* Sidebar Base */
         .sidebar {
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
         }
 
-        /* Sidebar Collapsed State */
+        /* Sidebar Collapsed State - Desktop */
         .sidebar.collapsed {
             width: 76px;
         }
@@ -117,7 +117,7 @@
             margin-left: 76px;
         }
 
-        /* Tooltip */
+        /* Tooltip - Desktop only */
         .nav-link {
             position: relative;
         }
@@ -159,10 +159,117 @@
             visibility: visible;
             transform: translateY(-50%) scale(1);
         }
+
+        /* Overlay */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 15;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ========== MOBILE RESPONSIVE ========== */
+        @media (max-width: 1024px) {
+            /* Sidebar - Hidden by default on mobile */
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px !important;
+                z-index: 50;
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            /* Reset collapsed state on mobile */
+            .sidebar.collapsed {
+                width: 280px !important;
+                transform: translateX(-100%);
+            }
+            .sidebar.collapsed.mobile-open {
+                transform: translateX(0);
+            }
+            .sidebar.collapsed .sidebar-logo-text,
+            .sidebar.collapsed .sidebar-user-info,
+            .sidebar.collapsed .section-label,
+            .sidebar.collapsed .sidebar-text {
+                display: block;
+                opacity: 1;
+                width: auto;
+                visibility: visible;
+            }
+            .sidebar.collapsed .logo-wrapper {
+                justify-content: flex-start;
+            }
+            .sidebar.collapsed .logo-header {
+                padding: 20px;
+            }
+            .sidebar.collapsed .nav-wrapper {
+                padding: 20px 16px;
+                align-items: stretch;
+            }
+            .sidebar.collapsed .nav-wrapper > div {
+                align-items: stretch;
+            }
+            .sidebar.collapsed .nav-link {
+                width: auto;
+                height: auto;
+                padding: 12px 16px !important;
+                gap: 12px !important;
+                justify-content: flex-start;
+                margin: 0 0 4px 0;
+            }
+            .sidebar.collapsed .nav-link::after,
+            .sidebar.collapsed .nav-link::before {
+                display: none !important;
+            }
+            .sidebar.collapsed .user-section {
+                padding: 16px;
+                justify-content: flex-start;
+            }
+
+            /* Main Content - Full width on mobile */
+            .main-content {
+                margin-left: 0 !important;
+            }
+            .main-content.expanded {
+                margin-left: 0 !important;
+            }
+
+            /* Hide desktop toggle icon behavior */
+            #toggle-icon {
+                transform: none !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .sidebar {
+                width: 100% !important;
+                max-width: 300px;
+            }
+            .sidebar.collapsed {
+                width: 100% !important;
+                max-width: 300px;
+            }
+
+            /* Header adjustments */
+            .header-user-info {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
     <div class="flex min-h-screen">
+        <!-- Overlay for mobile -->
+        <div id="sidebar-overlay" class="sidebar-overlay lg:hidden" onclick="closeSidebarMobile()"></div>
+
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar w-64 bg-gradient-to-b from-primary to-primary-dark text-white flex-shrink-0 fixed h-full flex flex-col z-20">
             <!-- Logo Header -->
@@ -229,10 +336,10 @@
         </aside>
 
         <!-- Main Content -->
-        <div id="main-content" class="main-content flex-1 ml-64" style="background-color: #F5F5F5">
+        <div id="main-content" class="main-content flex-1 ml-0 lg:ml-64" style="background-color: #F5F5F5">
             <!-- Top Header -->
-            <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-10">
-                <div class="flex items-center gap-4">
+            <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-6 sticky top-0 z-10">
+                <div class="flex items-center gap-3 lg:gap-4">
                     <!-- Toggle Sidebar Button -->
                     <button onclick="toggleSidebar()" class="p-2 text-gray-500 hover:text-primary hover:bg-primary-light rounded-lg transition-colors">
                         <svg id="toggle-icon" class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -240,10 +347,10 @@
                         </svg>
                     </button>
                     <div>
-                        <h1 class="text-lg font-semibold text-gray-800">@yield('page-title', 'Dashboard')</h1>
+                        <h1 class="text-base lg:text-lg font-semibold text-gray-800">@yield('page-title', 'Dashboard')</h1>
                     </div>
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 lg:gap-3">
                     <!-- Notification -->
                     <button class="p-2 text-gray-500 hover:text-primary hover:bg-primary-light rounded-lg transition-colors relative">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -252,8 +359,8 @@
                         <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
                     </button>
                     <!-- User Dropdown -->
-                    <div class="flex items-center gap-3 pl-3 border-l border-gray-200">
-                        <div class="text-right hidden sm:block">
+                    <div class="flex items-center gap-2 lg:gap-3 pl-2 lg:pl-3 border-l border-gray-200">
+                        <div class="header-user-info text-right hidden md:block">
                             <p class="text-sm font-medium text-gray-700">{{ Auth::user()->nama_instansi }}</p>
                             <p class="text-xs text-gray-500">{{ Auth::user()->username }}</p>
                         </div>
@@ -271,39 +378,87 @@
             </header>
 
             <!-- Page Content -->
-            <main class="p-6">
+            <main class="p-4 lg:p-6">
                 @yield('content')
             </main>
         </div>
     </div>
 
     <script>
+        const isMobile = () => window.innerWidth < 1024;
+
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const mainContent = document.getElementById('main-content');
             const toggleIcon = document.getElementById('toggle-icon');
+            const overlay = document.getElementById('sidebar-overlay');
 
-            sidebar.classList.toggle('collapsed');
-            mainContent.classList.toggle('expanded');
-
-            // Rotate icon
-            if (sidebar.classList.contains('collapsed')) {
-                toggleIcon.style.transform = 'rotate(180deg)';
-                localStorage.setItem('sidebarCollapsed', 'true');
+            if (isMobile()) {
+                // Mobile behavior - slide in/out
+                sidebar.classList.toggle('mobile-open');
+                overlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('mobile-open') ? 'hidden' : '';
             } else {
-                toggleIcon.style.transform = 'rotate(0deg)';
-                localStorage.setItem('sidebarCollapsed', 'false');
+                // Desktop behavior - collapse/expand
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded');
+
+                if (sidebar.classList.contains('collapsed')) {
+                    toggleIcon.style.transform = 'rotate(180deg)';
+                    localStorage.setItem('sidebarCollapsed', 'true');
+                } else {
+                    toggleIcon.style.transform = 'rotate(0deg)';
+                    localStorage.setItem('sidebarCollapsed', 'false');
+                }
             }
         }
 
-        // Restore sidebar state from localStorage
+        function closeSidebarMobile() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Restore sidebar state from localStorage (desktop only)
         document.addEventListener('DOMContentLoaded', function() {
-            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-            if (isCollapsed) {
-                document.getElementById('sidebar').classList.add('collapsed');
-                document.getElementById('main-content').classList.add('expanded');
-                document.getElementById('toggle-icon').style.transform = 'rotate(180deg)';
+            if (!isMobile()) {
+                const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+                if (isCollapsed) {
+                    document.getElementById('sidebar').classList.add('collapsed');
+                    document.getElementById('main-content').classList.add('expanded');
+                    document.getElementById('toggle-icon').style.transform = 'rotate(180deg)';
+                }
             }
+        });
+
+        // Handle resize events
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                const sidebar = document.getElementById('sidebar');
+                const mainContent = document.getElementById('main-content');
+                const overlay = document.getElementById('sidebar-overlay');
+
+                if (isMobile()) {
+                    // Reset to mobile state
+                    sidebar.classList.remove('mobile-open');
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                } else {
+                    // Apply desktop state from localStorage
+                    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+                    if (isCollapsed) {
+                        sidebar.classList.add('collapsed');
+                        mainContent.classList.add('expanded');
+                    } else {
+                        sidebar.classList.remove('collapsed');
+                        mainContent.classList.remove('expanded');
+                    }
+                }
+            }, 250);
         });
     </script>
 
