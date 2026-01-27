@@ -81,11 +81,11 @@
             <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-full bg-secondary flex items-center justify-center">
-                        <span class="text-primary font-semibold text-sm">A</span>
+                        <span class="text-primary font-semibold text-sm">{{ strtoupper(substr(Auth::user()->username, 0, 1)) }}</span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium truncate">Administrator</p>
-                        <p class="text-xs text-white/60 truncate">admin@example.com</p>
+                        <p class="text-sm font-medium truncate">{{ Auth::user()->nama_instansi }}</p>
+                        <p class="text-xs text-white/60 truncate">{{ Auth::user()->username }}</p>
                     </div>
                 </div>
             </div>
@@ -106,9 +106,12 @@
                         </svg>
                     </button>
                     <!-- Logout -->
-                    <button class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors">
-                        Keluar
-                    </button>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors">
+                            Keluar
+                        </button>
+                    </form>
                 </div>
             </header>
 

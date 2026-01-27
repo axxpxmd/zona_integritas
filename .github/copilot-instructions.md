@@ -1,51 +1,56 @@
 # Zona Integritas - AI Coding Instructions
 
 ## Project Overview
-Laravel 12 CMS untuk pengisian kuesioner Zona Integritas (WBK/WBBM) Tangerang Selatan. Menggunakan Tailwind CSS via CDN dengan design minimalist modern.
+Laravel 12 untuk pengisian kuesioner Zona Integritas (WBK/WBBM) Tangerang Selatan. Portal manajemen OPD (Organisasi Perangkat Daerah) dengan multi-role user system.
 
-## Tech Stack
-- **Backend:** Laravel 12, PHP 8.2+, MySQL
-- **Frontend:** Tailwind CSS (CDN), Inter font
-- **Database:** MySQL (configured in `.env`)
-
-## Design Guidelines
-- **Primary color:** `#0164CA` (sidebar, buttons), `#0150A8` (hover state)
-- **Secondary color:** `#F7D558` (accents)
-- **NO shadows** on buttons/cards
-- **NO gradients** - flat colors only
-- Cards: `bg-white rounded-xl` tanpa border
-- Form inputs: gunakan `border border-gray-300`
-- Status values: gunakan `1` (aktif) dan `0` (tidak aktif), bukan string
+## Tech Stack & Architecture
+- **Backend:** Laravel 12, PHP 8.2+, Eloquent ORM
+- **Frontend:** Tailwind CSS via CDN (no build step for styles), Inter font
+- **Database:** MySQL - table prefix `tm_` untuk master data
+- **Auth:** Username-based login (bukan email), roles: admin/operator/verifikator
 
 ## Development Commands
 ```bash
-composer setup           # Full setup (deps, key, migrate, build)
-composer dev             # Start server + queue + vite
-php artisan migrate:fresh  # Reset database
+composer setup           # Full setup (install, key, migrate, npm build)
+composer dev             # Start server + queue + vite concurrently
+php artisan migrate:fresh --seed  # Reset database with seeders
 ```
+
+## Design System (STRICT)
+- **Colors:** Primary `#0164CA`, hover `#0150A8`, accent `#F7D558`
+- **Cards:** `bg-white rounded-xl` - NO borders, NO shadows
+- **Buttons:** Flat colors only - NO gradients, NO shadows
+- **Inputs:** `border border-gray-300 rounded-lg`
+- **Status:** Integer `1` (aktif) / `0` (tidak aktif) - never strings
+
+## Database Conventions
+| Table | Prefix | Key Columns |
+|-------|--------|-------------|
+| `tm_opd` | tm_ | n_opd, alamat, status (tinyInt) |
+| `users` | - | username (unique), opd_id (FK), role (enum) |
+
+Model relationships: User `belongsTo` Opd, Opd `hasMany` Users
 
 ## Project Structure
-
-### Controllers
-Controllers langsung di `app/Http/Controllers/`:
-```php
-namespace App\Http\Controllers;
 ```
-
-### Database Tables
-- `tm_opd` - Master OPD (n_opd, alamat, status as tinyInteger)
-- `users` - Users dengan role enum (admin, operator, verifikator), linked via opd_id
-
-### Views Structure
-```
+app/Http/Controllers/     # Flat structure, no subfolders for main controllers
+app/Models/               # Opd.php (table: tm_opd), User.php
 resources/views/
-├── layouts/app.blade.php    # Main layout with sidebar + Tailwind config
+├── layouts/app.blade.php # Main layout with sidebar + Tailwind config
+├── auth/                 # Login pages
 └── page/
     ├── dashboard.blade.php
-    └── [module]/            # index, create, edit views
+    └── [module]/         # index, create, edit, show views
 ```
 
-### Layout Pattern
+## Route Conventions
+- **No prefix** - routes use simple names: `dashboard`, `opd.index`, `user.show`
+- Resource routes: `Route::resource('opd', OpdController::class)->names('opd')`
+- Dashboard at root: `Route::get('/', [DashboardController::class, 'index'])->name('dashboard')`
+
+## View Patterns
+
+### Layout Usage
 ```blade
 @extends('layouts.app')
 @section('title', 'Page Title')
@@ -55,45 +60,41 @@ resources/views/
 @endsection
 ```
 
-### Route Naming
-Routes use `cms.` prefix: `cms.dashboard`, `cms.opd.index`, etc.
+### Index Page Structure
+1. Header: judul + subtitle + tombol "Tambah" (kanan)
+2. Stats cards row: Total, Aktif, Tidak Aktif
+3. Filter card: search input + status dropdown + tombol filter
+4. Data table (desktop) + mobile cards (responsive)
+5. Custom pagination
 
-## UI Patterns
+### Form Page Structure
+- Header dengan icon, judul, subtitle, tombol "Kembali" (`bg-white`)
+- Form card: `max-w-3xl mx-auto bg-white rounded-xl p-6`
+- Grid layout: `grid grid-cols-1 md:grid-cols-2 gap-6`
 
-### Index Page (List View)
-- Header dengan judul + tombol tambah di kanan
-- Stats cards (Total, Aktif, Tidak Aktif)
-- Filter section dengan search + dropdown status
-- Table dengan desktop view dan mobile cards
-- Pagination custom
-
-### Create/Edit Page
-- Header dengan icon, judul, subtitle + tombol "Kembali" (bg-white)
-- Form card centered (`max-w-3xl mx-auto`)
-- Form fields dengan label, input, error message
-
-### Button Styles
+### Button Classes
 ```blade
-{{-- Primary --}}
-bg-primary text-white hover:bg-primary-dark
-
-{{-- Secondary/Cancel --}}
-bg-white border border-gray-300 text-gray-700 hover:bg-gray-50
+{{-- Primary --}} bg-primary text-white hover:bg-primary-dark
+{{-- Secondary --}} bg-white border border-gray-300 text-gray-700 hover:bg-gray-50
 ```
 
 ### Status Badge
 ```blade
 @if($item->status == 1)
 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-    <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-    Aktif
+    <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>Aktif
 </span>
 @else
-{{-- bg-gray-100 text-gray-600 untuk tidak aktif --}}
+<span class="... bg-gray-100 text-gray-600">Tidak Aktif</span>
 @endif
 ```
 
-## Key Files
-- [resources/views/layouts/app.blade.php](resources/views/layouts/app.blade.php) - Main layout + Tailwind config
-- [routes/web.php](routes/web.php) - All routes (dashboard at `/`)
-- [resources/views/page/opd/](resources/views/page/opd/) - Reference CRUD views
+## Controller Patterns
+- Validation dengan custom Indonesian messages
+- `withQueryString()` untuk pagination dengan filters
+- Hash password: `Hash::make()` on store, conditional on update
+
+## Key Reference Files
+- [resources/views/layouts/app.blade.php](resources/views/layouts/app.blade.php) - Layout + Tailwind config
+- [resources/views/page/opd/index.blade.php](resources/views/page/opd/index.blade.php) - Index page template
+- [app/Http/Controllers/UserController.php](app/Http/Controllers/UserController.php) - CRUD with validation
