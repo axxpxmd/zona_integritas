@@ -4,7 +4,7 @@
 @section('page-title', 'Tambah Pengguna')
 
 @section('content')
-<form action="{{ route('cms.user.store') }}" method="POST">
+<form action="{{ route('user.store') }}" method="POST">
     @csrf
 
     {{-- Header Section --}}
@@ -20,7 +20,7 @@
                 <p class="text-sm text-gray-500">Buat akun pengguna baru untuk sistem</p>
             </div>
         </div>
-        <a href="{{ route('cms.user.index') }}"
+        <a href="{{ route('user.index') }}"
            class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -331,7 +331,7 @@
                     </svg>
                     Buat User
                 </button>
-                <a href="{{ route('cms.user.index') }}"
+                <a href="{{ route('user.index') }}"
                    class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>

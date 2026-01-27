@@ -90,7 +90,7 @@ class UserController extends Controller
 
         User::create($validated);
 
-        return redirect()->route('cms.user.index')
+        return redirect()->route('user.index')
             ->with('success', 'Data pengguna berhasil ditambahkan.');
     }
 
@@ -150,7 +150,7 @@ class UserController extends Controller
 
         $user->update($validated);
 
-        return redirect()->route('cms.user.index')
+        return redirect()->route('user.index')
             ->with('success', 'Data pengguna berhasil diperbarui.');
     }
 
@@ -161,7 +161,7 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return redirect()->route('cms.user.index')
+        return redirect()->route('user.index')
             ->with('success', 'Data pengguna berhasil dihapus.');
     }
 }

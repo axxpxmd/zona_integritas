@@ -11,7 +11,7 @@
             <h2 class="text-xl font-bold text-gray-900">Data OPD</h2>
             <p class="text-sm text-gray-500 mt-1">Kelola data Organisasi Perangkat Daerah</p>
         </div>
-        <a href="{{ route('cms.opd.create') }}"
+        <a href="{{ route('opd.create') }}"
            class="inline-flex items-center justify-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -75,7 +75,7 @@
 
     {{-- Filter & Search --}}
     <div class="bg-white rounded-xl p-5">
-        <form action="{{ route('cms.opd.index') }}" method="GET" class="flex flex-col lg:flex-row gap-4">
+        <form action="{{ route('opd.index') }}" method="GET" class="flex flex-col lg:flex-row gap-4">
             <div class="flex-1">
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">
                     <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,7 +112,7 @@
                     Filter
                 </button>
                 @if(request('search') || request('status'))
-                <a href="{{ route('cms.opd.index') }}"
+                <a href="{{ route('opd.index') }}"
                    class="p-2.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                    title="Reset Filter">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -172,14 +172,14 @@
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-center gap-1">
-                                <a href="{{ route('cms.opd.edit', $opd) }}"
+                                <a href="{{ route('opd.edit', $opd) }}"
                                    class="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
                                    title="Edit">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
                                     </svg>
                                 </a>
-                                <form action="{{ route('cms.opd.destroy', $opd) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                <form action="{{ route('opd.destroy', $opd) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
@@ -204,7 +204,7 @@
                                 </div>
                                 <p class="text-gray-500 font-medium">Belum ada data OPD</p>
                                 <p class="text-gray-400 text-sm mt-1">Silakan tambah data OPD baru</p>
-                                <a href="{{ route('cms.opd.create') }}" class="mt-4 inline-flex items-center gap-2 text-primary text-sm font-medium hover:underline">
+                                <a href="{{ route('opd.create') }}" class="mt-4 inline-flex items-center gap-2 text-primary text-sm font-medium hover:underline">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                                     </svg>
@@ -247,14 +247,14 @@
                     @endif
                 </div>
                 <div class="flex items-center gap-2 pt-3 border-t border-gray-100">
-                    <a href="{{ route('cms.opd.edit', $opd) }}"
+                    <a href="{{ route('opd.edit', $opd) }}"
                        class="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium text-amber-600 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
                         </svg>
                         Edit
                     </a>
-                    <form action="{{ route('cms.opd.destroy', $opd) }}" method="POST" class="flex-1" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                    <form action="{{ route('opd.destroy', $opd) }}" method="POST" class="flex-1" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
                         @csrf
                         @method('DELETE')
                         <button type="submit"
@@ -275,7 +275,7 @@
                     </svg>
                 </div>
                 <p class="text-gray-500 font-medium">Belum ada data OPD</p>
-                <a href="{{ route('cms.opd.create') }}" class="mt-3 inline-flex items-center gap-2 text-primary text-sm font-medium hover:underline">
+                <a href="{{ route('opd.create') }}" class="mt-3 inline-flex items-center gap-2 text-primary text-sm font-medium hover:underline">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>

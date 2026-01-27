@@ -18,7 +18,7 @@
                 <p class="text-sm text-gray-500">Tambah data Organisasi Perangkat Daerah baru</p>
             </div>
         </div>
-        <a href="{{ route('cms.opd.index') }}"
+        <a href="{{ route('opd.index') }}"
            class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -29,7 +29,7 @@
 
     {{-- Form Card --}}
     <div class="bg-white rounded-xl">
-        <form action="{{ route('cms.opd.store') }}" method="POST" class="p-4 sm:p-6 space-y-5">
+        <form action="{{ route('opd.store') }}" method="POST" class="p-4 sm:p-6 space-y-5">
             @csrf
 
             {{-- Nama OPD --}}
@@ -81,7 +81,7 @@
 
             {{-- Form Actions --}}
             <div class="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 pt-4 border-t border-gray-200">
-                <a href="{{ route('cms.opd.index') }}"
+                <a href="{{ route('opd.index') }}"
                    class="w-full sm:w-auto px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors text-center">
                     Batal
                 </a>

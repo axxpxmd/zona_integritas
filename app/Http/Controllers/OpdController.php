@@ -59,7 +59,7 @@ class OpdController extends Controller
 
         Opd::create($validated);
 
-        return redirect()->route('cms.opd.index')
+        return redirect()->route('opd.index')
             ->with('success', 'Data OPD berhasil ditambahkan.');
     }
 
@@ -89,7 +89,7 @@ class OpdController extends Controller
 
         $opd->update($validated);
 
-        return redirect()->route('cms.opd.index')
+        return redirect()->route('opd.index')
             ->with('success', 'Data OPD berhasil diperbarui.');
     }
 
@@ -100,7 +100,7 @@ class OpdController extends Controller
     {
         $opd->delete();
 
-        return redirect()->route('cms.opd.index')
+        return redirect()->route('opd.index')
             ->with('success', 'Data OPD berhasil dihapus.');
     }
 }
