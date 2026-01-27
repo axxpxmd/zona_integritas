@@ -18,9 +18,18 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'opd_id',
+        'username',
+        'nama_instansi',
+        'nama_kepala',
+        'jabatan_kepala',
+        'nama_operator',
+        'jabatan_operator',
         'email',
+        'telp',
+        'alamat',
         'password',
+        'role',
     ];
 
     /**
@@ -44,5 +53,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the OPD that owns the user.
+     */
+    public function opd()
+    {
+        return $this->belongsTo(Opd::class, 'opd_id');
     }
 }

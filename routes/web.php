@@ -1,10 +1,14 @@
 <?php
 
-use App\Http\Controllers\Cms\DashboardController;
-use App\Http\Controllers\Cms\OpdController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OpdController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'index'])->name('cms.dashboard');
 
 // OPD Management
-Route::resource('opd', OpdController::class)->names('cms.opd')->except(['show']);
+Route::resource('opd', OpdController::class)->names('cms.opd');
+
+// User Management
+Route::resource('user', UserController::class)->names('cms.user');

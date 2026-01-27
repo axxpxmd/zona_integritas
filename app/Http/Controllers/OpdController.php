@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Cms;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Opd;
 use Illuminate\Http\Request;
 
@@ -31,7 +30,7 @@ class OpdController extends Controller
 
         $opds = $query->orderBy('n_opd', 'asc')->paginate(10)->withQueryString();
 
-        return view('cms.opd.index', compact('opds'));
+        return view('page.opd.index', compact('opds'));
     }
 
     /**
@@ -39,7 +38,7 @@ class OpdController extends Controller
      */
     public function create()
     {
-        return view('cms.opd.create');
+        return view('page.opd.create');
     }
 
     /**
@@ -69,7 +68,7 @@ class OpdController extends Controller
      */
     public function edit(Opd $opd)
     {
-        return view('cms.opd.edit', compact('opd'));
+        return view('page.opd.edit', compact('opd'));
     }
 
     /**

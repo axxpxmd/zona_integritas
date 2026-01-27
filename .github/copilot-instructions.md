@@ -5,48 +5,47 @@ Laravel 12 CMS untuk pengisian kuesioner Zona Integritas (WBK/WBBM) Tangerang Se
 
 ## Tech Stack
 - **Backend:** Laravel 12, PHP 8.2+, MySQL
-- **Frontend:** Tailwind CSS (CDN), Poppins font
+- **Frontend:** Tailwind CSS (CDN), Inter font
 - **Database:** MySQL (configured in `.env`)
 
 ## Design Guidelines
-- **Primary color:** `#0164CA` (sidebar, buttons)
+- **Primary color:** `#0164CA` (sidebar, buttons), `#0150A8` (hover state)
 - **Secondary color:** `#F7D558` (accents)
-- **NO shadows** on buttons/cards - use borders instead
+- **NO shadows** on buttons/cards
 - **NO gradients** - flat colors only
-- Rounded-full for navigation items, rounded-lg for cards
+- Cards: `bg-white rounded-xl` tanpa border
+- Form inputs: gunakan `border border-gray-300`
+- Status values: gunakan `1` (aktif) dan `0` (tidak aktif), bukan string
 
 ## Development Commands
 ```bash
-composer setup    # Full setup (deps, key, migrate, build)
-composer dev      # Start server + queue + vite
-composer test     # Run tests
+composer setup           # Full setup (deps, key, migrate, build)
+composer dev             # Start server + queue + vite
 php artisan migrate:fresh  # Reset database
 ```
 
 ## Project Structure
 
 ### Controllers
-CMS controllers in `app/Http/Controllers/Cms/`:
+Controllers langsung di `app/Http/Controllers/`:
 ```php
-namespace App\Http\Controllers\Cms;
-use App\Http\Controllers\Controller;
+namespace App\Http\Controllers;
 ```
 
 ### Database Tables
-- `tm_opd` - Master OPD (n_opd, alamat, status)
-- `users` - Users with role enum (admin, operator, verifikator), linked to tm_opd via opd_id
+- `tm_opd` - Master OPD (n_opd, alamat, status as tinyInteger)
+- `users` - Users dengan role enum (admin, operator, verifikator), linked via opd_id
 
 ### Views Structure
 ```
 resources/views/
-├── layouts/app.blade.php    # Main CMS layout with sidebar
-└── cms/
+├── layouts/app.blade.php    # Main layout with sidebar + Tailwind config
+└── page/
     ├── dashboard.blade.php
     └── [module]/            # index, create, edit views
 ```
 
 ### Layout Pattern
-All CMS views extend `layouts.app`:
 ```blade
 @extends('layouts.app')
 @section('title', 'Page Title')
@@ -59,13 +58,42 @@ All CMS views extend `layouts.app`:
 ### Route Naming
 Routes use `cms.` prefix: `cms.dashboard`, `cms.opd.index`, etc.
 
-## Key Files
-- [resources/views/layouts/app.blade.php](resources/views/layouts/app.blade.php) - Main layout with sidebar
-- [routes/web.php](routes/web.php) - All routes (dashboard at `/`)
-- [database/migrations/](database/migrations/) - tm_opd and users tables
+## UI Patterns
 
-## UI Components Pattern
-- Cards: `bg-white border border-gray-200 rounded-lg p-6`
-- Buttons primary: `bg-primary text-white px-4 py-2 rounded-lg`
-- Form inputs: `border border-gray-300 rounded-lg px-4 py-2 w-full`
-- Active nav: `bg-white/20 text-white rounded-full`
+### Index Page (List View)
+- Header dengan judul + tombol tambah di kanan
+- Stats cards (Total, Aktif, Tidak Aktif)
+- Filter section dengan search + dropdown status
+- Table dengan desktop view dan mobile cards
+- Pagination custom
+
+### Create/Edit Page
+- Header dengan icon, judul, subtitle + tombol "Kembali" (bg-white)
+- Form card centered (`max-w-3xl mx-auto`)
+- Form fields dengan label, input, error message
+
+### Button Styles
+```blade
+{{-- Primary --}}
+bg-primary text-white hover:bg-primary-dark
+
+{{-- Secondary/Cancel --}}
+bg-white border border-gray-300 text-gray-700 hover:bg-gray-50
+```
+
+### Status Badge
+```blade
+@if($item->status == 1)
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+    <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+    Aktif
+</span>
+@else
+{{-- bg-gray-100 text-gray-600 untuk tidak aktif --}}
+@endif
+```
+
+## Key Files
+- [resources/views/layouts/app.blade.php](resources/views/layouts/app.blade.php) - Main layout + Tailwind config
+- [routes/web.php](routes/web.php) - All routes (dashboard at `/`)
+- [resources/views/page/opd/](resources/views/page/opd/) - Reference CRUD views

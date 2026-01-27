@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->foreignId('opd_id')->nullable()->constrained('tm_opd')->nullOnDelete();
+            $table->string('username')->unique();
             $table->string('nama_instansi');
             $table->string('nama_kepala')->nullable();
             $table->string('jabatan_kepala')->nullable();
