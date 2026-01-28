@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KuesionerController;
 use App\Http\Controllers\OpdController;
 use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\UserController;
@@ -27,4 +28,11 @@ Route::middleware('auth')->group(function () {
 
     // Periode Management
     Route::resource('periode', PeriodeController::class)->names('periode');
+
+    // Kuesioner
+    Route::prefix('kuesioner')->name('kuesioner.')->group(function () {
+        Route::get('/', [KuesionerController::class, 'index'])->name('index');
+        Route::get('/{periode}', [KuesionerController::class, 'show'])->name('show');
+        Route::post('/auto-save', [KuesionerController::class, 'autoSave'])->name('auto-save');
+    });
 });
