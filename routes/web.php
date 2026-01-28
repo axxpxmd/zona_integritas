@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KomponenController;
 use App\Http\Controllers\KuesionerController;
 use App\Http\Controllers\OpdController;
 use App\Http\Controllers\PeriodeController;
@@ -28,6 +29,9 @@ Route::middleware('auth')->group(function () {
 
     // Periode Management
     Route::resource('periode', PeriodeController::class)->names('periode');
+
+    // Komponen Management
+    Route::resource('komponen', KomponenController::class)->names('komponen');
 
     // Kuesioner
     Route::prefix('kuesioner')->name('kuesioner.')->group(function () {
