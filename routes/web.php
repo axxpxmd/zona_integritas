@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\IndikatorController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\KomponenController;
 use App\Http\Controllers\KuesionerController;
@@ -40,6 +41,9 @@ Route::middleware('auth')->group(function () {
 
     // Sub Kategori Management
     Route::resource('sub-kategori', SubKategoriController::class)->names('sub-kategori');
+
+    // Indikator Management
+    Route::resource('indikator', IndikatorController::class)->names('indikator');
 
     // Kuesioner
     Route::prefix('kuesioner')->name('kuesioner.')->group(function () {
