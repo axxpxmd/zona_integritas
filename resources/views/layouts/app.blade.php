@@ -302,6 +302,15 @@
 
                 <p class="section-label text-[10px] font-semibold text-white/40 uppercase tracking-wider mb-3 mt-6">Master Data</p>
                 <div class="space-y-1.5">
+                    <a href="{{ route('periode.index') }}"
+                       data-tooltip="Data Periode"
+                       class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                              {{ request()->routeIs('periode.*') ? 'bg-white text-primary shadow-lg shadow-black/10' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <span class="sidebar-text transition-all duration-300 whitespace-nowrap">Data Periode</span>
+                    </a>
                     <a href="{{ route('opd.index') }}"
                        data-tooltip="Data OPD"
                        class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200

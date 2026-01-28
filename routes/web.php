@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OpdController;
+use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,4 +24,7 @@ Route::middleware('auth')->group(function () {
 
     // User Management
     Route::resource('user', UserController::class)->names('user');
+
+    // Periode Management
+    Route::resource('periode', PeriodeController::class)->names('periode');
 });
