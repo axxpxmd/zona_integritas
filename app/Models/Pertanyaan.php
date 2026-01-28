@@ -35,9 +35,17 @@ class Pertanyaan extends Model
     /**
      * Relationship: Pertanyaan has many SubPertanyaan
      */
-    public function subPertanyaan()
+    public function subPertanyaans()
     {
-        return $this->hasMany(SubPertanyaan::class);
+        return $this->hasMany(SubPertanyaan::class)->orderBy('urutan');
+    }
+
+    /**
+     * Accessor: Check apakah pertanyaan memiliki sub-pertanyaan
+     */
+    public function getHasSubPertanyaanAttribute()
+    {
+        return $this->subPertanyaans()->count() > 0;
     }
 
     /**
