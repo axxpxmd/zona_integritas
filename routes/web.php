@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\KomponenController;
 use App\Http\Controllers\KuesionerController;
 use App\Http\Controllers\OpdController;
@@ -32,6 +33,9 @@ Route::middleware('auth')->group(function () {
 
     // Komponen Management
     Route::resource('komponen', KomponenController::class)->names('komponen');
+
+    // Kategori Management
+    Route::resource('kategori', KategoriController::class)->names('kategori');
 
     // Kuesioner
     Route::prefix('kuesioner')->name('kuesioner.')->group(function () {
