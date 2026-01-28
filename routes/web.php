@@ -8,6 +8,7 @@ use App\Http\Controllers\KomponenController;
 use App\Http\Controllers\KuesionerController;
 use App\Http\Controllers\OpdController;
 use App\Http\Controllers\PeriodeController;
+use App\Http\Controllers\PertanyaanController;
 use App\Http\Controllers\SubKategoriController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,9 @@ Route::middleware('auth')->group(function () {
 
     // Indikator Management
     Route::resource('indikator', IndikatorController::class)->names('indikator');
+
+    // Pertanyaan Management
+    Route::resource('pertanyaan', PertanyaanController::class)->names('pertanyaan');
 
     // Kuesioner
     Route::prefix('kuesioner')->name('kuesioner.')->group(function () {
