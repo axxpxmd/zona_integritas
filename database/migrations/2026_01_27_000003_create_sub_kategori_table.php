@@ -25,7 +25,7 @@ return new class extends Migration
             $table->unique(['kategori_id', 'kode']);
         });
     }
-
+                                                    
     /**
      * Reverse the migrations.
      */

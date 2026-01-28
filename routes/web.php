@@ -7,6 +7,7 @@ use App\Http\Controllers\KomponenController;
 use App\Http\Controllers\KuesionerController;
 use App\Http\Controllers\OpdController;
 use App\Http\Controllers\PeriodeController;
+use App\Http\Controllers\SubKategoriController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,9 @@ Route::middleware('auth')->group(function () {
 
     // Kategori Management
     Route::resource('kategori', KategoriController::class)->names('kategori');
+
+    // Sub Kategori Management
+    Route::resource('sub-kategori', SubKategoriController::class)->names('sub-kategori');
 
     // Kuesioner
     Route::prefix('kuesioner')->name('kuesioner.')->group(function () {

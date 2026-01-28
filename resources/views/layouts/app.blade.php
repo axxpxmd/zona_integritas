@@ -338,6 +338,15 @@
                         </svg>
                         <span class="sidebar-text transition-all duration-300 whitespace-nowrap">Data Kategori</span>
                     </a>
+                    <a href="{{ route('sub-kategori.index') }}"
+                       data-tooltip="Data Sub Kategori"
+                       class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                              {{ request()->routeIs('sub-kategori.*') ? 'bg-white text-primary shadow-lg shadow-black/10' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                        </svg>
+                        <span class="sidebar-text transition-all duration-300 whitespace-nowrap">Data Sub Kategori</span>
+                    </a>
                     <a href="{{ route('opd.index') }}"
                        data-tooltip="Data OPD"
                        class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
