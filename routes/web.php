@@ -26,32 +26,35 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middl
 Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-    // OPD Management
-    Route::resource('opd', OpdController::class)->names('opd');
+    // Admin Only Routes
+    Route::middleware('admin')->group(function () {
+        // OPD Management
+        Route::resource('opd', OpdController::class)->names('opd');
 
-    // User Management
-    Route::resource('user', UserController::class)->names('user');
+        // User Management
+        Route::resource('user', UserController::class)->names('user');
 
-    // Periode Management
-    Route::resource('periode', PeriodeController::class)->names('periode');
+        // Periode Management
+        Route::resource('periode', PeriodeController::class)->names('periode');
 
-    // Komponen Management
-    Route::resource('komponen', KomponenController::class)->names('komponen');
+        // Komponen Management
+        Route::resource('komponen', KomponenController::class)->names('komponen');
 
-    // Kategori Management
-    Route::resource('kategori', KategoriController::class)->names('kategori');
+        // Kategori Management
+        Route::resource('kategori', KategoriController::class)->names('kategori');
 
-    // Sub Kategori Management
-    Route::resource('sub-kategori', SubKategoriController::class)->names('sub-kategori');
+        // Sub Kategori Management
+        Route::resource('sub-kategori', SubKategoriController::class)->names('sub-kategori');
 
-    // Indikator Management
-    Route::resource('indikator', IndikatorController::class)->names('indikator');
+        // Indikator Management
+        Route::resource('indikator', IndikatorController::class)->names('indikator');
 
-    // Pertanyaan Management
-    Route::resource('pertanyaan', PertanyaanController::class)->names('pertanyaan');
+        // Pertanyaan Management
+        Route::resource('pertanyaan', PertanyaanController::class)->names('pertanyaan');
 
-    // Sub Pertanyaan Management
-    Route::resource('sub-pertanyaan', SubPertanyaanController::class)->names('sub-pertanyaan');
+        // Sub Pertanyaan Management
+        Route::resource('sub-pertanyaan', SubPertanyaanController::class)->names('sub-pertanyaan');
+    });
 
     // Kuesioner
     Route::prefix('kuesioner')->name('kuesioner.')->group(function () {

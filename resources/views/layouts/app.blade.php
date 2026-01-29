@@ -309,6 +309,7 @@
                     </a>
                 </div>
 
+                @if(Auth::user()->role === 'admin')
                 <p class="section-label text-[10px] font-semibold text-white/40 uppercase tracking-wider mb-3 mt-6">Master Data</p>
                 <div class="space-y-1.5">
                     <a href="{{ route('periode.index') }}"
@@ -393,6 +394,7 @@
                         <span class="sidebar-text transition-all duration-300 whitespace-nowrap">Data Pengguna</span>
                     </a>
                 </div>
+                @endif
             </nav>
 
             <!-- User Section at Bottom -->
