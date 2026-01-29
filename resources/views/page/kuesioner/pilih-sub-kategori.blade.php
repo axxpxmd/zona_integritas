@@ -99,7 +99,7 @@
                                 <span class="font-semibold">{{ $prog['terjawab'] }}/{{ $prog['total'] }}</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                                <div class="h-full transition-all duration-300 rounded-full {{ $prog['persen'] == 100 ? 'bg-green-500' : 'bg-primary' }}" 
+                                <div class="h-full transition-all duration-300 rounded-full {{ $prog['persen'] == 100 ? 'bg-green-500' : 'bg-primary' }}"
                                      style="width: {{ $prog['persen'] }}%"></div>
                             </div>
                         </div>

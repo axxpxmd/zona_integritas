@@ -68,14 +68,14 @@ class KuesionerController extends Controller
                     foreach ($subKategori->indikators as $indikator) {
                         foreach ($indikator->pertanyaans as $pertanyaan) {
                             $totalPertanyaan++;
-                            
+
                             // Cek apakah pertanyaan ini sudah dijawab
                             $jawaban = Jawaban::where('periode_id', $periode_id)
                                 ->where('opd_id', $opd->id)
                                 ->where('pertanyaan_id', $pertanyaan->id)
                                 ->whereNull('sub_pertanyaan_id')
                                 ->exists();
-                            
+
                             if ($jawaban) {
                                 $pertanyaanTerjawab++;
                             }
