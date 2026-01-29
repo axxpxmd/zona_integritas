@@ -10,6 +10,7 @@ use App\Http\Controllers\OpdController;
 use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\PertanyaanController;
 use App\Http\Controllers\SubKategoriController;
+use App\Http\Controllers\SubPertanyaanController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -48,6 +49,9 @@ Route::middleware('auth')->group(function () {
 
     // Pertanyaan Management
     Route::resource('pertanyaan', PertanyaanController::class)->names('pertanyaan');
+
+    // Sub Pertanyaan Management
+    Route::resource('sub-pertanyaan', SubPertanyaanController::class)->names('sub-pertanyaan');
 
     // Kuesioner
     Route::prefix('kuesioner')->name('kuesioner.')->group(function () {

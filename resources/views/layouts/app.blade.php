@@ -365,6 +365,15 @@
                         </svg>
                         <span class="sidebar-text transition-all duration-300 whitespace-nowrap">Data Pertanyaan</span>
                     </a>
+                    <a href="{{ route('sub-pertanyaan.index') }}"
+                       data-tooltip="Data Sub Pertanyaan"
+                       class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                              {{ request()->routeIs('sub-pertanyaan.*') ? 'bg-white text-primary shadow-lg shadow-black/10' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                        </svg>
+                        <span class="sidebar-text transition-all duration-300 whitespace-nowrap">Data Sub Pertanyaan</span>
+                    </a>
                     <a href="{{ route('opd.index') }}"
                        data-tooltip="Data OPD"
                        class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
