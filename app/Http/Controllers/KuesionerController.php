@@ -148,6 +148,7 @@ class KuesionerController extends Controller
             'jawaban_text' => 'nullable|string',
             'jawaban_angka' => 'nullable|numeric',
             'keterangan' => 'nullable|string',
+            'dokumen' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png|max:5120',
         ]);
 
         $user = Auth::user();
@@ -155,6 +156,53 @@ class KuesionerController extends Controller
 
         if (!$opd) {
             return response()->json(['success' => false, 'message' => 'OPD tidak ditemukan'], 400);
+        }
+
+        // Get existing jawaban to preserve created_by
+        $existingJawaban = Jawaban::where('periode_id', $validated['periode_id'])
+            ->where('opd_id', $opd->id)
+            ->where('pertanyaan_id', $validated['pertanyaan_id'])
+            ->where('sub_pertanyaan_id', $validated['sub_pertanyaan_id'] ?? null)
+            ->first();
+
+        // Handle file deletion request
+        if ($request->has('delete_file') && $request->delete_file) {
+            if ($existingJawaban && $existingJawaban->file_path) {
+                \Storage::disk('public')->delete($existingJawaban->file_path);
+                $existingJawaban->update(['file_path' => null]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Dokumen berhasil dihapus'
+                ]);
+            }
+        }
+
+        // Handle file upload
+        $filePath = null;
+        if ($request->hasFile('dokumen')) {
+            $file = $request->file('dokumen');
+            $fileName = time() . '_' . $validated['pertanyaan_id'] . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('dokumen-kuesioner', $fileName, 'public');
+        }
+
+        // Prepare data for update/create
+        $jawabanData = [
+            'jawaban_text' => $validated['jawaban_text'] ?? null,
+            'jawaban_angka' => $validated['jawaban_angka'] ?? null,
+            'keterangan' => $validated['keterangan'] ?? null,
+            'status' => 'draft',
+            'created_by' => $existingJawaban->created_by ?? $user->id,
+            'updated_by' => $user->id,
+        ];
+
+        // Only update file_path if a new file was uploaded
+        if ($filePath) {
+            // Delete old file if exists
+            if ($existingJawaban && $existingJawaban->file_path) {
+                \Storage::disk('public')->delete($existingJawaban->file_path);
+            }
+            $jawabanData['file_path'] = $filePath;
         }
 
         // Update or create jawaban
@@ -165,14 +213,7 @@ class KuesionerController extends Controller
                 'pertanyaan_id' => $validated['pertanyaan_id'],
                 'sub_pertanyaan_id' => $validated['sub_pertanyaan_id'] ?? null,
             ],
-            [
-                'jawaban_text' => $validated['jawaban_text'] ?? null,
-                'jawaban_angka' => $validated['jawaban_angka'] ?? null,
-                'keterangan' => $validated['keterangan'] ?? null,
-                'status' => 'draft',
-                'created_by' => $jawaban->created_by ?? $user->id,
-                'updated_by' => $user->id,
-            ]
+            $jawabanData
         );
 
         return response()->json([

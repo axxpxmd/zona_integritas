@@ -16,6 +16,7 @@ class Jawaban extends Model
         'jawaban_text',
         'jawaban_angka',
         'keterangan',
+        'file_path',
         'status',
         'created_by',
         'updated_by',
