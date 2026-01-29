@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Isi Kuesioner - ' . $periode->nama_periode)
+@section('title', 'Isi Kuesioner - ' . $subKategori->nama)
 @section('page-title', 'Isi Kuesioner')
 
 @section('content')
@@ -8,15 +8,15 @@
     {{-- Header --}}
     <div class="flex items-center justify-between">
         <div class="flex items-center gap-4">
-            <a href="{{ route('kuesioner.index') }}"
+            <a href="{{ route('kuesioner.show', $periode->id) }}"
                class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
             </a>
             <div>
-                <h2 class="text-xl font-bold text-gray-900">{{ $periode->nama_periode }}</h2>
-                <p class="text-sm text-gray-500 mt-0.5">{{ $opd->n_opd }}</p>
+                <h2 class="text-xl font-bold text-gray-900">{{ $subKategori->nama }}</h2>
+                <p class="text-sm text-gray-500 mt-0.5">{{ $periode->nama_periode }} • {{ $opd->n_opd }}</p>
             </div>
         </div>
         <div class="flex items-center gap-3">
@@ -48,67 +48,47 @@
         </div>
     </div>
 
-    {{-- Komponen Loop --}}
-    @foreach($komponens as $komponen)
+    {{-- Breadcrumb --}}
+    <div class="bg-white rounded-lg p-4">
+        <div class="flex flex-wrap items-center gap-2 text-sm">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-100 text-purple-700 font-medium">
+                {{ $subKategori->kategori->komponen->kode }}. {{ $subKategori->kategori->komponen->nama }}
+            </span>
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-100 text-blue-700 font-medium">
+                {{ $subKategori->kategori->kode }}. {{ $subKategori->kategori->nama }}
+            </span>
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-white font-medium">
+                {{ $subKategori->kode }}. {{ $subKategori->nama }}
+            </span>
+        </div>
+    </div>
+
+    {{-- Sub Kategori Content --}}
     <div class="bg-white rounded-xl overflow-hidden">
-        {{-- Komponen Header --}}
-        <div class="bg-primary px-6 py-4">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h3 class="text-lg font-bold text-white">{{ $komponen->kode }}. {{ $komponen->nama }}</h3>
-                    @if($komponen->deskripsi)
-                    <p class="text-sm text-white/80 mt-1">{{ $komponen->deskripsi }}</p>
-                    @endif
+        {{-- Sub Kategori Header --}}
+        <div class="bg-gradient-to-r from-primary to-primary-dark px-6 py-5">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                    <span class="text-lg font-bold text-white">{{ $subKategori->kode }}</span>
                 </div>
-                <div class="text-white/90 text-sm font-medium">
-                    Bobot: {{ $komponen->bobot }}%
+                <div>
+                    <h3 class="text-lg font-bold text-white">{{ $subKategori->nama }}</h3>
+                    @if($subKategori->deskripsi)
+                    <p class="text-sm text-white/80 mt-1">{{ $subKategori->deskripsi }}</p>
+                    @endif
                 </div>
             </div>
         </div>
 
-        {{-- Kategori Accordion --}}
-        <div class="divide-y divide-gray-200">
-            @foreach($komponen->kategoris as $kategori)
-            <div class="kategori-section">
-                {{-- Kategori Header (Clickable) --}}
-                <button type="button"
-                        class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors kategori-toggle"
-                        data-target="kategori-{{ $kategori->id }}">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <span class="text-sm font-bold text-gray-700">{{ $kategori->kode }}</span>
-                        </div>
-                        <div class="text-left">
-                            <h4 class="text-base font-semibold text-gray-900">{{ $kategori->nama }}</h4>
-                            @if($kategori->deskripsi)
-                            <p class="text-xs text-gray-500 mt-0.5">{{ $kategori->deskripsi }}</p>
-                            @endif
-                        </div>
-                    </div>
-                    <svg class="w-5 h-5 text-gray-400 transition-transform kategori-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                    </svg>
-                </button>
-
-                {{-- Kategori Content (Collapsible) --}}
-                <div id="kategori-{{ $kategori->id }}" class="kategori-content hidden">
-                    @foreach($kategori->subKategoris as $subKategori)
-                    <div class="px-6 py-4 bg-gray-50">
-                        {{-- Sub Kategori Header --}}
-                        <div class="flex items-start gap-3 mb-4">
-                            <div class="w-6 h-6 bg-white rounded flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <span class="text-xs font-bold text-primary">{{ $subKategori->kode }}</span>
-                            </div>
-                            <div>
-                                <h5 class="text-sm font-semibold text-gray-900">{{ $subKategori->nama }}</h5>
-                                @if($subKategori->deskripsi)
-                                <p class="text-xs text-gray-600 mt-1">{{ $subKategori->deskripsi }}</p>
-                                @endif
-                            </div>
-                        </div>
-
-                        {{-- Indikator Loop --}}
-                        @foreach($subKategori->indikators as $indikator)
+        {{-- Indikator Loop --}}
+        <div class="p-6 space-y-6">
+            @foreach($subKategori->indikators as $indikator)
                         <div class="ml-9 mb-6 last:mb-0">
                             <div class="flex items-start gap-2 mb-3">
                                 <span class="inline-flex items-center justify-center w-5 h-5 bg-primary/10 text-primary rounded text-xs font-bold flex-shrink-0 mt-0.5">
@@ -174,39 +154,14 @@
                                 </div>
                                 @endforeach
                             </div>
-                        </div>
-                        @endforeach
-                    </div>
-                    @endforeach
-                </div>
             </div>
             @endforeach
         </div>
     </div>
-    @endforeach
 </div>
 
 @push('scripts')
 <script>
-// Accordion functionality
-document.querySelectorAll('.kategori-toggle').forEach(button => {
-    button.addEventListener('click', function() {
-        const target = this.getAttribute('data-target');
-        const content = document.getElementById(target);
-        const icon = this.querySelector('.kategori-icon');
-
-        // Toggle content
-        content.classList.toggle('hidden');
-
-        // Rotate icon
-        if (content.classList.contains('hidden')) {
-            icon.style.transform = 'rotate(0deg)';
-        } else {
-            icon.style.transform = 'rotate(180deg)';
-        }
-    });
-});
-
 // Auto-save functionality
 let saveTimeout;
 const autoSaveIndicator = document.getElementById('autoSaveIndicator');
