@@ -64,8 +64,16 @@
                     <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
                         <span class="text-sm font-bold text-gray-700">{{ $kategori->kode }}</span>
                     </div>
-                    <div>
-                        <h4 class="text-base font-semibold text-gray-900">{{ $kategori->nama }}</h4>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2">
+                            <h4 class="text-base font-semibold text-gray-900">{{ $kategori->nama }}</h4>
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-medium">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/>
+                                </svg>
+                                {{ $kategori->bobot }}
+                            </span>
+                        </div>
                         @if($kategori->deskripsi)
                         <p class="text-xs text-gray-500 mt-0.5">{{ $kategori->deskripsi }}</p>
                         @endif
@@ -89,6 +97,12 @@
                                 <h5 class="text-sm font-semibold text-gray-900 group-hover:text-primary transition-colors line-clamp-2">
                                     {{ $subKategori->nama }}
                                 </h5>
+                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-accent/20 text-gray-700 rounded text-xs font-medium mt-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/>
+                                    </svg>
+                                    Bobot: {{ $subKategori->bobot }}
+                                </span>
                             </div>
                         </div>
 

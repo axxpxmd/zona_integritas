@@ -97,7 +97,7 @@ class KuesionerController extends Controller
     /**
      * Halaman form isi kuesioner per sub kategori
      */
-    public function fill($periode_id, $sub_kategori_id)
+    public function fill(Request $request, $periode_id, $sub_kategori_id)
     {
         $periode = Periode::findOrFail($periode_id);
         $subKategori = SubKategori::with([
@@ -122,6 +122,16 @@ class KuesionerController extends Controller
                 ->with('error', 'User Anda belum terhubung dengan OPD');
         }
 
+        // Pagination indikator
+        $indikators = $subKategori->indikators;
+        $totalIndikator = $indikators->count();
+        $currentPage = (int) max(1, min($request->get('indikator', 1), $totalIndikator));
+        $currentIndikator = $indikators->get($currentPage - 1);
+
+        if (!$currentIndikator) {
+            return redirect()->route('kuesioner.fill', [$periode_id, $sub_kategori_id, 'indikator' => 1]);
+        }
+
         // Ambil jawaban yang sudah diisi oleh OPD ini untuk periode ini
         $jawabans = Jawaban::where('periode_id', $periode_id)
             ->where('opd_id', $opd->id)
@@ -133,7 +143,7 @@ class KuesionerController extends Controller
                     : $item->pertanyaan_id;
             });
 
-        return view('page.kuesioner.form', compact('periode', 'opd', 'subKategori', 'jawabans'));
+        return view('page.kuesioner.form', compact('periode', 'opd', 'subKategori', 'jawabans', 'currentIndikator', 'currentPage', 'totalIndikator'));
     }
 
     /**
@@ -141,6 +151,7 @@ class KuesionerController extends Controller
      */
     public function submit(Request $request)
     {
+        dd($request->all());
         // TODO: Implementasi simpan jawaban
     }
 }
