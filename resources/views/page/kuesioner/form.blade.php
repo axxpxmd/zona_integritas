@@ -19,33 +19,6 @@
                 <p class="text-sm text-gray-500 mt-0.5">{{ $periode->nama_periode }} • {{ $opd->n_opd }}</p>
             </div>
         </div>
-        <div class="flex items-center gap-3">
-            <div id="autoSaveIndicator" class="hidden items-center gap-2 text-sm text-gray-500">
-                <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                </svg>
-                <span>Menyimpan...</span>
-            </div>
-            <div id="savedIndicator" class="hidden items-center gap-2 text-sm text-green-600">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                <span>Tersimpan</span>
-            </div>
-        </div>
-    </div>
-
-    {{-- Info Bar --}}
-    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div class="flex gap-3">
-            <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <div class="text-sm text-blue-800">
-                <p class="font-medium">Jawaban Anda akan tersimpan otomatis setiap kali Anda mengisi.</p>
-                <p class="mt-1">Anda dapat meninggalkan halaman ini dan melanjutkan nanti tanpa kehilangan data.</p>
-            </div>
-        </div>
     </div>
 
     {{-- Breadcrumb --}}
@@ -89,284 +62,94 @@
         {{-- Indikator Loop --}}
         <div class="p-6 space-y-6">
             @foreach($subKategori->indikators as $indikator)
-                        <div class="ml-9 mb-6 last:mb-0">
-                            <div class="flex items-start gap-2 mb-3">
-                                <span class="inline-flex items-center justify-center w-5 h-5 bg-primary/10 text-primary rounded text-xs font-bold flex-shrink-0 mt-0.5">
-                                    {{ $indikator->kode }}
-                                </span>
-                                <div>
-                                    <h6 class="text-sm font-medium text-gray-900">{{ $indikator->nama }}</h6>
-                                    @if($indikator->deskripsi)
-                                    <p class="text-xs text-gray-600 mt-1">{{ $indikator->deskripsi }}</p>
-                                    @endif
+            <div class="ml-9 mb-6 last:mb-0">
+                <div class="flex items-start gap-2 mb-3">
+                    <span class="inline-flex items-center justify-center w-5 h-5 bg-primary/10 text-primary rounded text-xs font-bold flex-shrink-0 mt-0.5">
+                        {{ $indikator->kode }}
+                    </span>
+                    <div>
+                        <h6 class="text-sm font-medium text-gray-900">{{ $indikator->nama }}</h6>
+                        @if($indikator->deskripsi)
+                        <p class="text-xs text-gray-600 mt-1">{{ $indikator->deskripsi }}</p>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Pertanyaan Loop --}}
+                <div class="space-y-4 ml-7">
+                    @foreach($indikator->pertanyaans as $pertanyaan)
+                    <div class="bg-white rounded-lg p-4 border border-gray-200">
+                        {{-- Pertanyaan --}}
+                        <div class="flex items-start gap-3 mb-3">
+                            <span class="inline-flex items-center justify-center min-w-[24px] h-6 bg-gray-100 text-gray-700 rounded text-xs font-semibold px-2">
+                                {{ $pertanyaan->urutan }}
+                            </span>
+                            <p class="text-sm text-gray-900 flex-1">{{ $pertanyaan->pertanyaan }}</p>
+                        </div>
+
+                        {{-- Input berdasarkan tipe --}}
+                        @if($pertanyaan->tipe_jawaban === 'ya_tidak')
+                            @include('page.kuesioner.partials.input-ya-tidak', [
+                                'pertanyaan' => $pertanyaan,
+                                'jawaban' => $jawabans[$pertanyaan->id] ?? null
+                            ])
+                        @elseif($pertanyaan->tipe_jawaban === 'pilihan_ganda')
+                            @include('page.kuesioner.partials.input-pilihan-ganda', [
+                                'pertanyaan' => $pertanyaan,
+                                'jawaban' => $jawabans[$pertanyaan->id] ?? null
+                            ])
+                        @elseif($pertanyaan->tipe_jawaban === 'angka')
+                            @if($pertanyaan->has_sub_pertanyaan)
+                                @include('page.kuesioner.partials.input-sub-pertanyaan', [
+                                    'pertanyaan' => $pertanyaan,
+                                    'jawabans' => $jawabans
+                                ])
+                            @else
+                                @include('page.kuesioner.partials.input-angka', [
+                                    'pertanyaan' => $pertanyaan,
+                                    'jawaban' => $jawabans[$pertanyaan->id] ?? null
+                                ])
+                            @endif
+                        @endif
+
+                        {{-- Keterangan (optional) --}}
+                        <div class="mt-3 pt-3 border-t border-gray-100">
+                            <label class="block text-xs font-medium text-gray-700 mb-1.5">
+                                Keterangan (Opsional)
+                            </label>
+                            <textarea class="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none resize-none"
+                                        rows="2"
+                                        placeholder="Tambahkan catatan atau keterangan jika diperlukan...">{{ $jawabans[$pertanyaan->id]->keterangan ?? '' }}</textarea>
+                        </div>
+
+                        {{-- Upload Dokumen (optional) --}}
+                        <div class="mt-3 pt-3 border-t border-gray-100">
+                            <label class="block text-xs font-medium text-gray-700 mb-1.5">
+                                Upload Dokumen Pendukung (Opsional)
+                            </label>
+                            <div class="space-y-2">
+                                @if(isset($jawabans[$pertanyaan->id]) && $jawabans[$pertanyaan->id]->file_path)
+                                <div class="flex items-center gap-2 p-2 bg-green-50 border border-green-200 rounded-lg">
+                                    <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    <span class="text-xs text-green-700 flex-1 truncate">
+                                        {{ basename($jawabans[$pertanyaan->id]->file_path) }}
+                                    </span>
                                 </div>
+                                @endif
+                                <input type="file" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                                        accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
+                                <p class="text-xs text-gray-500">Format: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG. Maksimal 5MB.</p>
                             </div>
-
-                            {{-- Pertanyaan Loop --}}
-                            <div class="space-y-4 ml-7">
-                                @foreach($indikator->pertanyaans as $pertanyaan)
-                                <div class="bg-white rounded-lg p-4 border border-gray-200">
-                                    {{-- Pertanyaan --}}
-                                    <div class="flex items-start gap-3 mb-3">
-                                        <span class="inline-flex items-center justify-center min-w-[24px] h-6 bg-gray-100 text-gray-700 rounded text-xs font-semibold px-2">
-                                            {{ $pertanyaan->urutan }}
-                                        </span>
-                                        <p class="text-sm text-gray-900 flex-1">{{ $pertanyaan->pertanyaan }}</p>
-                                    </div>
-
-                                    {{-- Input berdasarkan tipe --}}
-                                    @if($pertanyaan->tipe_jawaban === 'ya_tidak')
-                                        @include('page.kuesioner.partials.input-ya-tidak', [
-                                            'pertanyaan' => $pertanyaan,
-                                            'jawaban' => $jawabans[$pertanyaan->id] ?? null
-                                        ])
-                                    @elseif($pertanyaan->tipe_jawaban === 'pilihan_ganda')
-                                        @include('page.kuesioner.partials.input-pilihan-ganda', [
-                                            'pertanyaan' => $pertanyaan,
-                                            'jawaban' => $jawabans[$pertanyaan->id] ?? null
-                                        ])
-                                    @elseif($pertanyaan->tipe_jawaban === 'angka')
-                                        @if($pertanyaan->has_sub_pertanyaan)
-                                            @include('page.kuesioner.partials.input-sub-pertanyaan', [
-                                                'pertanyaan' => $pertanyaan,
-                                                'jawabans' => $jawabans
-                                            ])
-                                        @else
-                                            @include('page.kuesioner.partials.input-angka', [
-                                                'pertanyaan' => $pertanyaan,
-                                                'jawaban' => $jawabans[$pertanyaan->id] ?? null
-                                            ])
-                                        @endif
-                                    @endif
-
-                                    {{-- Keterangan (optional) --}}
-                                    <div class="mt-3 pt-3 border-t border-gray-100">
-                                        <label class="block text-xs font-medium text-gray-700 mb-1.5">
-                                            Keterangan (Opsional)
-                                        </label>
-                                        <textarea class="keterangan-input w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none resize-none"
-                                                  rows="2"
-                                                  placeholder="Tambahkan catatan atau keterangan jika diperlukan..."
-                                                  data-periode-id="{{ $periode->id }}"
-                                                  data-pertanyaan-id="{{ $pertanyaan->id }}"
-                                                  data-sub-pertanyaan-id="">{{ $jawabans[$pertanyaan->id]->keterangan ?? '' }}</textarea>
-                                    </div>
-
-                                    {{-- Upload Dokumen (optional) --}}
-                                    <div class="mt-3 pt-3 border-t border-gray-100">
-                                        <label class="block text-xs font-medium text-gray-700 mb-1.5">
-                                            Upload Dokumen Pendukung (Opsional)
-                                        </label>
-                                        <div class="space-y-2">
-                                            @if(isset($jawabans[$pertanyaan->id]) && $jawabans[$pertanyaan->id]->file_path)
-                                            <div class="flex items-center gap-2 p-2 bg-green-50 border border-green-200 rounded-lg">
-                                                <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                                </svg>
-                                                <a href="{{ asset('storage/' . $jawabans[$pertanyaan->id]->file_path) }}" target="_blank" class="text-xs text-green-700 hover:text-green-900 flex-1 truncate">
-                                                    {{ basename($jawabans[$pertanyaan->id]->file_path) }}
-                                                </a>
-                                                <button type="button" class="delete-file-btn text-red-600 hover:text-red-800 p-1"
-                                                        data-periode-id="{{ $periode->id }}"
-                                                        data-pertanyaan-id="{{ $pertanyaan->id }}"
-                                                        data-sub-pertanyaan-id="">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                            @endif
-                                            <input type="file" class="dokumen-input w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
-                                                   accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
-                                                   data-periode-id="{{ $periode->id }}"
-                                                   data-pertanyaan-id="{{ $pertanyaan->id }}"
-                                                   data-sub-pertanyaan-id="">
-                                            <p class="text-xs text-gray-500">Format: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG. Maksimal 5MB.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                @endforeach
-                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
             </div>
             @endforeach
         </div>
     </div>
 </div>
 
-@push('scripts')
-<script>
-// Auto-save functionality
-let saveTimeout;
-const autoSaveIndicator = document.getElementById('autoSaveIndicator');
-const savedIndicator = document.getElementById('savedIndicator');
-
-function showSaving() {
-    autoSaveIndicator.classList.remove('hidden');
-    autoSaveIndicator.classList.add('flex');
-    savedIndicator.classList.remove('flex');
-    savedIndicator.classList.add('hidden');
-}
-
-function showSaved() {
-    autoSaveIndicator.classList.remove('flex');
-    autoSaveIndicator.classList.add('hidden');
-    savedIndicator.classList.remove('hidden');
-    savedIndicator.classList.add('flex');
-
-    setTimeout(() => {
-        savedIndicator.classList.remove('flex');
-        savedIndicator.classList.add('hidden');
-    }, 2000);
-}
-
-function autoSave(periodeId, pertanyaanId, subPertanyaanId, jawabanText, jawabanAngka, keterangan, fileInput = null) {
-    clearTimeout(saveTimeout);
-
-    saveTimeout = setTimeout(() => {
-        showSaving();
-
-        // Use FormData if file is provided, otherwise use JSON
-        let fetchOptions = {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        };
-
-        if (fileInput && fileInput.files.length > 0) {
-            // Use FormData for file upload
-            const formData = new FormData();
-            formData.append('periode_id', periodeId);
-            formData.append('pertanyaan_id', pertanyaanId);
-            if (subPertanyaanId) formData.append('sub_pertanyaan_id', subPertanyaanId);
-            if (jawabanText) formData.append('jawaban_text', jawabanText);
-            if (jawabanAngka) formData.append('jawaban_angka', jawabanAngka);
-            if (keterangan) formData.append('keterangan', keterangan);
-            formData.append('dokumen', fileInput.files[0]);
-
-            fetchOptions.body = formData;
-        } else {
-            // Use JSON for regular data
-            fetchOptions.headers['Content-Type'] = 'application/json';
-            fetchOptions.body = JSON.stringify({
-                periode_id: periodeId,
-                pertanyaan_id: pertanyaanId,
-                sub_pertanyaan_id: subPertanyaanId || null,
-                jawaban_text: jawabanText || null,
-                jawaban_angka: jawabanAngka || null,
-                keterangan: keterangan || null
-            });
-        }
-
-        fetch('{{ route("kuesioner.auto-save") }}', fetchOptions)
-        fetch('{{ route("kuesioner.auto-save") }}', fetchOptions)
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showSaved();
-                // Clear file input after successful upload
-                if (fileInput) {
-                    fileInput.value = '';
-                    // Reload page to show uploaded file
-                    setTimeout(() => location.reload(), 500);
-                }
-            }
-        })
-        .catch(error => {
-            console.error('Auto-save error:', error);
-            autoSaveIndicator.classList.add('hidden');
-        });
-    }, 1000); // Delay 1 detik setelah user berhenti mengetik
-}
-
-// Attach auto-save to all inputs
-document.addEventListener('DOMContentLoaded', function() {
-    // Radio buttons (ya_tidak, pilihan_ganda)
-    document.querySelectorAll('.jawaban-radio').forEach(radio => {
-        radio.addEventListener('change', function() {
-            const periodeId = this.getAttribute('data-periode-id');
-            const pertanyaanId = this.getAttribute('data-pertanyaan-id');
-            const value = this.value;
-
-            autoSave(periodeId, pertanyaanId, null, value, null, null);
-        });
-    });
-
-    // Number inputs (angka)
-    document.querySelectorAll('.jawaban-angka').forEach(input => {
-        input.addEventListener('input', function() {
-            const periodeId = this.getAttribute('data-periode-id');
-            const pertanyaanId = this.getAttribute('data-pertanyaan-id');
-            const subPertanyaanId = this.getAttribute('data-sub-pertanyaan-id');
-            const value = this.value;
-
-            autoSave(periodeId, pertanyaanId, subPertanyaanId, null, value, null);
-        });
-    });
-
-    // Keterangan textareas
-    document.querySelectorAll('.keterangan-input').forEach(textarea => {
-        textarea.addEventListener('input', function() {
-            const periodeId = this.getAttribute('data-periode-id');
-            const pertanyaanId = this.getAttribute('data-pertanyaan-id');
-            const subPertanyaanId = this.getAttribute('data-sub-pertanyaan-id');
-            const value = this.value;
-
-            autoSave(periodeId, pertanyaanId, subPertanyaanId, null, null, value);
-        });
-    });
-
-    // File uploads
-    document.querySelectorAll('.dokumen-input').forEach(input => {
-        input.addEventListener('change', function() {
-            if (this.files.length > 0) {
-                const periodeId = this.getAttribute('data-periode-id');
-                const pertanyaanId = this.getAttribute('data-pertanyaan-id');
-                const subPertanyaanId = this.getAttribute('data-sub-pertanyaan-id');
-
-                autoSave(periodeId, pertanyaanId, subPertanyaanId, null, null, null, this);
-            }
-        });
-    });
-
-    // Delete file buttons
-    document.querySelectorAll('.delete-file-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            if (confirm('Hapus dokumen ini?')) {
-                const periodeId = this.getAttribute('data-periode-id');
-                const pertanyaanId = this.getAttribute('data-pertanyaan-id');
-                const subPertanyaanId = this.getAttribute('data-sub-pertanyaan-id');
-
-                // Send request to delete file (save with empty file_path)
-                showSaving();
-                fetch('{{ route("kuesioner.auto-save") }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        periode_id: periodeId,
-                        pertanyaan_id: pertanyaanId,
-                        sub_pertanyaan_id: subPertanyaanId || null,
-                        delete_file: true
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showSaved();
-                        setTimeout(() => location.reload(), 500);
-                    }
-                })
-                .catch(error => {
-                    console.error('Delete error:', error);
-                    alert('Gagal menghapus dokumen');
-                });
-            }
-        });
-    });
-});
-</script>
-@endpush
 @endsection

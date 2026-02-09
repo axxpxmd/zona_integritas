@@ -41,16 +41,16 @@ class KuesionerController extends Controller
         // Ambil struktur hierarki: Komponen → Kategori → SubKategori dengan progress
         $komponens = Komponen::where('status', 1)
             ->with([
-                'kategoris' => function($q) {
+                'kategoris' => function ($q) {
                     $q->where('status', 1)->orderBy('urutan');
                 },
-                'kategoris.subKategoris' => function($q) {
+                'kategoris.subKategoris' => function ($q) {
                     $q->where('status', 1)->orderBy('urutan');
                 },
-                'kategoris.subKategoris.indikators' => function($q) {
+                'kategoris.subKategoris.indikators' => function ($q) {
                     $q->where('status', 1);
                 },
-                'kategoris.subKategoris.indikators.pertanyaans' => function($q) {
+                'kategoris.subKategoris.indikators.pertanyaans' => function ($q) {
                     $q->where('status', 1);
                 }
             ])
@@ -102,13 +102,13 @@ class KuesionerController extends Controller
         $periode = Periode::findOrFail($periode_id);
         $subKategori = SubKategori::with([
             'kategori.komponen',
-            'indikators' => function($q) {
+            'indikators' => function ($q) {
                 $q->where('status', 1)->orderBy('urutan');
             },
-            'indikators.pertanyaans' => function($q) {
+            'indikators.pertanyaans' => function ($q) {
                 $q->where('status', 1)->orderBy('urutan');
             },
-            'indikators.pertanyaans.subPertanyaans' => function($q) {
+            'indikators.pertanyaans.subPertanyaans' => function ($q) {
                 $q->where('status', 1)->orderBy('urutan');
             }
         ])->findOrFail($sub_kategori_id);
@@ -126,7 +126,7 @@ class KuesionerController extends Controller
         $jawabans = Jawaban::where('periode_id', $periode_id)
             ->where('opd_id', $opd->id)
             ->get()
-            ->keyBy(function($item) {
+            ->keyBy(function ($item) {
                 // Key: pertanyaan_id atau pertanyaan_id-sub_pertanyaan_id
                 return $item->sub_pertanyaan_id
                     ? $item->pertanyaan_id . '-' . $item->sub_pertanyaan_id
@@ -137,89 +137,10 @@ class KuesionerController extends Controller
     }
 
     /**
-     * Auto-save jawaban (AJAX)
+     * Simpan jawaban kuesioner
      */
-    public function autoSave(Request $request)
+    public function submit(Request $request)
     {
-        $validated = $request->validate([
-            'periode_id' => 'required|exists:tm_periode,id',
-            'pertanyaan_id' => 'required|exists:tm_pertanyaan,id',
-            'sub_pertanyaan_id' => 'nullable|exists:tm_sub_pertanyaan,id',
-            'jawaban_text' => 'nullable|string',
-            'jawaban_angka' => 'nullable|numeric',
-            'keterangan' => 'nullable|string',
-            'dokumen' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png|max:5120',
-        ]);
-
-        $user = Auth::user();
-        $opd = $user->opd;
-
-        if (!$opd) {
-            return response()->json(['success' => false, 'message' => 'OPD tidak ditemukan'], 400);
-        }
-
-        // Get existing jawaban to preserve created_by
-        $existingJawaban = Jawaban::where('periode_id', $validated['periode_id'])
-            ->where('opd_id', $opd->id)
-            ->where('pertanyaan_id', $validated['pertanyaan_id'])
-            ->where('sub_pertanyaan_id', $validated['sub_pertanyaan_id'] ?? null)
-            ->first();
-
-        // Handle file deletion request
-        if ($request->has('delete_file') && $request->delete_file) {
-            if ($existingJawaban && $existingJawaban->file_path) {
-                \Storage::disk('public')->delete($existingJawaban->file_path);
-                $existingJawaban->update(['file_path' => null]);
-
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Dokumen berhasil dihapus'
-                ]);
-            }
-        }
-
-        // Handle file upload
-        $filePath = null;
-        if ($request->hasFile('dokumen')) {
-            $file = $request->file('dokumen');
-            $fileName = time() . '_' . $validated['pertanyaan_id'] . '_' . $file->getClientOriginalName();
-            $filePath = $file->storeAs('dokumen-kuesioner', $fileName, 'public');
-        }
-
-        // Prepare data for update/create
-        $jawabanData = [
-            'jawaban_text' => $validated['jawaban_text'] ?? null,
-            'jawaban_angka' => $validated['jawaban_angka'] ?? null,
-            'keterangan' => $validated['keterangan'] ?? null,
-            'status' => 'draft',
-            'created_by' => $existingJawaban->created_by ?? $user->id,
-            'updated_by' => $user->id,
-        ];
-
-        // Only update file_path if a new file was uploaded
-        if ($filePath) {
-            // Delete old file if exists
-            if ($existingJawaban && $existingJawaban->file_path) {
-                \Storage::disk('public')->delete($existingJawaban->file_path);
-            }
-            $jawabanData['file_path'] = $filePath;
-        }
-
-        // Update or create jawaban
-        $jawaban = Jawaban::updateOrCreate(
-            [
-                'periode_id' => $validated['periode_id'],
-                'opd_id' => $opd->id,
-                'pertanyaan_id' => $validated['pertanyaan_id'],
-                'sub_pertanyaan_id' => $validated['sub_pertanyaan_id'] ?? null,
-            ],
-            $jawabanData
-        );
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Jawaban berhasil disimpan',
-            'data' => $jawaban
-        ]);
+        // TODO: Implementasi simpan jawaban
     }
 }

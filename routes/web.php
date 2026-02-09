@@ -61,6 +61,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [KuesionerController::class, 'index'])->name('index');
         Route::get('/{periode}', [KuesionerController::class, 'show'])->name('show');
         Route::get('/{periode}/{subKategori}', [KuesionerController::class, 'fill'])->name('fill');
-        Route::post('/auto-save', [KuesionerController::class, 'autoSave'])->name('auto-save');
+        Route::post('/submit', [KuesionerController::class, 'submit'])->name('submit');
     });
 });
