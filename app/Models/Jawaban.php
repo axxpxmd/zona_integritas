@@ -15,6 +15,7 @@ class Jawaban extends Model
         'sub_pertanyaan_id',
         'jawaban_text',
         'jawaban_angka',
+        'nilai',
         'keterangan',
         'file_path',
         'status',
@@ -24,6 +25,7 @@ class Jawaban extends Model
 
     protected $casts = [
         'jawaban_angka' => 'decimal:2',
+        'nilai' => 'decimal:2',
     ];
 
     /**

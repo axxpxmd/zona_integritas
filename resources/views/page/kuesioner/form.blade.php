@@ -74,6 +74,11 @@
         {{-- Indikator Content --}}
         <form action="{{ route('kuesioner.submit') }}" method="POST" enctype="multipart/form-data">
             @csrf
+            <input type="hidden" name="periode_id" value="{{ $periode->id }}">
+            <input type="hidden" name="sub_kategori_id" value="{{ $subKategori->id }}">
+            <input type="hidden" name="indikator_id" value="{{ $currentIndikator->id }}">
+            <input type="hidden" name="current_page" value="{{ $currentPage }}">
+            <input type="hidden" name="total_indikator" value="{{ $totalIndikator }}">
             <div class="p-6">
                 <div class="mb-6">
                     {{-- Indikator Header --}}
@@ -94,40 +99,91 @@
                         </div>
                     </div>
 
+                    {{-- Nilai Indikator Summary --}}
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 mb-4 border border-blue-100">
+                        <input type="hidden" id="indikatorIdInput" value="{{ $currentIndikator->id }}">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">Terjawab</p>
+                                    <p id="terjawabCount" class="text-lg font-bold text-gray-900">{{ $nilaiIndikator['pertanyaan_terjawab'] }}/{{ $nilaiIndikator['total_pertanyaan'] }}</p>
+                                </div>
+                                <div class="h-10 w-px bg-gray-300"></div>
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">Rata-rata Nilai</p>
+                                    <p id="rataRataNilai" class="text-lg font-bold text-primary">{{ number_format($nilaiIndikator['rata_rata_nilai'], 2) }}</p>
+                                </div>
+                                <div class="h-10 w-px bg-gray-300"></div>
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">Nilai Indikator</p>
+                                    <p id="nilaiIndikator" class="text-lg font-bold text-green-600">{{ number_format($nilaiIndikator['nilai_indikator'], 2) }}</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs text-gray-500 mb-1">Capaian</p>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div id="progressBar" class="h-full rounded-full {{ $nilaiIndikator['persen_capaian'] >= 80 ? 'bg-green-500' : ($nilaiIndikator['persen_capaian'] >= 50 ? 'bg-yellow-500' : 'bg-red-500') }}"
+                                             style="width: {{ min($nilaiIndikator['persen_capaian'], 100) }}%"></div>
+                                    </div>
+                                    <span id="persenCapaian" class="text-sm font-bold {{ $nilaiIndikator['persen_capaian'] >= 80 ? 'text-green-600' : ($nilaiIndikator['persen_capaian'] >= 50 ? 'text-yellow-600' : 'text-red-600') }}">
+                                        {{ number_format($nilaiIndikator['persen_capaian'], 1) }}%
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {{-- Pertanyaan Loop --}}
                     <div class="space-y-4">
                         @foreach($currentIndikator->pertanyaans as $pertanyaan)
-                        <div class="bg-white rounded-lg p-4 border border-gray-200">
+                        @php
+                            $pertanyaanNilai = $nilaiIndikator['nilai_per_pertanyaan'][$pertanyaan->id] ?? null;
+                            $nilaiTampil = $pertanyaanNilai && $pertanyaanNilai['nilai'] !== null ? $pertanyaanNilai['nilai'] : null;
+                        @endphp
+                        <div class="bg-white rounded-lg p-4 border border-gray-200 {{ $nilaiTampil !== null ? 'border-l-4 border-l-green-500' : '' }}">
                             {{-- Pertanyaan --}}
                             <div class="flex items-start gap-3 mb-3">
                                 <span class="inline-flex items-center justify-center min-w-[24px] h-6 bg-gray-100 text-gray-700 rounded text-xs font-semibold px-2">
                                     {{ $pertanyaan->urutan }}
                                 </span>
                                 <p class="text-sm text-gray-900 flex-1">{{ $pertanyaan->pertanyaan }}</p>
-                                <input type="text" name="pertanyaan_id[]" value="{{ $pertanyaan->id }}">
+                                <span id="nilaiBadge-{{ $pertanyaan->id }}" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold {{ $nilaiTampil !== null ? ($nilaiTampil >= 0.8 ? 'bg-green-100 text-green-700' : ($nilaiTampil >= 0.5 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700')) : '' }}" style="{{ $nilaiTampil === null ? 'display: none;' : '' }}">
+                                    @if($nilaiTampil !== null)
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    Nilai: {{ number_format($nilaiTampil, 2) }}
+                                    @endif
+                                </span>
+                                <input type="hidden" name="pertanyaan_id[]" value="{{ $pertanyaan->id }}">
                             </div>
 
                             {{-- Input berdasarkan tipe --}}
                             @if($pertanyaan->tipe_jawaban === 'ya_tidak')
                                 @include('page.kuesioner.partials.input-ya-tidak', [
                                     'pertanyaan' => $pertanyaan,
-                                    'jawaban' => $jawabans[$pertanyaan->id] ?? null
+                                    'jawaban' => $jawabans[$pertanyaan->id] ?? null,
+                                    'periode' => $periode
                                 ])
                             @elseif($pertanyaan->tipe_jawaban === 'pilihan_ganda')
                                 @include('page.kuesioner.partials.input-pilihan-ganda', [
                                     'pertanyaan' => $pertanyaan,
-                                    'jawaban' => $jawabans[$pertanyaan->id] ?? null
+                                    'jawaban' => $jawabans[$pertanyaan->id] ?? null,
+                                    'periode' => $periode
                                 ])
                             @elseif($pertanyaan->tipe_jawaban === 'angka')
                                 @if($pertanyaan->has_sub_pertanyaan)
                                     @include('page.kuesioner.partials.input-sub-pertanyaan', [
                                         'pertanyaan' => $pertanyaan,
-                                        'jawabans' => $jawabans
+                                        'jawabans' => $jawabans,
+                                        'periode' => $periode
                                     ])
                                 @else
                                     @include('page.kuesioner.partials.input-angka', [
                                         'pertanyaan' => $pertanyaan,
-                                        'jawaban' => $jawabans[$pertanyaan->id] ?? null
+                                        'jawaban' => $jawabans[$pertanyaan->id] ?? null,
+                                        'periode' => $periode
                                     ])
                                 @endif
                             @endif
@@ -137,7 +193,8 @@
                                 <label class="block text-xs font-medium text-gray-700 mb-1.5">
                                     Keterangan (Opsional)
                                 </label>
-                                <textarea class="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none resize-none"
+                                <textarea name="keterangan[{{ $pertanyaan->id }}]"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none resize-none"
                                             rows="2"
                                             placeholder="Tambahkan catatan atau keterangan jika diperlukan...">{{ $jawabans[$pertanyaan->id]->keterangan ?? '' }}</textarea>
                             </div>
@@ -158,7 +215,9 @@
                                         </span>
                                     </div>
                                     @endif
-                                    <input type="file" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                                    <input type="file"
+                                            name="file[{{ $pertanyaan->id }}]"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
                                             accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
                                     <p class="text-xs text-gray-500">Format: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG. Maksimal 5MB.</p>
                                 </div>
@@ -177,6 +236,9 @@
                     <span>Simpan Jawaban</span>
                 </button>
             </div>
+            </div>
+        </form>
+
         {{-- Pagination Navigation --}}
         <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
             <div class="flex items-center justify-between">
@@ -232,3 +294,124 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('kuesionerForm');
+    const indikatorId = document.getElementById('indikatorIdInput').value;
+
+    // Function to collect all answers from form
+    function collectAnswers() {
+        const answers = {};
+
+        // Collect radio button answers (ya/tidak, pilihan ganda)
+        form.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+            const match = radio.name.match(/jawaban\[(\d+)\]/);
+            if (match) {
+                answers[match[1]] = radio.value;
+            }
+        });
+
+        // Collect number inputs
+        form.querySelectorAll('input[type="number"][name^="jawaban"]').forEach(input => {
+            const match = input.name.match(/jawaban\[(\d+)\]/);
+            if (match && input.value) {
+                answers[match[1]] = input.value;
+            }
+        });
+
+        return answers;
+    }
+
+    // Function to update nilai display
+    function updateNilaiDisplay(data) {
+        // Update summary box
+        document.getElementById('terjawabCount').textContent = data.pertanyaan_terjawab + '/' + data.total_pertanyaan;
+        document.getElementById('rataRataNilai').textContent = data.rata_rata_nilai.toFixed(2);
+        document.getElementById('nilaiIndikator').textContent = data.nilai_indikator.toFixed(2);
+        document.getElementById('persenCapaian').textContent = data.persen_capaian.toFixed(1) + '%';
+
+        // Update progress bar
+        const progressBar = document.getElementById('progressBar');
+        progressBar.style.width = Math.min(data.persen_capaian, 100) + '%';
+
+        // Update progress bar color
+        progressBar.className = progressBar.className.replace(/bg-(green|yellow|red)-500/g, '');
+        if (data.persen_capaian >= 80) {
+            progressBar.classList.add('bg-green-500');
+        } else if (data.persen_capaian >= 50) {
+            progressBar.classList.add('bg-yellow-500');
+        } else {
+            progressBar.classList.add('bg-red-500');
+        }
+
+        // Update persen text color
+        const persenText = document.getElementById('persenCapaian');
+        persenText.className = persenText.className.replace(/text-(green|yellow|red)-600/g, '');
+        if (data.persen_capaian >= 80) {
+            persenText.classList.add('text-green-600');
+        } else if (data.persen_capaian >= 50) {
+            persenText.classList.add('text-yellow-600');
+        } else {
+            persenText.classList.add('text-red-600');
+        }
+
+        // Update per-question nilai badges
+        for (const [pertanyaanId, nilaiData] of Object.entries(data.nilai_per_pertanyaan)) {
+            const badge = document.getElementById('nilaiBadge-' + pertanyaanId);
+            if (badge) {
+                if (nilaiData.nilai !== null) {
+                    const nilai = parseFloat(nilaiData.nilai);
+                    let badgeClass = 'bg-red-100 text-red-700';
+                    if (nilai >= 0.8) {
+                        badgeClass = 'bg-green-100 text-green-700';
+                    } else if (nilai >= 0.5) {
+                        badgeClass = 'bg-yellow-100 text-yellow-700';
+                    }
+                    badge.className = 'inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold ' + badgeClass;
+                    badge.innerHTML = `
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Nilai: ${nilai.toFixed(2)}
+                    `;
+                    badge.style.display = 'inline-flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+    }
+
+    // Function to calculate nilai via AJAX
+    function calculateNilai() {
+        const answers = collectAnswers();
+
+        fetch('{{ route("kuesioner.hitung-nilai") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                indikator_id: indikatorId,
+                jawaban: answers
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                updateNilaiDisplay(result.data);
+            }
+        })
+        .catch(error => console.error('Error calculating nilai:', error));
+    }
+
+    // Listen for changes on all form inputs
+    form.querySelectorAll('input[type="radio"], input[type="number"]').forEach(input => {
+        input.addEventListener('change', calculateNilai);
+    });
+});
+</script>
+@endpush

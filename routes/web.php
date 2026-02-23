@@ -62,5 +62,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/{periode}', [KuesionerController::class, 'show'])->name('show');
         Route::get('/{periode}/{subKategori}', [KuesionerController::class, 'fill'])->name('fill');
         Route::post('/submit', [KuesionerController::class, 'submit'])->name('submit');
+        Route::post('/hitung-nilai', [KuesionerController::class, 'hitungNilaiPreview'])->name('hitung-nilai');
     });
 });

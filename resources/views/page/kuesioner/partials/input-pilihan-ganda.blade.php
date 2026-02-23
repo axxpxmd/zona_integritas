@@ -3,7 +3,7 @@
     @foreach($pertanyaan->penjelasan_list as $opsi)
     <label class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
         <input type="radio"
-               name="jawaban_{{ $pertanyaan->id }}"
+               name="jawaban[{{ $pertanyaan->id }}]"
                value="{{ $opsi['opsi'] }}"
                {{ ($jawaban && $jawaban->jawaban_text === $opsi['opsi']) ? 'checked' : '' }}
                class="jawaban-radio mt-0.5 w-4 h-4 text-primary border-gray-300 focus:ring-2 focus:ring-primary/20"
