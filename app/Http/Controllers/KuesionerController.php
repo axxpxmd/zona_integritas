@@ -245,16 +245,8 @@ class KuesionerController extends Controller
             );
         }
 
-        // Redirect ke indikator selanjutnya atau kembali ke halaman show
-        if ($currentPage < $totalIndikator) {
-            return redirect()
-                ->route('kuesioner.fill', [$periodeId, $subKategoriId, 'indikator' => $currentPage + 1])
-                ->with('success', 'Jawaban berhasil disimpan');
-        }
-
-        return redirect()
-            ->route('kuesioner.show', $periodeId)
-            ->with('success', 'Jawaban berhasil disimpan');
+        // Tetap di halaman form setelah submit
+        return redirect()->back()->with('success', 'Jawaban berhasil disimpan');
     }
 
     /**
