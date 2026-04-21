@@ -22,6 +22,9 @@ class DatabaseSeeder extends Seeder
         $this->command->info('🌱 Seeding master data hierarchy...');
 
         $this->call([
+            // Data OPD
+            OpdSeeder::class,
+
             // Master Data Zona Integritas (hierarchy order)
             KomponenSeeder::class,
             KategoriSeeder::class,
