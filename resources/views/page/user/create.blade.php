@@ -96,12 +96,12 @@
                     {{-- OPD --}}
                     <div id="opd_container" style="{{ old('role') === 'operator' ? 'display: block;' : 'display: none;' }}">
                         <label for="opd_id" class="block text-sm font-medium text-gray-700 mb-1.5">
-                            OPD
+                            Unit Kerja
                         </label>
                         <select name="opd_id"
                                 id="opd_id"
                                 class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-colors bg-white @error('opd_id') border-red-500 @enderror">
-                            <option value="">Pilih OPD...</option>
+                            <option value="">Pilih Unit Kerja...</option>
                             @foreach($opds as $opd)
                             <option value="{{ $opd->id }}" {{ old('opd_id') == $opd->id ? 'selected' : '' }}>{{ $opd->n_opd }}</option>
                             @endforeach
@@ -114,7 +114,7 @@
                     {{-- Multi OPD (Verifikator) --}}
                     <div id="verifikator_opds_container" style="{{ old('role') === 'verifikator' ? 'display: block;' : 'display: none;' }}">
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                            Pilih OPD untuk Diverifikasi
+                            Pilih Unit Kerja untuk Diverifikasi
                         </label>
                         <div class="space-y-2 max-h-60 overflow-y-auto w-full px-4 py-2 border border-gray-300 rounded-lg bg-white @error('verifikator_opds') border-red-500 @enderror">
                             @foreach($opds as $opd)
