@@ -4,7 +4,26 @@
 @section('page-title', 'Isi Kuesioner')
 
 @section('content')
+@php
+    $now = \Carbon\Carbon::now()->startOfDay();
+    $start = \Carbon\Carbon::parse($periode->tanggal_mulai)->startOfDay();
+    $end = \Carbon\Carbon::parse($periode->tanggal_selesai)->endOfDay();
+    $isCanFill = $now->between($start, $end);
+@endphp
 <div class="space-y-6">
+    {{-- Alert Waktu Pengisian --}}
+    @if(!$isCanFill)
+    <div class="bg-red-50 border border-red-200 text-red-800 rounded-lg px-4 py-3 mb-4 flex items-center gap-3">
+        <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <div class="text-sm">
+            <p class="font-bold">Waktu pengisian kuesioner tidak aktif!</p>
+            <p>Anda hanya dapat melihat data karena saat ini berada di luar rentang waktu pengisian.</p>
+        </div>
+    </div>
+    @endif
+
     {{-- Alert Success --}}
     @if(session('success'))
     <div class="bg-green-100 border border-green-200 text-green-800 rounded-lg px-4 py-3 mb-4 flex items-center gap-2">
@@ -14,6 +33,7 @@
         <span class="font-semibold">{{ session('success') }}</span>
     </div>
     @endif
+
     {{-- Header --}}
     <div class="flex items-center justify-between">
         <div class="flex items-center gap-4">
@@ -24,8 +44,15 @@
                 </svg>
             </a>
             <div>
-                <h2 class="text-xl font-bold text-gray-900">{{ $subKategori->nama }}</h2>
-                <p class="text-sm text-gray-500 mt-0.5">{{ $periode->nama_periode }} • {{ $opd->n_opd }}</p>
+                <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    {{ $subKategori->nama }}
+                    @if($now->lt($start))
+                        <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">Belum Dimulai</span>
+                    @elseif($now->gt($end))
+                        <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">Waktu Habis</span>
+                    @endif
+                </h2>
+                <p class="text-sm text-gray-500 mt-0.5">{{ $periode->nama_periode }} • {{ $opd->n_opd }} • <span class="font-medium text-gray-700">Waktu Pengisian: {{ $start->format('d M Y') }} s/d {{ $end->format('d M Y') }}</span></p>
             </div>
         </div>
     </div>
@@ -88,6 +115,7 @@
             <input type="hidden" name="indikator_id" value="{{ $currentIndikator->id }}">
             <input type="hidden" name="current_page" value="{{ $currentPage }}">
             <input type="hidden" name="total_indikator" value="{{ $totalIndikator }}">
+            <fieldset @if(!$isCanFill) disabled @endif>
             <div class="p-6">
                 <div class="mb-6">
                     {{-- Indikator Header --}}
@@ -246,7 +274,7 @@
 
             {{-- Submit Button --}}
             <div class="mt-6 pt-6 border-t border-gray-200">
-                <button type="submit" id="btnSubmitKuesioner" class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium disabled:opacity-70 disabled:cursor-not-allowed">
+                <button type="submit" id="btnSubmitKuesioner" class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-gray-400">
                     <svg id="submitIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
@@ -258,6 +286,7 @@
                 </button>
             </div>
             </div>
+            </fieldset>
         </form>
 
         {{-- Pagination Navigation --}}

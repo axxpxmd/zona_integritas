@@ -4,6 +4,12 @@
 @section('page-title', 'Pilih Sub Kategori')
 
 @section('content')
+@php
+    $now = \Carbon\Carbon::now()->startOfDay();
+    $start = \Carbon\Carbon::parse($periode->tanggal_mulai)->startOfDay();
+    $end = \Carbon\Carbon::parse($periode->tanggal_selesai)->endOfDay();
+    $isCanFill = $now->between($start, $end);
+@endphp
 <div class="space-y-6">
     {{-- Header --}}
     <div class="flex items-center justify-between">
@@ -19,12 +25,34 @@
                 <p class="text-sm text-gray-500 mt-0.5">{{ $opd->n_opd }}</p>
             </div>
         </div>
-        <div class="text-sm text-gray-600">
-            <span class="font-medium">Periode:</span> {{ $periode->tanggal_mulai->format('d M Y') }} - {{ $periode->tanggal_selesai->format('d M Y') }}
+        <div class="flex flex-col items-end gap-1">
+            <div class="text-sm text-gray-600">
+                <span class="font-medium">Waktu Pengisian:</span> {{ $start->format('d M Y') }} - {{ $end->format('d M Y') }}
+            </div>
+            @if($now->lt($start))
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Belum Dimulai</span>
+            @elseif($now->gt($end))
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Waktu Habis</span>
+            @else
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Sedang Berjalan</span>
+            @endif
         </div>
     </div>
 
     {{-- Info --}}
+    @if(!$isCanFill)
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div class="flex gap-3">
+            <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <div class="text-sm text-red-800">
+                <p class="font-medium">Waktu Pengisian Tidak Aktif</p>
+                <p class="mt-1">Anda hanya dapat melihat isian kuesioner Anda saat ini. Anda tidak dapat mengisi atau memperbarui jawaban karena di luar waktu pengisian.</p>
+            </div>
+        </div>
+    </div>
+    @else
     <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
         <div class="flex gap-3">
             <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -36,6 +64,7 @@
             </div>
         </div>
     </div>
+    @endif
 
     {{-- Komponen Loop --}}
     @foreach($komponens as $komponen)
