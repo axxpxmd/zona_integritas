@@ -22,40 +22,40 @@ class UserSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        $opd = Opd::where('n_opd', 'Dinas Komunikasi dan Informatika')->first();
+        $opd = Opd::where('n_opd', 'RSUD SERUT')->first();
 
         if ($opd) {
             User::create([
                 'opd_id' => $opd->id,
-                'username' => 'operator_kominfo',
+                'username' => 'operator_rsud_serut',
                 'nama_instansi' => $opd->n_opd,
-                'email' => 'kominfo@tangselkota.go.id',
+                'email' => 'operator_rsud_serut@tangselkota.go.id',
                 'password' => Hash::make('password'),
                 'role' => 'operator',
             ]);
         }
 
-        $opdInspektorat = Opd::where('n_opd', 'Inspektorat')->first();
+        $opdInspektorat = Opd::where('n_opd', 'UPTD SMPN 6 TANSGEL')->first();
 
         if ($opdInspektorat) {
             User::create([
                 'opd_id' => $opdInspektorat->id,
-                'username' => 'operator_inspektorat',
+                'username' => 'operator_updt_smpn6',
                 'nama_instansi' => $opdInspektorat->n_opd,
-                'email' => 'inspektorat@tangselkota.go.id',
+                'email' => 'operator_updt_smpn6@tangselkota.go.id',
                 'password' => Hash::make('password'),
                 'role' => 'operator',
             ]);
         }
 
-        $opdDishub = Opd::where('n_opd', 'Dinas Perhubungan')->first();
+        $opdDishub = Opd::where('n_opd', 'SDN KERANGGAN')->first();
 
         if ($opdDishub) {
             User::create([
                 'opd_id' => $opdDishub->id,
-                'username' => 'operator_dishub',
+                'username' => 'operator_sdn_keranggan',
                 'nama_instansi' => $opdDishub->n_opd,
-                'email' => 'dishub@tangselkota.go.id',
+                'email' => 'operator_sdn_keranggan@tangselkota.go.id',
                 'password' => Hash::make('password'),
                 'role' => 'operator',
             ]);

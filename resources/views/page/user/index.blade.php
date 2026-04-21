@@ -163,7 +163,7 @@
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">No</th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Pengguna</th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">OPD</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Kontak</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Username</th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
                         <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
                     </tr>
@@ -190,8 +190,7 @@
                         </td>
                         <td class="px-6 py-4">
                             <div>
-                                <p class="text-sm text-gray-900">{{ $user->email }}</p>
-                                <p class="text-xs text-gray-500">{{ $user->telp ?? '-' }}</p>
+                                <p class="text-sm text-gray-900">{{ $user->username }}</p>
                             </div>
                         </td>
                         <td class="px-6 py-4">
