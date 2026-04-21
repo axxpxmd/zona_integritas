@@ -24,38 +24,21 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Statistik untuk Admin
-        if ($user->role === 'admin') {
-            $stats = [
-                'periode' => Periode::count(),
-                'periodeAktif' => Periode::where('status', 1)->count(),
-                'komponen' => Komponen::count(),
-                'komponenAktif' => Komponen::where('status', 1)->count(),
-                'kategori' => Kategori::count(),
-                'kategoriAktif' => Kategori::where('status', 1)->count(),
-                'subKategori' => SubKategori::count(),
-                'subKategoriAktif' => SubKategori::where('status', 1)->count(),
-                'indikator' => Indikator::count(),
-                'indikatorAktif' => Indikator::where('status', 1)->count(),
-                'pertanyaan' => Pertanyaan::count(),
-                'pertanyaanAktif' => Pertanyaan::where('status', 1)->count(),
-                'subPertanyaan' => SubPertanyaan::count(),
-                'subPertanyaanAktif' => SubPertanyaan::where('status', 1)->count(),
-                'opd' => Opd::count(),
-                'opdAktif' => Opd::where('status', 1)->count(),
-                'user' => User::count(),
-                'jawaban' => Jawaban::count(),
-            ];
-        } else {
-            // Statistik untuk Operator/Verifikator
-            $stats = [
-                'periodeAktif' => Periode::where('status', 1)->count(),
-                'pertanyaanTotal' => Pertanyaan::where('status', 1)->count(),
-                'subPertanyaanTotal' => SubPertanyaan::where('status', 1)->count(),
-                'jawabanSaya' => Jawaban::where('opd_id', $user->opd_id)->count(),
-            ];
-        }
+        $roleLabels = [
+            'admin' => 'Administrator',
+            'operator' => 'Operator',
+            'verifikator' => 'Verifikator',
+        ];
 
-        return view('page.dashboard', compact('stats'));
+        $displayName = $user->nama_operator
+            ?? $user->nama_kepala
+            ?? $user->nama_instansi
+            ?? $user->username;
+
+        return view('page.dashboard', [
+            'displayName' => $displayName,
+            'username' => $user->username,
+            'roleLabel' => $roleLabels[$user->role] ?? ucfirst($user->role),
+        ]);
     }
 }
