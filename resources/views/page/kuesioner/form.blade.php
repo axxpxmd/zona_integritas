@@ -215,13 +215,21 @@
                                 </label>
                                 <div class="space-y-2">
                                     @if(isset($jawabans[$pertanyaan->id]) && $jawabans[$pertanyaan->id]->file_path)
-                                    <div class="flex items-center gap-2 p-2 bg-green-50 border border-green-200 rounded-lg">
-                                        <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                        </svg>
-                                        <span class="text-xs text-green-700 flex-1 truncate">
-                                            {{ basename($jawabans[$pertanyaan->id]->file_path) }}
-                                        </span>
+                                    <div class="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg">
+                                        <div class="flex items-center gap-2 overflow-hidden flex-1">
+                                            <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                            </svg>
+                                            <a href="{{ route('kuesioner.file.view', $jawabans[$pertanyaan->id]->id) }}" target="_blank" class="text-xs text-green-700 hover:text-green-800 hover:underline truncate">
+                                                {{ basename($jawabans[$pertanyaan->id]->file_path) }}
+                                            </a>
+                                        </div>
+                                        <a href="{{ route('kuesioner.file.view', $jawabans[$pertanyaan->id]->id) }}" target="_blank" title="Lihat File" class="text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0 ml-2 p-1 bg-blue-50 rounded">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                        </a>
                                     </div>
                                     @endif
                                     <input type="file"

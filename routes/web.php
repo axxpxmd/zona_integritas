@@ -59,6 +59,7 @@ Route::middleware('auth')->group(function () {
     // Kuesioner
     Route::prefix('kuesioner')->name('kuesioner.')->group(function () {
         Route::get('/', [KuesionerController::class, 'index'])->name('index');
+        Route::get('/file/{id}', [KuesionerController::class, 'viewFile'])->name('file.view');
         Route::get('/{periode}', [KuesionerController::class, 'show'])->name('show');
         Route::get('/{periode}/{subKategori}', [KuesionerController::class, 'fill'])->name('fill');
         Route::post('/submit', [KuesionerController::class, 'submit'])->name('submit');

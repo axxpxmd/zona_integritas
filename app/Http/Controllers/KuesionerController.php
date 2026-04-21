@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\{Periode, Komponen, Kategori, SubKategori, Indikator, Pertanyaan, Jawaban};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class KuesionerController extends Controller
 {
@@ -444,6 +445,32 @@ class KuesionerController extends Controller
                 'persen_capaian' => round($persenCapaian, 2),
                 'nilai_per_pertanyaan' => $nilaiPerPertanyaan,
             ],
+        ]);
+    }
+
+    /**
+     * Tampilkan file dokumen kuesioner yang sudah diunggah
+     */
+    public function viewFile($id)
+    {
+        $jawaban = Jawaban::findOrFail($id);
+
+        if (!$jawaban->file_path || !Storage::disk('sftp')->exists($jawaban->file_path)) {
+            abort(404, 'File tidak ditemukan.');
+        }
+
+        $user = Auth::user();
+        // Hanya verifikator, admin, atau OPD yang memiliki jawaban ini yang boleh mengakses
+        if ($user->role === 'operator' && $jawaban->opd_id !== $user->opd_id) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $fileContent = Storage::disk('sftp')->get($jawaban->file_path);
+        $mimeType = Storage::disk('sftp')->mimeType($jawaban->file_path);
+
+        return response($fileContent, 200, [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'inline; filename="' . basename($jawaban->file_path) . '"'
         ]);
     }
 }
