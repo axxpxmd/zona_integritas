@@ -182,77 +182,131 @@ class KuesionerController extends Controller
         $keteranganData = $request->keterangan ?? [];
         $fileData = $request->file('file') ?? [];
 
+        $jawabanData = $request->jawaban ?? [];
+        $jawabanSubData = $request->jawaban_sub ?? [];
+        $keteranganData = $request->keterangan ?? [];
+        $fileData = $request->file('file') ?? [];
+
         foreach ($pertanyaanIds as $pertanyaanId) {
-            // Skip jika tidak ada jawaban dan keterangan untuk pertanyaan ini
-            $jawaban = $jawabanData[$pertanyaanId] ?? null;
-            $keterangan = $keteranganData[$pertanyaanId] ?? null;
-            $file = $fileData[$pertanyaanId] ?? null;
-
-            // Skip jika tidak ada data sama sekali
-            if (empty($jawaban) && empty($keterangan) && empty($file)) {
-                continue;
-            }
-
             $pertanyaan = Pertanyaan::find($pertanyaanId);
+            if (!$pertanyaan) continue;
 
-            if (!$pertanyaan) {
-                continue;
+            // Handle jawaban untuk pertanyaan utama (non-sub)
+            if (!$pertanyaan->has_sub_pertanyaan) {
+                $jawaban = $jawabanData[$pertanyaanId] ?? null;
+                $keterangan = $keteranganData[$pertanyaanId] ?? null;
+                $file = $fileData[$pertanyaanId] ?? null;
+
+                $this->simpanJawaban($periodeId, $opd->id, $pertanyaanId, null, $jawaban, $keterangan, $file);
             }
+            // Handle jawaban untuk sub-pertanyaan
+            else {
+                if (isset($jawabanSubData[$pertanyaanId])) {
+                    foreach ($jawabanSubData[$pertanyaanId] as $subPertanyaanId => $subJawaban) {
+                        // Untuk sub-pertanyaan, keterangan dan file di-handle di pertanyaan utamanya
+                        $this->simpanJawaban($periodeId, $opd->id, $pertanyaanId, $subPertanyaanId, $subJawaban, null, null);
+                    }
+                }
 
-            // Hitung nilai berdasarkan tipe jawaban dan formula Excel
-            $nilai = $jawaban ? $this->hitungNilai($pertanyaan, $jawaban) : null;
+                // Simpan keterangan & file untuk pertanyaan utamanya (parent)
+                $keterangan = $keteranganData[$pertanyaanId] ?? null;
+                $file = $fileData[$pertanyaanId] ?? null;
+                if ($keterangan || $file) {
+                    // Cek apakah sudah ada jawaban "parent" untuk keterangan/file
+                    $existingParent = Jawaban::where('periode_id', $periodeId)
+                        ->where('opd_id', $opd->id)
+                        ->where('pertanyaan_id', $pertanyaanId)
+                        ->whereNull('sub_pertanyaan_id')
+                        ->first();
 
-            // Tentukan field yang akan disimpan
-            $jawabanText = null;
-            $jawabanAngka = null;
-
-            if ($jawaban) {
-                if (in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda'])) {
-                    $jawabanText = $jawaban;
-                } else {
-                    $jawabanAngka = is_numeric($jawaban) ? $jawaban : null;
+                    // Jika belum ada, buat record baru. Jika sudah ada, update.
+                    $this->simpanJawaban($periodeId, $opd->id, $pertanyaanId, null, null, $keterangan, $file, $existingParent);
                 }
             }
-
-            // Handle file upload
-            $filePath = null;
-            if ($file && $file->isValid()) {
-                $ext = strtolower($file->getClientOriginalExtension());
-                $fileName = time() . '_' . $pertanyaanId . '.' . $ext;
-                $storagePath = 'kuesioner/' . $periodeId . '/' . $opd->id . '/';
-
-                $file->storeAs($storagePath, $fileName, 'sftp');
-                $filePath = $storagePath . $fileName;
-            }
-
-            // Simpan atau update jawaban
-            $dataToUpdate = [
-                'jawaban_text' => $jawabanText,
-                'jawaban_angka' => $jawabanAngka,
-                'nilai' => $nilai,
-                'keterangan' => $keterangan,
-                'status' => 'draft',
-                'created_by' => $user->id,
-                'updated_by' => $user->id,
-            ];
-
-            if ($filePath) {
-                $dataToUpdate['file_path'] = $filePath;
-            }
-
-            Jawaban::updateOrCreate(
-                [
-                    'periode_id' => $periodeId,
-                    'opd_id' => $opd->id,
-                    'pertanyaan_id' => $pertanyaanId,
-                    'sub_pertanyaan_id' => null,
-                ],
-                $dataToUpdate
-            );
         }
 
         // Tetap di halaman form setelah submit
         return redirect()->back()->with('success', 'Jawaban berhasil disimpan');
+    }
+
+    /**
+     * Helper untuk simpan/update jawaban
+     */
+    private function simpanJawaban($periodeId, $opdId, $pertanyaanId, $subPertanyaanId, $jawabanValue, $keterangan, $file, $existingJawaban = null)
+    {
+        $user = Auth::user();
+        $pertanyaan = Pertanyaan::find($pertanyaanId);
+
+        // Tentukan field yang akan disimpan
+        $jawabanText = null;
+        $jawabanAngka = null;
+        $nilai = null;
+
+        if ($jawabanValue) {
+            if ($subPertanyaanId) {
+                // Sub-pertanyaan selalu angka
+                $jawabanAngka = is_numeric($jawabanValue) ? $jawabanValue : null;
+            } else {
+                if (in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda'])) {
+                    $jawabanText = $jawabanValue;
+                } else {
+                    $jawabanAngka = is_numeric($jawabanValue) ? $jawabanValue : null;
+                }
+            }
+            // Hitung nilai hanya untuk jawaban utama
+            if (!$subPertanyaanId) {
+                $nilai = $this->hitungNilai($pertanyaan, $jawabanValue);
+            }
+        }
+
+        // Handle file upload
+        $filePath = null;
+        if ($file && $file->isValid()) {
+            $ext = strtolower($file->getClientOriginalExtension());
+            $fileName = time() . '_' . $pertanyaanId . ($subPertanyaanId ? '_'.$subPertanyaanId : '') . '.' . $ext;
+            $storagePath = 'kuesioner/' . $periodeId . '/' . $opdId . '/';
+
+            $file->storeAs($storagePath, $fileName, 'sftp');
+            $filePath = $storagePath . $fileName;
+        }
+
+        $data = [
+            'jawaban_text' => $jawabanText,
+            'jawaban_angka' => $jawabanAngka,
+            'nilai' => $nilai,
+            'keterangan' => $keterangan,
+            'status' => 'draft',
+            'created_by' => $user->id,
+            'updated_by' => $user->id,
+        ];
+
+        // Hanya update file path jika ada file baru yang diupload
+        if ($filePath) {
+            $data['file_path'] = $filePath;
+        }
+
+        // Jika ada existing jawaban (untuk update keterangan/file di parent), gunakan itu
+        if ($existingJawaban) {
+            // Jangan null-kan field jawaban jika hanya update keterangan/file
+            if (!$jawabanValue) {
+                unset($data['jawaban_text']);
+                unset($data['jawaban_angka']);
+                unset($data['nilai']);
+            }
+            if (!$keterangan) unset($data['keterangan']);
+
+            $existingJawaban->update(array_filter($data, fn($val) => $val !== null));
+        } else {
+            Jawaban::updateOrCreate(
+                [
+                    'periode_id' => $periodeId,
+                    'opd_id' => $opdId,
+                    'pertanyaan_id' => $pertanyaanId,
+                    'sub_pertanyaan_id' => $subPertanyaanId,
+                ],
+                $data
+            );
+        }
     }
 
     /**

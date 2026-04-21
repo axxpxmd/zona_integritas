@@ -6,6 +6,7 @@
             {{ $subPertanyaan->pertanyaan }}
         </label>
         <input type="number"
+               name="jawaban_sub[{{ $pertanyaan->id }}][{{ $subPertanyaan->id }}]"
                step="{{ $subPertanyaan->tipe_input === 'desimal' ? '0.01' : '1' }}"
                class="jawaban-angka flex-1 max-w-xs px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
                placeholder="Masukkan {{ $subPertanyaan->tipe_input }}..."
