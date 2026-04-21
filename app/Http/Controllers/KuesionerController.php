@@ -126,6 +126,12 @@ class KuesionerController extends Controller
         // Pagination indikator
         $indikators = $subKategori->indikators;
         $totalIndikator = $indikators->count();
+
+        if ($totalIndikator == 0) {
+            return redirect()->route('kuesioner.show', $periode_id)
+                ->with('error', 'Belum ada indikator/pertanyaan untuk sub-kategori ini.');
+        }
+
         $currentPage = (int) max(1, min($request->get('indikator', 1), $totalIndikator));
         $currentIndikator = $indikators->get($currentPage - 1);
 
