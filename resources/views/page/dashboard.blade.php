@@ -36,6 +36,7 @@
 	</div>
 
 	@if($activePeriode)
+		@if(auth()->user()->role === 'admin')
 		<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
 			<!-- Total OPD -->
 			<div class="bg-white rounded-xl p-6 flex items-center justify-between">
@@ -83,7 +84,7 @@
 		</div>
 
 		<!-- Progress OPD Table -->
-		<div class="bg-white rounded-xl overflow-hidden">
+		<div class="bg-white rounded-xl overflow-hidden mt-6">
 			<div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
 				<h3 class="text-lg font-semibold text-gray-900">Progress Pengisian Kuesioner (Periode: {{ $activePeriode->nama_periode }})</h3>
 				<span class="text-sm text-gray-500">Total Pertanyaan: {{ $totalRequired }}</span>
@@ -131,6 +132,7 @@
 				</table>
 			</div>
 		</div>
+		@endif
 	@else
 		<div class="bg-yellow-50 text-yellow-800 rounded-xl p-6 border border-yellow-200">
 			<div class="flex items-center gap-3">
