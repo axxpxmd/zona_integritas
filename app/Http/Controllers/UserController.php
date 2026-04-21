@@ -61,6 +61,8 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'opd_id' => 'nullable|exists:tm_opd,id',
+            'verifikator_opds' => 'nullable|array',
+            'verifikator_opds.*' => 'exists:tm_opd,id',
             'username' => 'required|string|max:255|unique:users,username',
             'nama_instansi' => 'required|string|max:255',
             'nama_kepala' => 'nullable|string|max:255',
@@ -86,9 +88,18 @@ class UserController extends Controller
             'role.in' => 'Role tidak valid.',
         ]);
 
-        $validated['password'] = Hash::make($validated['password']);
+        if ($validated['role'] === 'admin') {
+            $validated['opd_id'] = null;
+        }
 
-        User::create($validated);
+        $passwordParam = $validated['password'];
+        $validated['password'] = Hash::make($passwordParam);
+
+        $user = User::create(collect($validated)->except(['verifikator_opds'])->toArray());
+
+        if ($user->role === 'verifikator' && !empty($validated['verifikator_opds'])) {
+            $user->verifikatorOpds()->sync($validated['verifikator_opds']);
+        }
 
         return redirect()->route('user.index')
             ->with('success', 'Data pengguna berhasil ditambahkan.');
@@ -118,6 +129,8 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'opd_id' => 'nullable|exists:tm_opd,id',
+            'verifikator_opds' => 'nullable|array',
+            'verifikator_opds.*' => 'exists:tm_opd,id',
             'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
             'nama_instansi' => 'required|string|max:255',
             'nama_kepala' => 'nullable|string|max:255',
@@ -148,7 +161,21 @@ class UserController extends Controller
             unset($validated['password']);
         }
 
-        $user->update($validated);
+        if ($validated['role'] === 'admin') {
+            $validated['opd_id'] = null;
+        }
+
+        $user->update(collect($validated)->except(['verifikator_opds'])->toArray());
+
+        if ($user->role === 'verifikator') {
+            if (!empty($validated['verifikator_opds'])) {
+                $user->verifikatorOpds()->sync($validated['verifikator_opds']);
+            } else {
+                $user->verifikatorOpds()->detach();
+            }
+        } else {
+            $user->verifikatorOpds()->detach();
+        }
 
         return redirect()->route('user.index')
             ->with('success', 'Data pengguna berhasil diperbarui.');

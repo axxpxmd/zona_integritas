@@ -10,7 +10,8 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -61,5 +62,13 @@ class User extends Authenticatable
     public function opd()
     {
         return $this->belongsTo(Opd::class, 'opd_id');
+    }
+
+    /**
+     * Data multiple OPD untuk relasi ke Verifikator
+     */
+    public function verifikatorOpds()
+    {
+        return $this->belongsToMany(Opd::class, 'opd_verifikator', 'user_id', 'opd_id');
     }
 }

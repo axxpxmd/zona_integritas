@@ -95,7 +95,7 @@
                     </div>
 
                     {{-- OPD --}}
-                    <div>
+                    <div id="opd_container" style="{{ old('role', $user->role) === 'operator' ? 'display: block;' : 'display: none;' }}">
                         <label for="opd_id" class="block text-sm font-medium text-gray-700 mb-1.5">
                             OPD
                         </label>
@@ -111,6 +111,27 @@
                         <p class="mt-1.5 text-sm text-red-500">{{ $message }}</p>
                         @enderror
                     </div>
+
+                     {{-- Multi OPD (Verifikator) --}}
+                     @php
+                        $selectedVerifikatorOpds = old('verifikator_opds', $user->verifikatorOpds->pluck('id')->toArray());
+                     @endphp
+                     <div id="verifikator_opds_container" style="{{ old('role', $user->role) === 'verifikator' ? 'display: block;' : 'display: none;' }}">
+                         <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                             Pilih OPD untuk Diverifikasi
+                         </label>
+                         <div class="space-y-2 max-h-60 overflow-y-auto w-full px-4 py-2 border border-gray-300 rounded-lg bg-white @error('verifikator_opds') border-red-500 @enderror">
+                             @foreach($opds as $opd)
+                                 <label class="flex items-center gap-2 cursor-pointer">
+                                     <input type="checkbox" name="verifikator_opds[]" value="{{ $opd->id }}" class="rounded text-primary focus:ring-primary border-gray-300" {{ in_array($opd->id, $selectedVerifikatorOpds) ? 'checked' : '' }}>
+                                     <span class="text-sm text-gray-700">{{ $opd->n_opd }}</span>
+                                 </label>
+                             @endforeach
+                         </div>
+                         @error('verifikator_opds')
+                         <p class="mt-1.5 text-sm text-red-500">{{ $message }}</p>
+                         @enderror
+                     </div>
 
                     {{-- Nama Kepala --}}
                     <div>
@@ -382,6 +403,24 @@ function updateRoleDescription() {
         'verifikator': 'Verifikator dapat memverifikasi dan menyetujui data'
     };
     roleText.textContent = descriptions[role] || 'Pilih role untuk melihat deskripsi';
+
+    // Handle OPD visibility
+    const opdContainer = document.getElementById('opd_container');
+    const verifikatorOpdsContainer = document.getElementById('verifikator_opds_container');
+
+    if (opdContainer) {
+        opdContainer.style.display = role === 'operator' ? 'block' : 'none';
+        if (role !== 'operator') {
+            document.getElementById('opd_id').value = '';
+        }
+    }
+    if (verifikatorOpdsContainer) {
+        verifikatorOpdsContainer.style.display = role === 'verifikator' ? 'block' : 'none';
+        if (role !== 'verifikator') {
+            const checkboxes = verifikatorOpdsContainer.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = false);
+        }
+    }
 }
 
 function checkPasswordStrength() {
