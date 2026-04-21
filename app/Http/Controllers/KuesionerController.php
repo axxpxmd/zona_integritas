@@ -216,7 +216,12 @@ class KuesionerController extends Controller
             // Handle file upload
             $filePath = null;
             if ($file && $file->isValid()) {
-                $filePath = $file->store('kuesioner/' . $periodeId . '/' . $opd->id, 'public');
+                $ext = strtolower($file->getClientOriginalExtension());
+                $fileName = time() . '_' . $pertanyaanId . '.' . $ext;
+                $storagePath = 'kuesioner/' . $periodeId . '/' . $opd->id . '/';
+
+                $file->storeAs($storagePath, $fileName, 'sftp');
+                $filePath = $storagePath . $fileName;
             }
 
             // Simpan atau update jawaban

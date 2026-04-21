@@ -211,7 +211,7 @@
                             {{-- Upload Dokumen (optional) --}}
                             <div class="mt-3 pt-3 border-t border-gray-100">
                                 <label class="block text-xs font-medium text-gray-700 mb-1.5">
-                                    Upload Dokumen Pendukung (Opsional)
+                                    Upload Dokumen Pendukung
                                 </label>
                                 <div class="space-y-2">
                                     @if(isset($jawabans[$pertanyaan->id]) && $jawabans[$pertanyaan->id]->file_path)
