@@ -35,10 +35,7 @@
                             Tahun
                         </th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                            Tanggal Mulai
-                        </th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                            Tanggal Selesai
+                            Waktu Pengisian
                         </th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                             Durasi
@@ -66,10 +63,7 @@
                             <span class="text-sm text-gray-900">{{ $periode->tahun }}</span>
                         </td>
                         <td class="px-6 py-4">
-                            <span class="text-sm text-gray-900">{{ $periode->tanggal_mulai->format('d M Y') }}</span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="text-sm text-gray-900">{{ $periode->tanggal_selesai->format('d M Y') }}</span>
+                            <span class="text-sm text-gray-900">{{ $periode->tanggal_mulai->format('d M Y') }} - {{ $periode->tanggal_selesai->format('d M Y') }}</span>
                         </td>
                         <td class="px-6 py-4">
                             <span class="text-sm text-gray-900">{{ $periode->tanggal_mulai->diffInDays($periode->tanggal_selesai) + 1 }} Hari</span>
