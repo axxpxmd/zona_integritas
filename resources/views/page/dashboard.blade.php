@@ -86,7 +86,7 @@
 		<!-- Progress OPD Table -->
 		<div class="bg-white rounded-xl overflow-hidden mt-6">
 			<div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
-				<h3 class="text-lg font-semibold text-gray-900">Progress Pengisian Lembar Kerja (Periode: {{ $activePeriode->nama_periode }})</h3>
+				<h3 class="text-lg font-semibold text-gray-900">Progress Pengisian Lembar Kerja Evaluasi (Periode: {{ $activePeriode->nama_periode }})</h3>
 				<span class="text-sm text-gray-500">Total Pertanyaan: {{ $totalRequired }}</span>
 			</div>
 

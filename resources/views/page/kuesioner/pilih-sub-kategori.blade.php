@@ -48,7 +48,7 @@
             </svg>
             <div class="text-sm text-red-800">
                 <p class="font-medium">Waktu Pengisian Tidak Aktif</p>
-                <p class="mt-1">Anda hanya dapat melihat isian Lembar Kerja Anda saat ini. Anda tidak dapat mengisi atau memperbarui jawaban karena di luar waktu pengisian.</p>
+                <p class="mt-1">Anda hanya dapat melihat isian Lembar Kerja Evaluasi Anda saat ini. Anda tidak dapat mengisi atau memperbarui jawaban karena di luar waktu pengisian.</p>
             </div>
         </div>
     </div>
