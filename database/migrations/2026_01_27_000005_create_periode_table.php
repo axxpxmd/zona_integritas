@@ -14,14 +14,24 @@ return new class () extends Migration {
             $table->id();
             $table->year('tahun'); // 2024, 2025, 2026
             $table->string('nama_periode', 100); // Zona Integritas 2024, WBK/WBBM 2025
-            $table->date('tanggal_mulai'); // Kapan mulai pengisian
-            $table->date('tanggal_selesai'); // Deadline pengisian
+
+            // Waktu Pengisian
+            $table->date('tanggal_mulai')->comment('Kapan mulai pengisian');
+            $table->date('tanggal_selesai')->comment('Deadline pengisian');
+
+            // Waktu Verifikasi
+            $table->date('tanggal_mulai_verifikasi')->nullable()->comment('Kapan mulai verifikasi');
+            $table->date('tanggal_selesai_verifikasi')->nullable()->comment('Deadline verifikasi');
+
+            // Waktu Revisi
+            $table->date('tanggal_mulai_revisi')->nullable()->comment('Kapan mulai revisi');
+            $table->date('tanggal_selesai_revisi')->nullable()->comment('Deadline revisi');
+
             $table->text('deskripsi')->nullable();
             $table->enum('status', ['draft', 'aktif', 'selesai', 'ditutup'])->default('draft');
             // draft: belum dibuka, aktif: sedang berjalan, selesai: sudah deadline, ditutup: sudah finalisasi
             $table->tinyInteger('is_template')->default(0)->comment('1: template untuk copy, 0: periode normal');
-            $table->foreignId('copied_from_periode_id')->nullable()->constrained('tm_periode')->nullOnDelete()
-                ->comment('ID periode sumber jika di-copy dari periode lain');
+            $table->foreignId('copied_from_periode_id')->nullable()->constrained('tm_periode')->nullOnDelete()->comment('ID periode sumber jika di-copy dari periode lain');
             $table->timestamps();
 
             $table->unique(['tahun', 'nama_periode']);

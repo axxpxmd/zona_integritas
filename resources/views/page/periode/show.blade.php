@@ -75,7 +75,7 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500">Tanggal Mulai</p>
+                    <p class="text-sm text-gray-500">Mulai Pengisian</p>
                     <p class="text-base font-semibold text-gray-900 mt-0.5">
                         {{ $periode->tanggal_mulai->format('d F Y') }}
                     </p>
@@ -93,7 +93,7 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500">Tanggal Selesai</p>
+                    <p class="text-sm text-gray-500">Selesai Pengisian</p>
                     <p class="text-base font-semibold text-gray-900 mt-0.5">
                         {{ $periode->tanggal_selesai->format('d F Y') }}
                     </p>
@@ -103,15 +103,53 @@
                 </div>
             </div>
 
-            {{-- Durasi --}}
+            {{-- Tanggal Verifikasi --}}
+            @if($periode->tanggal_mulai_verifikasi || $periode->tanggal_selesai_verifikasi)
             <div class="flex items-start gap-3">
                 <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
                     <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Jadwal Verifikasi</p>
+                    <p class="text-base font-semibold text-gray-900 mt-0.5">
+                        {{ $periode->tanggal_mulai_verifikasi?->format('d F Y') ?? '-' }}
+                        s/d
+                        {{ $periode->tanggal_selesai_verifikasi?->format('d F Y') ?? '-' }}
+                    </p>
+                </div>
+            </div>
+            @endif
+
+            {{-- Tanggal Revisi --}}
+            @if($periode->tanggal_mulai_revisi || $periode->tanggal_selesai_revisi)
+            <div class="flex items-start gap-3">
+                <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Jadwal Revisi</p>
+                    <p class="text-base font-semibold text-gray-900 mt-0.5">
+                        {{ $periode->tanggal_mulai_revisi?->format('d F Y') ?? '-' }}
+                        s/d
+                        {{ $periode->tanggal_selesai_revisi?->format('d F Y') ?? '-' }}
+                    </p>
+                </div>
+            </div>
+            @endif
+
+            {{-- Durasi --}}
+            <div class="flex items-start gap-3">
+                <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                     </svg>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500">Durasi Periode</p>
+                    <p class="text-sm text-gray-500">Durasi Pengisian</p>
                     <p class="text-base font-semibold text-gray-900 mt-0.5">
                         {{ $periode->tanggal_mulai->diffInDays($periode->tanggal_selesai) + 1 }} Hari
                     </p>

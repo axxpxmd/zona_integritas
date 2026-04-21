@@ -15,6 +15,10 @@ class Periode extends Model
         'nama_periode',
         'tanggal_mulai',
         'tanggal_selesai',
+        'tanggal_mulai_verifikasi',
+        'tanggal_selesai_verifikasi',
+        'tanggal_mulai_revisi',
+        'tanggal_selesai_revisi',
         'deskripsi',
         'status',
         'is_template',
@@ -25,6 +29,10 @@ class Periode extends Model
         'tahun' => 'integer',
         'tanggal_mulai' => 'date',
         'tanggal_selesai' => 'date',
+        'tanggal_mulai_verifikasi' => 'date',
+        'tanggal_selesai_verifikasi' => 'date',
+        'tanggal_mulai_revisi' => 'date',
+        'tanggal_selesai_revisi' => 'date',
         'is_template' => 'boolean',
     ];
 
