@@ -78,10 +78,25 @@
                     <p class="text-xs text-gray-500">Nama Instansi</p>
                     <p class="text-sm font-medium text-gray-900">{{ $user->nama_instansi }}</p>
                 </div>
+                @if($user->role === 'verifikator')
+                <div class="space-y-1 md:col-span-2">
+                    <p class="text-xs text-gray-500">OPD yang Diverifikasi</p>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                        @forelse($user->verifikatorOpds as $opd)
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md border border-blue-200 bg-blue-50 text-xs font-medium text-blue-700">
+                                {{ $opd->n_opd }}
+                            </span>
+                        @empty
+                            <p class="text-sm text-gray-500">-</p>
+                        @endforelse
+                    </div>
+                </div>
+                @else
                 <div class="space-y-1">
                     <p class="text-xs text-gray-500">OPD</p>
                     <p class="text-sm font-medium text-gray-900">{{ $user->opd?->n_opd ?? '-' }}</p>
                 </div>
+                @endif
                 <div class="space-y-1">
                     <p class="text-xs text-gray-500">Nama Kepala</p>
                     <p class="text-sm font-medium text-gray-900">{{ $user->nama_kepala ?? '-' }}</p>
