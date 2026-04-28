@@ -250,6 +250,35 @@ class SubPertanyaanSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+
+            // Pertanyaan ID 108
+            [
+                'pertanyaan_id' => 108,
+                'kode' => 'a',
+                'pertanyaan' => 'Jumlah perijinan/pelayanan yang terdata/terdaftar',
+                'penjelasan' => null,
+                'tipe_input' => 'jumlah',
+                'satuan' => 'Jumlah',
+                'formula' => null,
+                'urutan' => 1,
+                'status' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'pertanyaan_id' => 108,
+                'kode' => 'b',
+                'pertanyaan' => 'Jumlah perijinan/pelayanan yang telah dipermudah',
+                'penjelasan' => null,
+                'tipe_input' => 'jumlah',
+                'satuan' => 'Jumlah',
+                'formula' => null,
+                'urutan' => 2,
+                'status' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
         ];
 
         DB::table('tm_sub_pertanyaan')->insert($subPertanyaans);
