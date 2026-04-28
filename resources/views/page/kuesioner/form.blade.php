@@ -164,7 +164,7 @@
                                              style="width: {{ min($nilaiIndikator['persen_capaian'], 100) }}%"></div>
                                     </div>
                                     <span id="persenCapaian" class="text-sm font-bold {{ $nilaiIndikator['persen_capaian'] >= 80 ? 'text-green-600' : ($nilaiIndikator['persen_capaian'] >= 50 ? 'text-yellow-600' : 'text-red-600') }}">
-                                        {{ number_format($nilaiIndikator['persen_capaian'], 1) }}%
+                                        {{ number_format($nilaiIndikator['persen_capaian'], 2) }}%
                                     </span>
                                 </div>
                             </div>

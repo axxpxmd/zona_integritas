@@ -22,40 +22,15 @@ class UserSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        $opd = Opd::where('n_opd', 'RSUD SERUT')->first();
+        $opds = Opd::all();
 
-        if ($opd) {
+        foreach ($opds as $opd) {
+            $slug = \Illuminate\Support\Str::slug($opd->n_opd, '_');
             User::create([
                 'opd_id' => $opd->id,
-                'username' => 'operator_rsud_serut',
+                'username' => 'operator_' . $slug,
                 'nama_instansi' => $opd->n_opd,
-                'email' => 'operator_rsud_serut@tangselkota.go.id',
-                'password' => Hash::make('password'),
-                'role' => 'operator',
-            ]);
-        }
-
-        $opdInspektorat = Opd::where('n_opd', 'UPTD SMPN 6 TANSGEL')->first();
-
-        if ($opdInspektorat) {
-            User::create([
-                'opd_id' => $opdInspektorat->id,
-                'username' => 'operator_updt_smpn6',
-                'nama_instansi' => $opdInspektorat->n_opd,
-                'email' => 'operator_updt_smpn6@tangselkota.go.id',
-                'password' => Hash::make('password'),
-                'role' => 'operator',
-            ]);
-        }
-
-        $opdDishub = Opd::where('n_opd', 'SDN KERANGGAN')->first();
-
-        if ($opdDishub) {
-            User::create([
-                'opd_id' => $opdDishub->id,
-                'username' => 'operator_sdn_keranggan',
-                'nama_instansi' => $opdDishub->n_opd,
-                'email' => 'operator_sdn_keranggan@tangselkota.go.id',
+                'email' => 'operator_' . $slug . '@tangselkota.go.id',
                 'password' => Hash::make('password'),
                 'role' => 'operator',
             ]);

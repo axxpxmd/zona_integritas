@@ -113,7 +113,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ml-13">
                     @foreach($kategori->subKategoris as $subKategori)
                     @php
-                        $prog = $progress[$subKategori->id] ?? ['total' => 0, 'terjawab' => 0, 'persen' => 0];
+                        $prog = $progress[$subKategori->id] ?? ['total' => 0, 'terjawab' => 0, 'persen' => 0, 'nilai' => 0, 'capaian' => 0];
                     @endphp
                     <a href="{{ route('kuesioner.fill', [$periode->id, $subKategori->id]) }}"
                        class="block bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-primary hover:shadow-lg transition-all group">
@@ -132,6 +132,18 @@
                                     </svg>
                                     Bobot: {{ $subKategori->bobot }}
                                 </span>
+                            </div>
+                        </div>
+
+                        {{-- Nilai & Capaian --}}
+                        <div class="grid grid-cols-2 gap-2 mb-3">
+                            <div class="bg-gray-50 rounded-lg p-2.5 border border-gray-100 flex flex-col justify-center">
+                                <p class="text-[10px] text-gray-500 uppercase font-semibold tracking-wider mb-0.5">Nilai</p>
+                                <p class="text-sm font-bold text-gray-900">{{ number_format($prog['nilai'], 2) }}</p>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-2.5 border border-gray-100 flex flex-col justify-center">
+                                <p class="text-[10px] text-gray-500 uppercase font-semibold tracking-wider mb-0.5">Capaian</p>
+                                <p class="text-sm font-bold {{ $prog['capaian'] >= 80 ? 'text-green-600' : ($prog['capaian'] >= 50 ? 'text-yellow-600' : 'text-red-600') }}">{{ number_format($prog['capaian'], 2) }}%</p>
                             </div>
                         </div>
 

@@ -60,33 +60,54 @@ class KuesionerController extends Controller
 
         // Hitung progress untuk setiap sub kategori
         $progress = [];
+        $jawabans = Jawaban::where('periode_id', $periode_id)
+            ->where('opd_id', $opd->id)
+            ->whereNull('sub_pertanyaan_id')
+            ->get()
+            ->keyBy('pertanyaan_id');
+
         foreach ($komponens as $komponen) {
             foreach ($komponen->kategoris as $kategori) {
                 foreach ($kategori->subKategoris as $subKategori) {
                     $totalPertanyaan = 0;
                     $pertanyaanTerjawab = 0;
+                    $totalNilaiSubKategori = 0;
 
                     foreach ($subKategori->indikators as $indikator) {
+                        $indPertanyaanTerjawab = 0;
+                        $indTotalNilai = 0;
+
                         foreach ($indikator->pertanyaans as $pertanyaan) {
                             $totalPertanyaan++;
 
                             // Cek apakah pertanyaan ini sudah dijawab
-                            $jawaban = Jawaban::where('periode_id', $periode_id)
-                                ->where('opd_id', $opd->id)
-                                ->where('pertanyaan_id', $pertanyaan->id)
-                                ->whereNull('sub_pertanyaan_id')
-                                ->exists();
+                            $jawaban = $jawabans[$pertanyaan->id] ?? null;
 
                             if ($jawaban) {
                                 $pertanyaanTerjawab++;
+
+                                if ($jawaban->nilai !== null) {
+                                    $indPertanyaanTerjawab++;
+                                    $indTotalNilai += $jawaban->nilai;
+                                }
                             }
                         }
+
+                        // Hitung nilai indikator
+                        $indRataRata = $indPertanyaanTerjawab > 0 ? $indTotalNilai / $indPertanyaanTerjawab : 0;
+                        $indNilaiAkhir = $indRataRata * $indikator->bobot;
+                        $totalNilaiSubKategori += $indNilaiAkhir;
                     }
+
+                    // Hitung capaian sub kategori
+                    $persenCapaian = $subKategori->bobot > 0 ? ($totalNilaiSubKategori / $subKategori->bobot) * 100 : 0;
 
                     $progress[$subKategori->id] = [
                         'total' => $totalPertanyaan,
                         'terjawab' => $pertanyaanTerjawab,
-                        'persen' => $totalPertanyaan > 0 ? round(($pertanyaanTerjawab / $totalPertanyaan) * 100) : 0
+                        'persen' => $totalPertanyaan > 0 ? round(($pertanyaanTerjawab / $totalPertanyaan) * 100) : 0,
+                        'nilai' => $totalNilaiSubKategori,
+                        'capaian' => $persenCapaian
                     ];
                 }
             }
@@ -195,7 +216,9 @@ class KuesionerController extends Controller
 
         foreach ($pertanyaanIds as $pertanyaanId) {
             $pertanyaan = Pertanyaan::find($pertanyaanId);
-            if (!$pertanyaan) continue;
+            if (!$pertanyaan) {
+                continue;
+            }
 
             // Handle jawaban untuk pertanyaan utama (non-sub)
             if (!$pertanyaan->has_sub_pertanyaan) {
@@ -299,9 +322,11 @@ class KuesionerController extends Controller
                 unset($data['jawaban_angka']);
                 unset($data['nilai']);
             }
-            if (!$keterangan) unset($data['keterangan']);
+            if (!$keterangan) {
+                unset($data['keterangan']);
+            }
 
-            $existingJawaban->update(array_filter($data, fn($val) => $val !== null));
+            $existingJawaban->update(array_filter($data, fn ($val) => $val !== null));
         } else {
             Jawaban::updateOrCreate(
                 [
