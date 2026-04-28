@@ -22,8 +22,8 @@ class PeriodeSeeder extends Seeder
             [
                 'tahun' => 2026,
                 'nama_periode' => 'Zona Integritas 2026',
-                'tanggal_mulai' => '2026-01-05',
-                'tanggal_selesai' => '2026-01-31',
+                'tanggal_mulai' => '2026-01-01',
+                'tanggal_selesai' => '2026-12-31',
                 'deskripsi' => 'Periode penilaian Zona Integritas tahun 2026 - Tahap Pengisian Kuesioner',
                 'status' => 'aktif',
                 'is_template' => 0,
