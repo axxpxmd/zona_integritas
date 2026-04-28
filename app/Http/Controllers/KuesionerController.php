@@ -468,13 +468,32 @@ class KuesionerController extends Controller
             return null;
         }
 
-        $idAcuan = $subPertanyaans->first()->id;    // a: penyebut (target/acuan)
-        $idRealisasi = $subPertanyaans->last()->id; // b: pembilang (realisasi)
+        $idAcuan = $subPertanyaans->first()->id;    // default: a: penyebut (target/acuan)
+        $idRealisasi = $subPertanyaans->last()->id; // default: b: pembilang (realisasi)
+
+        // Penyesuaian id pembilang/penyebut untuk pertanyaan spesifik
+        if (str_contains($pertanyaan->pertanyaan, 'Penurunan pelanggaran disiplin pegawai')) {
+            // b: pembilang ada di urutan 2 (index 1)
+            $idRealisasi = $subPertanyaans->get(1)->id;
+        } elseif (str_contains($pertanyaan->pertanyaan, 'Persentase penyampaian LHKPN')) {
+            // b: pembilang ada di urutan 5 (index 4) atau yang terakhir
+            // urutan 1 = Jumlah yang harus melaporkan, urutan 5 = Jumlah yang sudah melaporkan
+            $idRealisasi = $subPertanyaans->where('urutan', 5)->first()->id ?? $subPertanyaans->last()->id;
+        }
 
         $nilaiAcuan = floatval($jawabanSubArray[$idAcuan] ?? 0);
         $nilaiRealisasi = floatval($jawabanSubArray[$idRealisasi] ?? 0);
 
         if ($nilaiAcuan > 0) {
+            // Khusus untuk Penurunan pelanggaran disiplin pegawai
+            if (str_contains($pertanyaan->pertanyaan, 'Penurunan pelanggaran disiplin pegawai')) {
+                // Rumus: (Tahun Lalu - Tahun Ini) / Tahun Lalu
+                // misal: (10 - 5) / 10 = 50%, (10 - 7) / 10 = 30%
+                $capaian = ($nilaiAcuan - $nilaiRealisasi) / $nilaiAcuan;
+                // Pastikan tidak negatif
+                return max(0, min($capaian, 1.0));
+            }
+
             $capaian = $nilaiRealisasi / $nilaiAcuan;
             return min($capaian, 1.0); // max 100%
         }
