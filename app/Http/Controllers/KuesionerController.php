@@ -230,27 +230,28 @@ class KuesionerController extends Controller
             }
             // Handle jawaban untuk sub-pertanyaan
             else {
+                $nilaiGabungan = null;
                 if (isset($jawabanSubData[$pertanyaanId])) {
+                    // Hitung relasi acuan <=> capaian
+                    $nilaiGabungan = $this->hitungNilaiSubPertanyaan($pertanyaan, $jawabanSubData[$pertanyaanId]);
+
                     foreach ($jawabanSubData[$pertanyaanId] as $subPertanyaanId => $subJawaban) {
-                        // Untuk sub-pertanyaan, keterangan dan file di-handle di pertanyaan utamanya
+                        // Untuk sub-pertanyaan
                         $this->simpanJawaban($periodeId, $opd->id, $pertanyaanId, $subPertanyaanId, $subJawaban, null, null);
                     }
                 }
 
-                // Simpan keterangan & file untuk pertanyaan utamanya (parent)
+                // Simpan keterangan & file (dan nilai) untuk pertanyaan utamanya (parent)
                 $keterangan = $keteranganData[$pertanyaanId] ?? null;
                 $file = $fileData[$pertanyaanId] ?? null;
-                if ($keterangan || $file) {
-                    // Cek apakah sudah ada jawaban "parent" untuk keterangan/file
-                    $existingParent = Jawaban::where('periode_id', $periodeId)
-                        ->where('opd_id', $opd->id)
-                        ->where('pertanyaan_id', $pertanyaanId)
-                        ->whereNull('sub_pertanyaan_id')
-                        ->first();
 
-                    // Jika belum ada, buat record baru. Jika sudah ada, update.
-                    $this->simpanJawaban($periodeId, $opd->id, $pertanyaanId, null, null, $keterangan, $file, $existingParent);
-                }
+                $existingParent = Jawaban::where('periode_id', $periodeId)
+                    ->where('opd_id', $opd->id)
+                    ->where('pertanyaan_id', $pertanyaanId)
+                    ->whereNull('sub_pertanyaan_id')
+                    ->first();
+
+                $this->simpanJawaban($periodeId, $opd->id, $pertanyaanId, null, null, $keterangan, $file, $existingParent, $nilaiGabungan);
             }
         }
 
@@ -261,7 +262,7 @@ class KuesionerController extends Controller
     /**
      * Helper untuk simpan/update jawaban
      */
-    private function simpanJawaban($periodeId, $opdId, $pertanyaanId, $subPertanyaanId, $jawabanValue, $keterangan, $file, $existingJawaban = null)
+    private function simpanJawaban($periodeId, $opdId, $pertanyaanId, $subPertanyaanId, $jawabanValue, $keterangan, $file, $existingJawaban = null, $nilaiGabungan = null)
     {
         $user = Auth::user();
         $pertanyaan = Pertanyaan::find($pertanyaanId);
@@ -269,9 +270,11 @@ class KuesionerController extends Controller
         // Tentukan field yang akan disimpan
         $jawabanText = null;
         $jawabanAngka = null;
-        $nilai = null;
 
-        if ($jawabanValue) {
+        // Default nilai null
+        $nilai = $nilaiGabungan;
+
+        if ($jawabanValue !== null) {
             if ($subPertanyaanId) {
                 // Sub-pertanyaan selalu angka
                 $jawabanAngka = is_numeric($jawabanValue) ? $jawabanValue : null;
@@ -282,8 +285,8 @@ class KuesionerController extends Controller
                     $jawabanAngka = is_numeric($jawabanValue) ? $jawabanValue : null;
                 }
             }
-            // Hitung nilai hanya untuk jawaban utama
-            if (!$subPertanyaanId) {
+            // Hitung nilai hanya untuk jawaban utama yang bukan gabungan
+            if (!$subPertanyaanId && $nilaiGabungan === null) {
                 $nilai = $this->hitungNilai($pertanyaan, $jawabanValue);
             }
         }
@@ -317,16 +320,28 @@ class KuesionerController extends Controller
         // Jika ada existing jawaban (untuk update keterangan/file di parent), gunakan itu
         if ($existingJawaban) {
             // Jangan null-kan field jawaban jika hanya update keterangan/file
-            if (!$jawabanValue) {
+            if ($jawabanValue === null) {
                 unset($data['jawaban_text']);
                 unset($data['jawaban_angka']);
-                unset($data['nilai']);
+
+                // Jika tidak ada nilai gabungan yang dikirim (bukan parent update nilai)
+                if ($nilaiGabungan === null && !$subPertanyaanId) {
+                    unset($data['nilai']);
+                }
             }
             if (!$keterangan) {
                 unset($data['keterangan']);
             }
 
-            $existingJawaban->update(array_filter($data, fn ($val) => $val !== null));
+            // Jika nilai sengaja diset (misal update nilai gabungan val 0)
+            if ($nilaiGabungan !== null) {
+                $data['nilai'] = $nilaiGabungan;
+            }
+
+            $existingJawaban->update(array_filter($data, function ($val, $key) {
+                // Biarkan 'nilai' bisa divaluesi 0 (null di filter jika di set)
+                return $val !== null || $key === 'nilai';
+            }, ARRAY_FILTER_USE_BOTH));
         } else {
             Jawaban::updateOrCreate(
                 [
@@ -431,6 +446,36 @@ class KuesionerController extends Controller
     }
 
     /**
+     * Hitung nilai pertanyaan yang memiliki sub-pertanyaan
+     * Misalnya: a = target (penyebut), b = realisasi (pembilang)
+     * Nilai = b / a
+     */
+    private function hitungNilaiSubPertanyaan(Pertanyaan $pertanyaan, array $jawabanSubArray): ?float
+    {
+        if (count($jawabanSubArray) < 2) {
+            return null; // butuh minimal 2 nilai (acuan dan realisasi)
+        }
+
+        $subPertanyaans = $pertanyaan->subPertanyaans()->orderBy('urutan')->get();
+        if ($subPertanyaans->count() < 2) {
+            return null;
+        }
+
+        $idAcuan = $subPertanyaans[0]->id;    // a: penyebut (target/acuan)
+        $idRealisasi = $subPertanyaans[1]->id; // b: pembilang (realisasi)
+
+        $nilaiAcuan = floatval($jawabanSubArray[$idAcuan] ?? 0);
+        $nilaiRealisasi = floatval($jawabanSubArray[$idRealisasi] ?? 0);
+
+        if ($nilaiAcuan > 0) {
+            $capaian = $nilaiRealisasi / $nilaiAcuan;
+            return min($capaian, 1.0); // max 100%
+        }
+
+        return null;
+    }
+
+    /**
      * Hitung nilai indikator berdasarkan formula Excel:
      * Nilai Indikator = AVERAGE(nilai semua pertanyaan) × bobot
      */
@@ -484,34 +529,49 @@ class KuesionerController extends Controller
     {
         $request->validate([
             'indikator_id' => 'required|exists:tm_indikator,id',
-            'jawaban' => 'required|array',
+            'jawaban' => 'nullable|array',
+            'jawaban_sub' => 'nullable|array',
         ]);
 
         $indikator = Indikator::with(['pertanyaans' => function ($q) {
             $q->where('status', 1)->orderBy('urutan');
         }])->findOrFail($request->indikator_id);
 
-        $jawabanInput = $request->jawaban;
+        $jawabanInput = $request->jawaban ?? [];
+        $jawabanSubInput = $request->jawaban_sub ?? [];
         $totalPertanyaan = $indikator->pertanyaans->count();
         $pertanyaanTerjawab = 0;
         $totalNilai = 0;
         $nilaiPerPertanyaan = [];
 
         foreach ($indikator->pertanyaans as $pertanyaan) {
-            $jawaban = $jawabanInput[$pertanyaan->id] ?? null;
             $nilai = null;
+            $terjawab = false;
 
-            if (!empty($jawaban)) {
-                $nilai = $this->hitungNilai($pertanyaan, $jawaban);
-                if ($nilai !== null) {
-                    $totalNilai += $nilai;
-                    $pertanyaanTerjawab++;
+            if ($pertanyaan->has_sub_pertanyaan) {
+                // Untuk pertanyaan dengan sub, cek array jawaban sub-nya
+                $jawabanSub = $jawabanSubInput[$pertanyaan->id] ?? null;
+                if (!empty($jawabanSub) && is_array($jawabanSub) && count($jawabanSub) >= 2) {
+                    $nilai = $this->hitungNilaiSubPertanyaan($pertanyaan, $jawabanSub);
+                    $terjawab = true;
                 }
+            } else {
+                // Untuk pertanyaan biasa
+                $jawaban = $jawabanInput[$pertanyaan->id] ?? null;
+                if (!empty($jawaban)) {
+                    $nilai = $this->hitungNilai($pertanyaan, $jawaban);
+                    $terjawab = true;
+                }
+            }
+
+            if ($nilai !== null) {
+                $totalNilai += $nilai;
+                $pertanyaanTerjawab++;
             }
 
             $nilaiPerPertanyaan[$pertanyaan->id] = [
                 'nilai' => $nilai,
-                'terjawab' => !empty($jawaban),
+                'terjawab' => $terjawab,
             ];
         }
 

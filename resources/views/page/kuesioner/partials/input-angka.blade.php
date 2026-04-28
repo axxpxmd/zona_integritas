@@ -1,7 +1,7 @@
 {{-- Input Angka --}}
 <div>
     <input type="number"
-           step="0.01"
+           {{-- step="0.01" --}}
            name="jawaban[{{ $pertanyaan->id }}]"
            class="jawaban-angka w-full max-w-xs px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
            placeholder="Masukkan angka..."

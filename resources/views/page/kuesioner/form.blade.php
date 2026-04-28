@@ -363,25 +363,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to collect all answers from form
     function collectAnswers() {
-        const answers = {};
+        const data = {
+            jawaban: {},
+            jawaban_sub: {}
+        };
 
         // Collect radio button answers (ya/tidak, pilihan ganda)
         form.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
             const match = radio.name.match(/jawaban\[(\d+)\]/);
             if (match) {
-                answers[match[1]] = radio.value;
+                data.jawaban[match[1]] = radio.value;
             }
         });
 
         // Collect number inputs
-        form.querySelectorAll('input[type="number"][name^="jawaban"]').forEach(input => {
-            const match = input.name.match(/jawaban\[(\d+)\]/);
+        form.querySelectorAll('input[type="number"]').forEach(input => {
+            // For normal jawaban
+            const match = input.name.match(/^jawaban\[(\d+)\]$/);
             if (match && input.value) {
-                answers[match[1]] = input.value;
+                data.jawaban[match[1]] = input.value;
+            }
+
+            // For jawaban_sub
+            const matchSub = input.name.match(/^jawaban_sub\[(\d+)\]\[(\d+)\]$/);
+            if (matchSub && input.value) {
+                if (!data.jawaban_sub[matchSub[1]]) {
+                    data.jawaban_sub[matchSub[1]] = {};
+                }
+                data.jawaban_sub[matchSub[1]][matchSub[2]] = input.value;
             }
         });
 
-        return answers;
+        return data;
     }
 
     // Function to update nilai display
@@ -446,7 +459,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to calculate nilai via AJAX
     function calculateNilai() {
-        const answers = collectAnswers();
+        const data = collectAnswers();
 
         fetch('{{ route("kuesioner.hitung-nilai") }}', {
             method: 'POST',
@@ -456,7 +469,8 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify({
                 indikator_id: indikatorId,
-                jawaban: answers
+                jawaban: data.jawaban,
+                jawaban_sub: data.jawaban_sub
             })
         })
         .then(response => response.json())
