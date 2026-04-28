@@ -24,8 +24,8 @@ class Jawaban extends Model
     ];
 
     protected $casts = [
-        'jawaban_angka' => 'decimal:2',
-        'nilai' => 'decimal:2',
+        'jawaban_angka' => 'float',
+        'nilai' => 'float',
     ];
 
     /**

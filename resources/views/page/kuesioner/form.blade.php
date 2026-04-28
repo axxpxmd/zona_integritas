@@ -200,7 +200,10 @@
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                     </svg>
-                                    Nilai: {{ number_format($nilaiTampil, 2) }}
+                                    @php
+                                        $isPercenCapianFormat = isset($pertanyaan) && $pertanyaan->has_sub_pertanyaan;
+                                    @endphp
+                                    Nilai: {{ $isPercenCapianFormat ? number_format((float)$nilaiTampil * 100, 2) . '%' : number_format((float)$nilaiTampil, 2) }}
                                     @endif
                                 </span>
                                 <input type="hidden" name="pertanyaan_id[]" value="{{ $pertanyaan->id }}">
@@ -443,11 +446,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         badgeClass = 'bg-yellow-100 text-yellow-700';
                     }
                     badge.className = 'inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold ' + badgeClass;
+
+                    // Check if it's a sub question type
+                    const isSubTipe = document.querySelector(`input[name^="jawaban_sub[${pertanyaanId}]"]`);
+                    const displayNilai = isSubTipe ? (nilai * 100).toFixed(2) + '%' : nilai.toFixed(2);
+
                     badge.innerHTML = `
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        Nilai: ${nilai.toFixed(2)}
+                        Nilai: ${displayNilai}
                     `;
                     badge.style.display = 'inline-flex';
                 } else {
@@ -485,6 +493,30 @@ document.addEventListener('DOMContentLoaded', function() {
     // Listen for changes on all form inputs
     form.querySelectorAll('input[type="radio"], input[type="number"]').forEach(input => {
         input.addEventListener('change', calculateNilai);
+    });
+
+    // Auto-sum logic for sub questions with specific format rules
+    form.querySelectorAll('input[class*="sum-part-"]').forEach(input => {
+        input.addEventListener('input', function() {
+            const pertanyaanId = this.dataset.pertanyaanId;
+            const targetInput = form.querySelector('.sum-target-' + pertanyaanId);
+
+            if (targetInput) {
+                let total = null;
+                const parts = form.querySelectorAll('.sum-part-' + pertanyaanId);
+                parts.forEach(part => {
+                    if (part.value !== '') {
+                        const val = parseFloat(part.value);
+                        if (!isNaN(val)) {
+                            if (total === null) total = 0;
+                            total += val;
+                        }
+                    }
+                });
+
+                targetInput.value = total !== null ? total : '';
+            }
+        });
     });
 
     // Handle form submit loading state to prevent double click

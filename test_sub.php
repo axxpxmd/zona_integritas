@@ -1,0 +1,1 @@
+<?php require "vendor/autoload.php"; $app = require_once "bootstrap/app.php"; $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class); $kernel->bootstrap(); $data = App\Models\SubPertanyaan::whereIn("pertanyaan_id", [100, 105])->get()->toJson(); echo $data;

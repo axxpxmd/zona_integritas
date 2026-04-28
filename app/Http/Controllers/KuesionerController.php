@@ -461,8 +461,8 @@ class KuesionerController extends Controller
             return null;
         }
 
-        $idAcuan = $subPertanyaans[0]->id;    // a: penyebut (target/acuan)
-        $idRealisasi = $subPertanyaans[1]->id; // b: pembilang (realisasi)
+        $idAcuan = $subPertanyaans->first()->id;    // a: penyebut (target/acuan)
+        $idRealisasi = $subPertanyaans->last()->id; // b: pembilang (realisasi)
 
         $nilaiAcuan = floatval($jawabanSubArray[$idAcuan] ?? 0);
         $nilaiRealisasi = floatval($jawabanSubArray[$idRealisasi] ?? 0);
