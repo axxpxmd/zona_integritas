@@ -1,5 +1,5 @@
 {{-- Input Angka --}}
-<div>
+<div class="ml-9">
     <input type="number"
            {{-- step="0.01" --}}
            name="jawaban[{{ $pertanyaan->id }}]"
