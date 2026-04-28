@@ -116,7 +116,7 @@
                         $prog = $progress[$subKategori->id] ?? ['total' => 0, 'terjawab' => 0, 'persen' => 0, 'nilai' => 0, 'capaian' => 0];
                     @endphp
                     <a href="{{ route('kuesioner.fill', [$periode->id, $subKategori->id]) }}"
-                       class="block bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-primary hover:shadow-lg transition-all group">
+                       class="flex flex-col h-full bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-primary hover:shadow-lg transition-all group">
                         {{-- Sub Kategori Header --}}
                         <div class="flex items-start gap-3 mb-3">
                             <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-colors">
@@ -148,7 +148,7 @@
                         </div>
 
                         {{-- Progress Bar --}}
-                        <div class="mb-2">
+                        <div class="mt-auto mb-2">
                             <div class="flex items-center justify-between text-xs text-gray-600 mb-1">
                                 <span>Progress</span>
                                 <span class="font-semibold">{{ $prog['terjawab'] }}/{{ $prog['total'] }}</span>
