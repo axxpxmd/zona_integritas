@@ -390,8 +390,15 @@ class KuesionerController extends Controller
 
         // Untuk tipe Angka (persentase, jumlah, dll)
         if ($tipe === 'angka') {
-            // Jika dalam persen (0-100), konversi ke desimal (0-1)
             $angka = floatval($jawaban);
+
+            // Khusus pertanyaan survei eksternal tertentu, nilai maksimalnya adalah 4
+            if (str_contains($pertanyaan->pertanyaan, 'Nilai Survey Persepsi Korupsi (Survei Eksternal)') ||
+                str_contains($pertanyaan->pertanyaan, 'Nilai Persepsi Kualitas Pelayanan (Survei Eksternal)')) {
+                return $angka / 4;
+            }
+
+            // Jika dalam persen (0-100), konversi ke desimal (0-1)
             if ($angka > 1 && $angka <= 100) {
                 return $angka / 100;
             }
