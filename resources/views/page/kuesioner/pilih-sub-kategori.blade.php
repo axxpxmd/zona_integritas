@@ -68,6 +68,17 @@
 
     {{-- Komponen Loop --}}
     @foreach($komponens as $komponen)
+    @php
+        $komponenNilai = 0;
+        foreach($komponen->kategoris as $cat) {
+            foreach($cat->subKategoris as $subCat) {
+                if(isset($progress[$subCat->id])) {
+                    $komponenNilai += $progress[$subCat->id]['nilai'];
+                }
+            }
+        }
+        $komponenCapaian = $komponen->bobot > 0 ? ($komponenNilai / $komponen->bobot * 100) : 0;
+    @endphp
     <div class="bg-white rounded-xl overflow-hidden">
         {{-- Komponen Header --}}
         <div class="bg-primary px-6 py-4">
@@ -78,8 +89,21 @@
                     <p class="text-sm text-white/80 mt-1">{{ $komponen->deskripsi }}</p>
                     @endif
                 </div>
-                <div class="text-white/90 text-sm font-medium">
-                    Bobot: {{ $komponen->bobot }}%
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <div class="text-white/80 text-xs uppercase font-semibold tracking-wider">Bobot</div>
+                        <div class="text-white font-bold text-sm">{{ number_format($komponen->bobot, 2) }}</div>
+                    </div>
+                    <div class="w-px h-8 bg-white/20"></div>
+                    <div class="text-right">
+                        <div class="text-white/80 text-xs uppercase font-semibold tracking-wider">Nilai</div>
+                        <div class="text-white font-bold text-sm">{{ number_format($komponenNilai, 2) }}</div>
+                    </div>
+                    <div class="w-px h-8 bg-white/20"></div>
+                    <div class="text-right">
+                        <div class="text-white/80 text-xs uppercase font-semibold tracking-wider">Capaian</div>
+                        <div class="text-white font-bold text-sm">{{ number_format($komponenCapaian, 2) }}%</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -87,25 +111,48 @@
         {{-- Kategori & Sub Kategori --}}
         <div class="divide-y divide-gray-200">
             @foreach($komponen->kategoris as $kategori)
+            @php
+                $kategoriNilai = 0;
+                foreach($kategori->subKategoris as $subCat) {
+                    if(isset($progress[$subCat->id])) {
+                        $kategoriNilai += $progress[$subCat->id]['nilai'];
+                    }
+                }
+                $kategoriCapaian = $kategori->bobot > 0 ? ($kategoriNilai / $kategori->bobot * 100) : 0;
+            @endphp
             <div class="p-6">
                 {{-- Kategori Header --}}
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                        <span class="text-sm font-bold text-gray-700">{{ $kategori->kode }}</span>
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2">
-                            <h4 class="text-base font-semibold text-gray-900">{{ $kategori->nama }}</h4>
-                            <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-medium">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/>
-                                </svg>
-                                {{ $kategori->bobot }}
-                            </span>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <span class="text-sm font-bold text-gray-700">{{ $kategori->kode }}</span>
                         </div>
-                        @if($kategori->deskripsi)
-                        <p class="text-xs text-gray-500 mt-0.5">{{ $kategori->deskripsi }}</p>
-                        @endif
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2">
+                                <h4 class="text-base font-semibold text-gray-900">{{ $kategori->nama }}</h4>
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-medium">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/>
+                                    </svg>
+                                    {{ number_format($kategori->bobot, 2) }}
+                                </span>
+                            </div>
+                            @if($kategori->deskripsi)
+                            <p class="text-xs text-gray-500 mt-0.5">{{ $kategori->deskripsi }}</p>
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- Nilai & Capaian Kategori --}}
+                    <div class="flex items-center gap-3 ml-4">
+                        <div class="bg-gray-50 rounded-lg px-3 py-2 border border-gray-100 flex flex-col justify-center items-end min-w-[70px]">
+                            <span class="text-[10px] text-gray-500 uppercase font-semibold tracking-wider">Nilai</span>
+                            <span class="text-sm font-bold text-gray-900">{{ number_format($kategoriNilai, 2) }}</span>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg px-3 py-2 border border-gray-100 flex flex-col justify-center items-end min-w-[70px]">
+                            <span class="text-[10px] text-gray-500 uppercase font-semibold tracking-wider">Capaian</span>
+                            <span class="text-sm font-bold {{ $kategoriCapaian >= 80 ? 'text-green-600' : ($kategoriCapaian >= 50 ? 'text-yellow-600' : 'text-red-600') }}">{{ number_format($kategoriCapaian, 2) }}%</span>
+                        </div>
                     </div>
                 </div>
 
