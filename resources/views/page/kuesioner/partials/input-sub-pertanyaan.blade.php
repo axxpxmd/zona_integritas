@@ -1,7 +1,7 @@
 {{-- Input Sub Pertanyaan (untuk pertanyaan dengan formula) --}}
 <div class="space-y-3">
     @foreach($pertanyaan->subPertanyaans as $subPertanyaan)
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-4 ml-9">
         <label class="text-sm text-gray-700 w-48 flex-shrink-0">
             {{ $subPertanyaan->pertanyaan }}
         </label>

@@ -1,6 +1,6 @@
 {{-- Input Ya/Tidak --}}
 <div class="flex gap-4">
-    <label class="flex items-center gap-2 cursor-pointer">
+    <label class="flex items-center ml-9 gap-2 cursor-pointer">
         <input type="radio"
                name="jawaban[{{ $pertanyaan->id }}]"
                value="ya"

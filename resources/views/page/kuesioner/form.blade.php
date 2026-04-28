@@ -96,13 +96,23 @@
         </div>
 
         {{-- Pagination Info --}}
-        <div class="px-6 pt-4 pb-2 bg-gray-50 border-b border-gray-200">
+        <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
             <div class="flex items-center justify-between">
-                <div class="text-sm text-gray-600">
-                    <span class="font-semibold text-gray-900">Indikator {{ $currentPage }}</span> dari {{ $totalIndikator }}
+                <div>
+                    <div class="text-sm text-gray-600 mb-1">
+                        <span class="font-semibold text-gray-900">Indikator {{ $currentPage }}</span> dari {{ $totalIndikator }}
+                    </div>
+                    <div class="text-xs text-gray-500">{{ $currentIndikator->kode }}. {{ $currentIndikator->nama }}</div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="text-xs text-gray-500">{{ $currentIndikator->kode }}. {{ $currentIndikator->nama }}</span>
+
+                {{-- Page Indicator --}}
+                <div class="flex items-center gap-1.5 overflow-x-auto">
+                    @for($i = 1; $i <= $totalIndikator; $i++)
+                    <a href="{{ route('kuesioner.fill', [$periode->id, $subKategori->id, 'indikator' => $i]) }}"
+                       class="w-7 h-7 flex items-center justify-center rounded-lg text-sm font-medium transition-colors flex-shrink-0 {{ $i === $currentPage ? 'bg-primary text-white shadow-sm' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50' }}">
+                        {{ $i }}
+                    </a>
+                    @endfor
                 </div>
             </div>
         </div>
@@ -226,7 +236,7 @@
                             @endif
 
                             {{-- Keterangan (optional) --}}
-                            <div class="mt-3 pt-3 border-t border-gray-100">
+                            <div class="mt-3 pt-3 ml-9 border-t border-gray-100">
                                 <label class="block text-xs font-medium text-gray-700 mb-1.5">
                                     Keterangan (Opsional)
                                 </label>
@@ -237,7 +247,7 @@
                             </div>
 
                             {{-- Upload Dokumen (optional) --}}
-                            <div class="mt-3 pt-3 border-t border-gray-100">
+                            <div class="mt-3 pt-3 ml-9 border-t border-gray-100">
                                 <label class="block text-xs font-medium text-gray-700 mb-1.5">
                                     Upload Dokumen Pendukung
                                 </label>
