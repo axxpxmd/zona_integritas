@@ -266,7 +266,7 @@
                                 <label class="block text-xs font-medium text-gray-700 mb-1.5">
                                     Keterangan (Opsional)
                                 </label>
-                                <div class="text-sm text-gray-800 rounded-lg px-3 py-2">
+                                <div class="text-[12px] text-gray-800 rounded-lg px-3 py-2">
                                     {{ optional($jawabanParent)->keterangan ?: '-' }}
                                 </div>
                             </div>
@@ -325,18 +325,46 @@
 
                             {{-- Verifikasi --}}
                             <div class="mt-4 pt-4 border-t border-gray-200">
-                                <div class="flex items-center gap-3">
-                                    <label class="text-xs font-semibold text-gray-900 uppercase w-32">Status Verifikasi:</label>
-                                    <div class="flex items-center gap-2">
-                                        <input type="hidden" name="verifikasi[{{ $pertanyaan->id }}][status_verifikasi]" value="belum_diverifikasi">
-                                        <label class="inline-flex items-center gap-2 text-sm text-gray-700">
-                                            <input type="checkbox"
-                                                   name="verifikasi[{{ $pertanyaan->id }}][status_verifikasi]"
-                                                   value="disetujui"
-                                                   {{ $statusVerifikasi == 'disetujui' ? 'checked' : '' }}
-                                                   class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary/20">
-                                            <span>Disetujui</span>
-                                        </label>
+                                <div class="p-3 rounded-xl border-2 transition-all duration-200 {{ $statusVerifikasi === 'belum_diverifikasi' ? 'bg-yellow-50/50 border-yellow-200' : 'bg-gray-50 border-gray-200' }}">
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                        <div>
+                                            <div class="flex items-center gap-3 mb-1.5">
+                                                <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Status Verifikasi</h4>
+                                                @if($statusVerifikasi === 'belum_diverifikasi')
+                                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-yellow-100 text-yellow-800 border border-yellow-200 shadow-sm animate-pulse">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                                        </svg>
+                                                        Perlu Diverifikasi
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-green-100 text-green-800 border border-green-200 shadow-sm">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                                        </svg>
+                                                        Telah Diverifikasi
+                                                    </span>
+                                                @endif
+                                            </div>
+                                            <p class="text-xs text-gray-500">
+                                                {{ $statusVerifikasi === 'belum_diverifikasi' ? 'Mohon periksa jawaban dan dokumen pendukung sebelum menyetujui.' : 'Jawaban telah diperiksa dan disetujui.' }}
+                                            </p>
+                                        </div>
+                                        
+                                        <div class="flex items-center shrink-0 bg-white px-4 py-2.5 rounded-lg border border-gray-200 shadow-sm">
+                                            <input type="hidden" name="verifikasi[{{ $pertanyaan->id }}][status_verifikasi]" value="belum_diverifikasi">
+                                            <label class="relative inline-flex items-center cursor-pointer group">
+                                                <input type="checkbox"
+                                                       name="verifikasi[{{ $pertanyaan->id }}][status_verifikasi]"
+                                                       value="disetujui"
+                                                       {{ $statusVerifikasi == 'disetujui' ? 'checked' : '' }}
+                                                       class="sr-only peer">
+                                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                                <span class="ml-3 text-sm font-bold text-gray-600 peer-checked:text-primary group-hover:text-gray-900 transition-colors">
+                                                    Verifikasi
+                                                </span>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
 
