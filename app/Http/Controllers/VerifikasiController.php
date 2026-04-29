@@ -239,12 +239,14 @@ class VerifikasiController extends Controller
         $pertanyaans = $indikator->pertanyaans;
         $totalPertanyaan = $pertanyaans->count();
         $pertanyaanTerjawab = 0;
+        $pertanyaanTerverifikasi = 0;
         $totalNilai = 0;
         $nilaiPerPertanyaan = [];
 
         foreach ($pertanyaans as $pertanyaan) {
             $nilai = null;
             $terjawab = false;
+            $isVerified = false;
 
             if ($pertanyaan->has_sub_pertanyaan) {
                 $jawabanSub = [];
@@ -252,6 +254,9 @@ class VerifikasiController extends Controller
                     $key = $pertanyaan->id . '_' . $subPertanyaan->id;
                     $jawabanSubModel = $jawabanMap[$key] ?? null;
                     if ($jawabanSubModel) {
+                        if ($jawabanSubModel->status_verifikasi !== 'belum_diverifikasi') {
+                            $isVerified = true;
+                        }
                         $value = $jawabanSubModel->verifikator_jawaban_angka;
                         if ($value === null || $value === '') {
                             $value = $jawabanSubModel->jawaban_angka;
@@ -269,6 +274,9 @@ class VerifikasiController extends Controller
             } else {
                 $jawaban = $jawabanMap[$pertanyaan->id] ?? null;
                 if ($jawaban) {
+                    if ($jawaban->status_verifikasi !== 'belum_diverifikasi') {
+                        $isVerified = true;
+                    }
                     if (in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda'])) {
                         $value = $jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text;
                     } else {
@@ -291,6 +299,10 @@ class VerifikasiController extends Controller
                 $totalNilai += $nilai;
                 $pertanyaanTerjawab++;
             }
+
+            if ($isVerified) {
+                $pertanyaanTerverifikasi++;
+            }
         }
 
         $rataRataNilai = $pertanyaanTerjawab > 0 ? $totalNilai / $pertanyaanTerjawab : 0;
@@ -300,6 +312,7 @@ class VerifikasiController extends Controller
         return [
             'total_pertanyaan' => $totalPertanyaan,
             'pertanyaan_terjawab' => $pertanyaanTerjawab,
+            'pertanyaan_terverifikasi' => $pertanyaanTerverifikasi,
             'rata_rata_nilai' => round($rataRataNilai, 2),
             'bobot' => $indikator->bobot,
             'nilai_indikator' => round($nilaiIndikator, 2),

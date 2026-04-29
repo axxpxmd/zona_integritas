@@ -123,8 +123,8 @@
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-4">
                                 <div class="text-center">
-                                    <p class="text-xs text-gray-500 mb-1">Terjawab</p>
-                                    <p class="text-lg font-bold text-gray-900">{{ $nilaiIndikator['pertanyaan_terjawab'] }}/{{ $nilaiIndikator['total_pertanyaan'] }}</p>
+                                    <p class="text-xs text-gray-500 mb-1">Status Verifikasi</p>
+                                    <p class="text-lg font-bold text-gray-900">{{ $nilaiIndikator['pertanyaan_terverifikasi'] }}/{{ $nilaiIndikator['total_pertanyaan'] }}</p>
                                 </div>
                                 <div class="h-10 w-px bg-gray-300"></div>
                                 <div class="text-center">
