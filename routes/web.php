@@ -12,6 +12,7 @@ use App\Http\Controllers\PertanyaanController;
 use App\Http\Controllers\SubKategoriController;
 use App\Http\Controllers\SubPertanyaanController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VerifikasiController;
 use Illuminate\Support\Facades\Route;
 
 // Auth Routes
@@ -65,5 +66,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/{periode}/{subKategori}', [KuesionerController::class, 'fill'])->name('fill');
         Route::post('/submit', [KuesionerController::class, 'submit'])->name('submit');
         Route::post('/hitung-nilai', [KuesionerController::class, 'hitungNilaiPreview'])->name('hitung-nilai');
+    });
+
+    // Verifikator
+    Route::prefix('verifikasi')->name('verifikasi.')->group(function () {
+        Route::get('/', [VerifikasiController::class, 'index'])->name('index');
     });
 });

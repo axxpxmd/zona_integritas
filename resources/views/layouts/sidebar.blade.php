@@ -37,6 +37,17 @@
                 <span class="sidebar-text transition-all duration-300 whitespace-nowrap">Lembar Kerja Evaluasi</span>
             </a>
             @endif
+            @if (in_array(Auth::user()->role, ['admin', 'verifikator']))
+                <a href="{{ route('verifikasi.index') }}"
+                   data-tooltip="Verifikasi"
+                   class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                      {{ request()->routeIs('verifikasi.*') ? 'bg-white text-primary shadow-lg shadow-black/10' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                </svg>
+                <span class="sidebar-text transition-all duration-300 whitespace-nowrap">Verifikasi OPD</span>
+            </a>
+            @endif
         </div>
 
         @if(Auth::user()->role === 'admin')
