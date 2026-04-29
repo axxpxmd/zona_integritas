@@ -500,3 +500,54 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('verifikasiForm');
+    if (!form) return;
+
+    // Auto-sum logic: sama seperti di form kuesioner
+    // Field dengan class "sum-part-{id}" akan dijumlahkan ke "sum-target-{id}"
+    function runAutoSum(pertanyaanId) {
+        const targetInput = form.querySelector('.sum-target-' + pertanyaanId);
+        if (!targetInput) return;
+
+        let total = null;
+        const parts = form.querySelectorAll('.sum-part-' + pertanyaanId);
+        parts.forEach(function(part) {
+            // Lewati input yang disabled (milik bagian Jawaban Operator)
+            if (part.disabled) return;
+
+            if (part.value !== '') {
+                const val = parseFloat(part.value);
+                if (!isNaN(val)) {
+                    if (total === null) total = 0;
+                    total += val;
+                }
+            }
+        });
+
+        targetInput.value = total !== null ? total : '';
+    }
+
+    // Pasang event listener pada semua input "sum-part"
+    form.querySelectorAll('input[class*="sum-part-"]').forEach(function(input) {
+        input.addEventListener('input', function() {
+            const pertanyaanId = this.dataset.pertanyaanId;
+            runAutoSum(pertanyaanId);
+        });
+    });
+
+    // Jalankan auto-sum saat halaman pertama dimuat (agar nilai awal sudah benar)
+    const seenIds = new Set();
+    form.querySelectorAll('input[class*="sum-part-"]').forEach(function(input) {
+        const id = input.dataset.pertanyaanId;
+        if (id && !seenIds.has(id)) {
+            seenIds.add(id);
+            runAutoSum(id);
+        }
+    });
+});
+</script>
+@endpush
