@@ -266,7 +266,7 @@
                                 <label class="block text-xs font-medium text-gray-700 mb-1.5">
                                     Keterangan (Opsional)
                                 </label>
-                                <div class="text-[12px] text-gray-800 rounded-lg px-3 py-2">
+                                <div class="text-[13px] text-gray-800 rounded-lg px-3 py-2">
                                     {{ optional($jawabanParent)->keterangan ?: '-' }}
                                 </div>
                             </div>
@@ -274,50 +274,42 @@
                             {{-- Upload Dokumen (optional) --}}
                             <div class="mt-3 pt-3 ml-9 border-t border-gray-100">
                                 <label class="block text-xs font-medium text-gray-700 mb-1.5">
-                                    Upload Dokumen Pendukung
+                                    Dokumen Pendukung
                                 </label>
-                                <div class="space-y-2">
+                                <div>
                                     @php
                                         $uploadedFiles = $jawabanParent ? ($jawabanParent->files ?? collect()) : collect();
                                     @endphp
                                     @if($uploadedFiles->count())
-                                        <div class="space-y-2">
+                                        <ol class="list-decimal list-inside space-y-1 mt-1 text-[13px] ml-1">
                                             @foreach($uploadedFiles as $file)
-                                            <div class="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg">
-                                                <div class="flex items-center gap-2 overflow-hidden flex-1">
-                                                    <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                            <li class="text-gray-600">
+                                                <a href="{{ route('kuesioner.file.item.view', $file->id) }}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1 align-middle">
+                                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
                                                     </svg>
-                                                    <a href="{{ route('kuesioner.file.item.view', $file->id) }}" target="_blank" class="text-xs text-green-700 hover:text-green-800 hover:underline truncate">
-                                                        {{ $file->original_name ?? basename($file->file_path) }}
-                                                    </a>
-                                                </div>
+                                                    {{ $file->original_name ?? basename($file->file_path) }}
+                                                </a>
                                                 @if($file->size)
-                                                <span class="text-[10px] text-gray-500">{{ number_format($file->size / 1024, 0) }} KB</span>
+                                                <span class="text-xs text-gray-400 ml-0.5">({{ number_format($file->size / 1024, 0) }} KB)</span>
                                                 @endif
-                                            </div>
+                                            </li>
                                             @endforeach
-                                        </div>
+                                        </ol>
                                     @elseif($jawabanParent && $jawabanParent->file_path)
-                                        <div class="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg">
-                                            <div class="flex items-center gap-2 overflow-hidden flex-1">
-                                                <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                                </svg>
-                                                <a href="{{ route('kuesioner.file.view', $jawabanParent->id) }}" target="_blank" class="text-xs text-green-700 hover:text-green-800 hover:underline truncate">
+                                        <ul class="list-disc list-inside mt-1 text-[13px] ml-1">
+                                            <li class="text-gray-600">
+                                                <a href="{{ route('kuesioner.file.view', $jawabanParent->id) }}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1 align-middle">
+                                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                                                    </svg>
                                                     {{ basename($jawabanParent->file_path) }}
                                                 </a>
-                                            </div>
-                                            <a href="{{ route('kuesioner.file.view', $jawabanParent->id) }}" target="_blank" title="Lihat File" class="text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0 ml-2 p-1 bg-blue-50 rounded">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                </svg>
-                                            </a>
-                                        </div>
+                                            </li>
+                                        </ul>
                                     @else
-                                        <div class="text-sm text-gray-600 text-red-500 rounded-lg px-3 py-2">
-                                            Tidak ada dokumen diunggah.
+                                        <div class="text-[12px] text-gray-500 italic mt-1">
+                                            Tidak ada dokumen pendukung.
                                         </div>
                                     @endif
                                 </div>
