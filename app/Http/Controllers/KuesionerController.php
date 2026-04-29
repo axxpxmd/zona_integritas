@@ -66,6 +66,9 @@ class KuesionerController extends Controller
             ->get()
             ->keyBy('pertanyaan_id');
 
+        $totalSemuaPertanyaan = 0;
+        $totalPertanyaanTerjawab = 0;
+
         foreach ($komponens as $komponen) {
             foreach ($komponen->kategoris as $kategori) {
                 foreach ($kategori->subKategoris as $subKategori) {
@@ -79,12 +82,14 @@ class KuesionerController extends Controller
 
                         foreach ($indikator->pertanyaans as $pertanyaan) {
                             $totalPertanyaan++;
+                            $totalSemuaPertanyaan++;
 
                             // Cek apakah pertanyaan ini sudah dijawab
                             $jawaban = $jawabans[$pertanyaan->id] ?? null;
 
                             if ($jawaban) {
                                 $pertanyaanTerjawab++;
+                                $totalPertanyaanTerjawab++;
 
                                 if ($jawaban->nilai !== null) {
                                     $indPertanyaanTerjawab++;
@@ -113,7 +118,34 @@ class KuesionerController extends Controller
             }
         }
 
-        return view('page.kuesioner.pilih-sub-kategori', compact('periode', 'opd', 'komponens', 'progress'));
+        $isAllAnswered = ($totalSemuaPertanyaan > 0 && $totalSemuaPertanyaan === $totalPertanyaanTerjawab);
+        $isSent = Jawaban::where('periode_id', $periode_id)->where('opd_id', $opd->id)->where('status', 'final')->exists();
+
+        return view('page.kuesioner.pilih-sub-kategori', compact('periode', 'opd', 'komponens', 'progress', 'isAllAnswered', 'isSent'));
+    }
+
+    /**
+     * Kirim kuesioner ke verifikator (ubah status menjadi final)
+     */
+    public function kirimVerifikator(Request $request)
+    {
+        $request->validate([
+            'periode_id' => 'required|exists:tm_periode,id',
+        ]);
+
+        $user = Auth::user();
+        $opd = $user->opd;
+
+        if (!$opd) {
+            return redirect()->back()->with('error', 'User belum terhubung dengan OPD');
+        }
+
+        // Ubah semua jawaban di periode dan opd ini menjadi final
+        Jawaban::where('periode_id', $request->periode_id)
+            ->where('opd_id', $opd->id)
+            ->update(['status' => 'final']);
+
+        return redirect()->back()->with('success', 'Kuesioner berhasil dikirim ke Verifikator.');
     }
 
     /**
