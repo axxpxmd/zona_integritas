@@ -118,11 +118,47 @@
                         </div>
                     </div>
 
+                    {{-- Nilai Indikator Summary --}}
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 mb-4 border border-blue-100">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">Terjawab</p>
+                                    <p class="text-lg font-bold text-gray-900">{{ $nilaiIndikator['pertanyaan_terjawab'] }}/{{ $nilaiIndikator['total_pertanyaan'] }}</p>
+                                </div>
+                                <div class="h-10 w-px bg-gray-300"></div>
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">Rata-rata Nilai</p>
+                                    <p class="text-lg font-bold text-primary">{{ number_format($nilaiIndikator['rata_rata_nilai'], 2) }}</p>
+                                </div>
+                                <div class="h-10 w-px bg-gray-300"></div>
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">Nilai Indikator</p>
+                                    <p class="text-lg font-bold text-green-600">{{ number_format($nilaiIndikator['nilai_indikator'], 2) }}</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs text-gray-500 mb-1">Capaian</p>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full rounded-full {{ $nilaiIndikator['persen_capaian'] >= 80 ? 'bg-green-500' : ($nilaiIndikator['persen_capaian'] >= 50 ? 'bg-yellow-500' : 'bg-red-500') }}"
+                                             style="width: {{ min($nilaiIndikator['persen_capaian'], 100) }}%"></div>
+                                    </div>
+                                    <span class="text-sm font-bold {{ $nilaiIndikator['persen_capaian'] >= 80 ? 'text-green-600' : ($nilaiIndikator['persen_capaian'] >= 50 ? 'text-yellow-600' : 'text-red-600') }}">
+                                        {{ number_format($nilaiIndikator['persen_capaian'], 2) }}%
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {{-- Pertanyaan Loop --}}
                     <div class="space-y-4">
                         @foreach($currentIndikator->pertanyaans as $pertanyaanIndex => $pertanyaan)
                         @php
                             $jawabanParent = $jawabanMap[$pertanyaan->id] ?? null;
+                            $pertanyaanNilai = $nilaiIndikator['nilai_per_pertanyaan'][$pertanyaan->id] ?? null;
+                            $nilaiTampil = $pertanyaanNilai && $pertanyaanNilai['nilai'] !== null ? $pertanyaanNilai['nilai'] : null;
                             $statusVerifikasi = $jawabanParent ? $jawabanParent->status_verifikasi : 'belum_diverifikasi';
                             if (!$jawabanParent) {
                                 foreach ($pertanyaan->subPertanyaans as $sp) {
@@ -174,6 +210,17 @@
                                     {{ $pertanyaan->urutan ?? ($pertanyaanIndex + 1) }}
                                 </span>
                                 <p class="text-sm text-gray-900 flex-1">{{ $pertanyaan->pertanyaan }}</p>
+                                <span class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold {{ $nilaiTampil !== null ? ($nilaiTampil >= 0.8 ? 'bg-green-100 text-green-700' : ($nilaiTampil >= 0.5 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700')) : '' }}" style="{{ $nilaiTampil === null ? 'display: none;' : '' }}">
+                                    @if($nilaiTampil !== null)
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    @php
+                                        $isPercenCapianFormat = isset($pertanyaan) && $pertanyaan->has_sub_pertanyaan;
+                                    @endphp
+                                    Nilai: {{ $isPercenCapianFormat ? number_format((float)$nilaiTampil * 100, 2) . '%' : number_format((float)$nilaiTampil, 2) }}
+                                    @endif
+                                </span>
                             </div>
                             {{-- Jawaban Verifikator (ubah langsung di pilihan jawaban) --}}
                             <div class="space-y-3">
@@ -219,8 +266,8 @@
                                 <label class="block text-xs font-medium text-gray-700 mb-1.5">
                                     Keterangan (Opsional)
                                 </label>
-                                <div class="text-sm text-gray-800 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
-                                    {{ optional($jawabanParent)->keterangan ?: 'Tidak ada keterangan.' }}
+                                <div class="text-sm text-gray-800 rounded-lg px-3 py-2">
+                                    {{ optional($jawabanParent)->keterangan ?: '-' }}
                                 </div>
                             </div>
 
@@ -269,7 +316,7 @@
                                             </a>
                                         </div>
                                     @else
-                                        <div class="text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
+                                        <div class="text-sm text-gray-600 text-red-500 rounded-lg px-3 py-2">
                                             Tidak ada dokumen diunggah.
                                         </div>
                                     @endif
@@ -295,7 +342,7 @@
 
                                 @if($showOperatorAnswer)
                                     <div class="mt-4 pt-4 border-t border-gray-200">
-                                        <p class="text-xs font-semibold text-gray-900 uppercase mb-2">Jawaban Operator (Pembanding)</p>
+                                        <p class="text-xs font-semibold text-gray-900 uppercase mb-2">Jawaban Operator</p>
                                         <div class="space-y-3">
                                             @if($pertanyaan->tipe_jawaban === 'ya_tidak')
                                                 @include('page.kuesioner.partials.input-ya-tidak', [
@@ -305,12 +352,26 @@
                                                     'isReadonly' => true,
                                                 ])
                                             @elseif($pertanyaan->tipe_jawaban === 'pilihan_ganda')
-                                                @include('page.kuesioner.partials.input-pilihan-ganda', [
-                                                    'pertanyaan' => $pertanyaan,
-                                                    'jawaban' => $jawabanParent,
-                                                    'periode' => $periode,
-                                                    'isReadonly' => true,
-                                                ])
+                                                @php
+                                                    $opsiTerpilih = $jawabanParent->jawaban_text ?? null;
+                                                    $opsiLabel = null;
+                                                    if ($opsiTerpilih && isset($pertanyaan->penjelasan_list)) {
+                                                        foreach ($pertanyaan->penjelasan_list as $opsiItem) {
+                                                            if (($opsiItem['opsi'] ?? null) === $opsiTerpilih) {
+                                                                $opsiLabel = $opsiItem['text'] ?? null;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                @endphp
+                                                <div class="ml-6">
+                                                    <div class="inline-flex items-start gap-2 text-sm text-gray-700">
+                                                        <span class="inline-flex items-center justify-center w-5 h-5 bg-primary/10 text-primary rounded text-xs font-bold">
+                                                            {{ $opsiTerpilih ?? '-' }}
+                                                        </span>
+                                                        <span>{{ $opsiLabel ? $opsiLabel : ('Pilihan ' . ($opsiTerpilih ?? '-')) }}</span>
+                                                    </div>
+                                                </div>
                                             @elseif($pertanyaan->tipe_jawaban === 'angka')
                                                 @if($pertanyaan->has_sub_pertanyaan)
                                                     @include('page.kuesioner.partials.input-sub-pertanyaan', [

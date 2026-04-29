@@ -7,6 +7,8 @@ use App\Models\Opd;
 use App\Models\Komponen;
 use App\Models\SubKategori;
 use App\Models\Periode;
+use App\Models\Indikator;
+use App\Models\Pertanyaan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -178,7 +180,9 @@ class VerifikasiController extends Controller
             $jawabanMap[$key] = $j;
         }
 
-        return view('page.verifikasi.detail', compact('periode', 'opd', 'subKategori', 'currentIndikator', 'currentPage', 'totalIndikator', 'jawabanMap'));
+        $nilaiIndikator = $this->hitungNilaiIndikatorVerifikasi($currentIndikator, $jawabanMap);
+
+        return view('page.verifikasi.detail', compact('periode', 'opd', 'subKategori', 'currentIndikator', 'currentPage', 'totalIndikator', 'jawabanMap', 'nilaiIndikator'));
     }
 
     public function store(Request $request, Periode $periode, Opd $opd, SubKategori $subKategori)
@@ -217,7 +221,7 @@ class VerifikasiController extends Controller
                         $jawaban->verified_by = Auth::id();
                         $jawaban->verified_at = now();
                     } else {
-                        $jawaban->verified_by = null;
+                        $jawaban->verified_by = Auth::user()->id;
                         $jawaban->verified_at = null;
                     }
 
@@ -228,5 +232,192 @@ class VerifikasiController extends Controller
 
         return redirect()->route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage])
             ->with('success', 'Data verifikasi untuk indikator ini berhasil disimpan.');
+    }
+
+    private function hitungNilaiIndikatorVerifikasi(Indikator $indikator, array $jawabanMap): array
+    {
+        $pertanyaans = $indikator->pertanyaans;
+        $totalPertanyaan = $pertanyaans->count();
+        $pertanyaanTerjawab = 0;
+        $totalNilai = 0;
+        $nilaiPerPertanyaan = [];
+
+        foreach ($pertanyaans as $pertanyaan) {
+            $nilai = null;
+            $terjawab = false;
+
+            if ($pertanyaan->has_sub_pertanyaan) {
+                $jawabanSub = [];
+                foreach ($pertanyaan->subPertanyaans as $subPertanyaan) {
+                    $key = $pertanyaan->id . '_' . $subPertanyaan->id;
+                    $jawabanSubModel = $jawabanMap[$key] ?? null;
+                    if ($jawabanSubModel) {
+                        $value = $jawabanSubModel->verifikator_jawaban_angka;
+                        if ($value === null || $value === '') {
+                            $value = $jawabanSubModel->jawaban_angka;
+                        }
+                        if ($value !== null && $value !== '') {
+                            $jawabanSub[$subPertanyaan->id] = $value;
+                        }
+                    }
+                }
+
+                if (count($jawabanSub) >= 2) {
+                    $nilai = $this->hitungNilaiSubPertanyaan($pertanyaan, $jawabanSub);
+                    $terjawab = true;
+                }
+            } else {
+                $jawaban = $jawabanMap[$pertanyaan->id] ?? null;
+                if ($jawaban) {
+                    if (in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda'])) {
+                        $value = $jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text;
+                    } else {
+                        $value = $jawaban->verifikator_jawaban_angka ?? $jawaban->jawaban_angka;
+                    }
+
+                    if ($value !== null && $value !== '') {
+                        $nilai = $this->hitungNilai($pertanyaan, $value);
+                        $terjawab = true;
+                    }
+                }
+            }
+
+            $nilaiPerPertanyaan[$pertanyaan->id] = [
+                'nilai' => $nilai,
+                'terjawab' => $terjawab,
+            ];
+
+            if ($nilai !== null) {
+                $totalNilai += $nilai;
+                $pertanyaanTerjawab++;
+            }
+        }
+
+        $rataRataNilai = $pertanyaanTerjawab > 0 ? $totalNilai / $pertanyaanTerjawab : 0;
+        $nilaiIndikator = $rataRataNilai * $indikator->bobot;
+        $persenCapaian = $indikator->bobot > 0 ? ($nilaiIndikator / $indikator->bobot) * 100 : 0;
+
+        return [
+            'total_pertanyaan' => $totalPertanyaan,
+            'pertanyaan_terjawab' => $pertanyaanTerjawab,
+            'rata_rata_nilai' => round($rataRataNilai, 2),
+            'bobot' => $indikator->bobot,
+            'nilai_indikator' => round($nilaiIndikator, 2),
+            'persen_capaian' => round($persenCapaian, 2),
+            'nilai_per_pertanyaan' => $nilaiPerPertanyaan,
+        ];
+    }
+
+    private function hitungNilai(Pertanyaan $pertanyaan, $jawaban): ?float
+    {
+        if ($jawaban === null || $jawaban === '') {
+            return null;
+        }
+
+        $tipe = $pertanyaan->tipe_jawaban;
+
+        if ($tipe === 'ya_tidak') {
+            return strtolower((string) $jawaban) === 'ya' ? 1.0 : 0.0;
+        }
+
+        if ($tipe === 'pilihan_ganda') {
+            $jumlahOpsi = count($pertanyaan->penjelasan_list);
+            $opsi = strtoupper((string) $jawaban);
+            $skorMap = $this->getSkorMap($jumlahOpsi);
+
+            return $skorMap[$opsi] ?? null;
+        }
+
+        if ($tipe === 'angka') {
+            $angka = floatval($jawaban);
+
+            if (str_contains($pertanyaan->pertanyaan, 'Nilai Survey Persepsi Korupsi (Survei Eksternal)') ||
+                str_contains($pertanyaan->pertanyaan, 'Nilai Persepsi Kualitas Pelayanan (Survei Eksternal)')) {
+                return $angka / 4;
+            }
+
+            if ($angka > 1 && $angka <= 100) {
+                return $angka / 100;
+            }
+
+            return $angka;
+        }
+
+        return null;
+    }
+
+    private function getSkorMap(int $jumlahOpsi): array
+    {
+        switch ($jumlahOpsi) {
+            case 2:
+                return [
+                    'A' => 1.0,
+                    'B' => 0.0,
+                ];
+            case 3:
+                return [
+                    'A' => 1.0,
+                    'B' => 0.5,
+                    'C' => 0.0,
+                ];
+            case 4:
+                return [
+                    'A' => 1.0,
+                    'B' => 0.67,
+                    'C' => 0.33,
+                    'D' => 0.0,
+                ];
+            case 5:
+                return [
+                    'A' => 1.0,
+                    'B' => 0.75,
+                    'C' => 0.5,
+                    'D' => 0.25,
+                    'E' => 0.0,
+                ];
+            default:
+                $map = [];
+                $letters = range('A', chr(64 + $jumlahOpsi));
+                foreach ($letters as $index => $letter) {
+                    $map[$letter] = round(1 - ($index / ($jumlahOpsi - 1)), 2);
+                }
+                return $map;
+        }
+    }
+
+    private function hitungNilaiSubPertanyaan(Pertanyaan $pertanyaan, array $jawabanSubArray): ?float
+    {
+        if (count($jawabanSubArray) < 2) {
+            return null;
+        }
+
+        $subPertanyaans = $pertanyaan->subPertanyaans()->orderBy('urutan')->get();
+        if ($subPertanyaans->count() < 2) {
+            return null;
+        }
+
+        $idAcuan = $subPertanyaans->first()->id;
+        $idRealisasi = $subPertanyaans->last()->id;
+
+        if (str_contains($pertanyaan->pertanyaan, 'Penurunan pelanggaran disiplin pegawai')) {
+            $idRealisasi = $subPertanyaans->get(1)->id;
+        } elseif (str_contains($pertanyaan->pertanyaan, 'Persentase penyampaian LHKPN')) {
+            $idRealisasi = $subPertanyaans->where('urutan', 5)->first()->id ?? $subPertanyaans->last()->id;
+        }
+
+        $nilaiAcuan = floatval($jawabanSubArray[$idAcuan] ?? 0);
+        $nilaiRealisasi = floatval($jawabanSubArray[$idRealisasi] ?? 0);
+
+        if ($nilaiAcuan > 0) {
+            if (str_contains($pertanyaan->pertanyaan, 'Penurunan pelanggaran disiplin pegawai')) {
+                $capaian = ($nilaiAcuan - $nilaiRealisasi) / $nilaiAcuan;
+                return max(0, min($capaian, 1.0));
+            }
+
+            $capaian = $nilaiRealisasi / $nilaiAcuan;
+            return min($capaian, 1.0);
+        }
+
+        return null;
     }
 }
