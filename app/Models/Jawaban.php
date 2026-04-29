@@ -60,4 +60,9 @@ class Jawaban extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
+    public function files()
+    {
+        return $this->hasMany(JawabanFile::class, 'jawaban_id');
+    }
 }

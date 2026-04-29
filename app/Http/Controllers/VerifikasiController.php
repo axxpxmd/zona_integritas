@@ -65,6 +65,7 @@ class VerifikasiController extends Controller
         // Get all answers by this OPD to calculate progress
         $jawabans = Jawaban::where('periode_id', $periode->id)
             ->where('opd_id', $opd->id)
+            ->with('files')
             ->get();
 
         $jawabanMap = [];

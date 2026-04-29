@@ -61,6 +61,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('kuesioner')->name('kuesioner.')->group(function () {
         Route::get('/', [KuesionerController::class, 'index'])->name('index');
         Route::get('/file/{id}', [KuesionerController::class, 'viewFile'])->name('file.view');
+        Route::get('/file-item/{id}', [KuesionerController::class, 'viewFileItem'])->name('file.item.view');
         Route::get('/{periode}', [KuesionerController::class, 'show'])->name('show');
         Route::post('/kirim', [KuesionerController::class, 'kirimVerifikator'])->name('kirim.verifikator');
         Route::get('/{periode}/{subKategori}', [KuesionerController::class, 'fill'])->name('fill');

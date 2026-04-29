@@ -268,30 +268,68 @@
                                 <label class="block text-xs font-medium text-gray-700 mb-1.5">
                                     Upload Dokumen Pendukung
                                 </label>
-                                <div class="space-y-2">
-                                    @if(isset($jawabans[$pertanyaan->id]) && $jawabans[$pertanyaan->id]->file_path)
-                                    <div class="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg">
-                                        <div class="flex items-center gap-2 overflow-hidden flex-1">
-                                            <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                            </svg>
-                                            <a href="{{ route('kuesioner.file.view', $jawabans[$pertanyaan->id]->id) }}" target="_blank" class="text-xs text-green-700 hover:text-green-800 hover:underline truncate">
-                                                {{ basename($jawabans[$pertanyaan->id]->file_path) }}
+                                @php
+                                    $jawabanItem = $jawabans[$pertanyaan->id] ?? null;
+                                    $uploadedFiles = $jawabanItem ? ($jawabanItem->files ?? collect()) : collect();
+                                @endphp
+                                <div class="space-y-3">
+                                    @if($uploadedFiles->count())
+                                        <div class="space-y-2">
+                                            @foreach($uploadedFiles as $file)
+                                            <div class="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg">
+                                                <div class="flex items-center gap-2 overflow-hidden flex-1">
+                                                    <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                                    </svg>
+                                                    <a href="{{ route('kuesioner.file.item.view', $file->id) }}" target="_blank" class="text-xs text-green-700 hover:text-green-800 hover:underline truncate">
+                                                        {{ $file->original_name ?? basename($file->file_path) }}
+                                                    </a>
+                                                </div>
+                                                @if($file->size)
+                                                <span class="text-[10px] text-gray-500">{{ number_format($file->size / 1024, 0) }} KB</span>
+                                                @endif
+                                            </div>
+                                            @endforeach
+                                        </div>
+                                    @elseif($jawabanItem && $jawabanItem->file_path)
+                                        <div class="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg">
+                                            <div class="flex items-center gap-2 overflow-hidden flex-1">
+                                                <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                                </svg>
+                                                <a href="{{ route('kuesioner.file.view', $jawabanItem->id) }}" target="_blank" class="text-xs text-green-700 hover:text-green-800 hover:underline truncate">
+                                                    {{ basename($jawabanItem->file_path) }}
+                                                </a>
+                                            </div>
+                                            <a href="{{ route('kuesioner.file.view', $jawabanItem->id) }}" target="_blank" title="Lihat File" class="text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0 ml-2 p-1 bg-blue-50 rounded">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
                                             </a>
                                         </div>
-                                        <a href="{{ route('kuesioner.file.view', $jawabans[$pertanyaan->id]->id) }}" target="_blank" title="Lihat File" class="text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0 ml-2 p-1 bg-blue-50 rounded">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                            </svg>
-                                        </a>
-                                    </div>
                                     @endif
-                                    <input type="file"
-                                            name="file[{{ $pertanyaan->id }}]"
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
-                                            accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
-                                    <p class="text-xs text-gray-500">Format: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG. Maksimal 5MB.</p>
+
+                                    <label for="file-{{ $pertanyaan->id }}" class="flex items-center justify-between gap-4 p-4 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:bg-white hover:border-primary/60 transition-colors cursor-pointer">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-primary/10 text-primary rounded-lg flex items-center justify-center">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 12v7m0 0l-3-3m3 3l3-3M12 5v7" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-800">Klik untuk upload dokumen</p>
+                                                <p class="text-xs text-gray-500">Bisa pilih lebih dari satu file.</p>
+                                            </div>
+                                        </div>
+                                        <span class="px-3 py-1.5 text-xs font-medium bg-primary text-white rounded-lg">Pilih File</span>
+                                    </label>
+                                    <input id="file-{{ $pertanyaan->id }}" type="file"
+                                           name="file[{{ $pertanyaan->id }}][]"
+                                           class="hidden"
+                                           accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                                           multiple>
+                                    <p class="text-xs text-gray-500">Format: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG. Maksimal 5MB per file.</p>
                                 </div>
                             </div>
                         </div>

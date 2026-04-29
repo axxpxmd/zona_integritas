@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Periode, Komponen, Kategori, SubKategori, Indikator, Pertanyaan, Jawaban};
+use App\Models\{Periode, Komponen, Kategori, SubKategori, Indikator, Pertanyaan, Jawaban, JawabanFile};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class KuesionerController extends Controller
 {
@@ -195,6 +196,7 @@ class KuesionerController extends Controller
         // Ambil jawaban yang sudah diisi oleh OPD ini untuk periode ini
         $jawabans = Jawaban::where('periode_id', $periode_id)
             ->where('opd_id', $opd->id)
+            ->with('files')
             ->get()
             ->keyBy(function ($item) {
                 // Key: pertanyaan_id atau pertanyaan_id-sub_pertanyaan_id
@@ -235,6 +237,8 @@ class KuesionerController extends Controller
             'jawaban' => 'nullable|array',
             'keterangan' => 'nullable|array',
             'file' => 'nullable|array',
+            'file.*' => 'nullable|array',
+            'file.*.*' => 'file|max:5120',
         ]);
 
         $periodeId = $request->periode_id;
@@ -242,10 +246,6 @@ class KuesionerController extends Controller
         $currentPage = $request->current_page;
         $totalIndikator = $request->total_indikator;
         $pertanyaanIds = $request->pertanyaan_id;
-        $jawabanData = $request->jawaban ?? [];
-        $keteranganData = $request->keterangan ?? [];
-        $fileData = $request->file('file') ?? [];
-
         $jawabanData = $request->jawaban ?? [];
         $jawabanSubData = $request->jawaban_sub ?? [];
         $keteranganData = $request->keterangan ?? [];
@@ -261,9 +261,18 @@ class KuesionerController extends Controller
             if (!$pertanyaan->has_sub_pertanyaan) {
                 $jawaban = $jawabanData[$pertanyaanId] ?? null;
                 $keterangan = $keteranganData[$pertanyaanId] ?? null;
-                $file = $fileData[$pertanyaanId] ?? null;
+                $files = $fileData[$pertanyaanId] ?? [];
 
-                $this->simpanJawaban($periodeId, $opd->id, $pertanyaanId, null, $jawaban, $keterangan, $file);
+                if ($files instanceof \Illuminate\Http\UploadedFile) {
+                    $files = [$files];
+                }
+
+                if (!is_array($files)) {
+                    $files = [];
+                }
+
+                $jawabanModel = $this->simpanJawaban($periodeId, $opd->id, $pertanyaanId, null, $jawaban, $keterangan);
+                $this->simpanFileJawaban($jawabanModel, $files, $periodeId, $opd->id, $pertanyaanId);
             }
             // Handle jawaban untuk sub-pertanyaan
             else {
@@ -280,7 +289,15 @@ class KuesionerController extends Controller
 
                 // Simpan keterangan & file (dan nilai) untuk pertanyaan utamanya (parent)
                 $keterangan = $keteranganData[$pertanyaanId] ?? null;
-                $file = $fileData[$pertanyaanId] ?? null;
+                $files = $fileData[$pertanyaanId] ?? [];
+
+                if ($files instanceof \Illuminate\Http\UploadedFile) {
+                    $files = [$files];
+                }
+
+                if (!is_array($files)) {
+                    $files = [];
+                }
 
                 $existingParent = Jawaban::where('periode_id', $periodeId)
                     ->where('opd_id', $opd->id)
@@ -288,7 +305,8 @@ class KuesionerController extends Controller
                     ->whereNull('sub_pertanyaan_id')
                     ->first();
 
-                $this->simpanJawaban($periodeId, $opd->id, $pertanyaanId, null, null, $keterangan, $file, $existingParent, $nilaiGabungan);
+                $jawabanModel = $this->simpanJawaban($periodeId, $opd->id, $pertanyaanId, null, null, $keterangan, $existingParent, $nilaiGabungan);
+                $this->simpanFileJawaban($jawabanModel, $files, $periodeId, $opd->id, $pertanyaanId);
             }
         }
 
@@ -299,7 +317,7 @@ class KuesionerController extends Controller
     /**
      * Helper untuk simpan/update jawaban
      */
-    private function simpanJawaban($periodeId, $opdId, $pertanyaanId, $subPertanyaanId, $jawabanValue, $keterangan, $file, $existingJawaban = null, $nilaiGabungan = null)
+    private function simpanJawaban($periodeId, $opdId, $pertanyaanId, $subPertanyaanId, $jawabanValue, $keterangan, $existingJawaban = null, $nilaiGabungan = null)
     {
         $user = Auth::user();
         $pertanyaan = Pertanyaan::find($pertanyaanId);
@@ -328,17 +346,6 @@ class KuesionerController extends Controller
             }
         }
 
-        // Handle file upload
-        $filePath = null;
-        if ($file && $file->isValid()) {
-            $ext = strtolower($file->getClientOriginalExtension());
-            $fileName = time() . '_' . $pertanyaanId . ($subPertanyaanId ? '_'.$subPertanyaanId : '') . '.' . $ext;
-            $storagePath = 'kuesioner/' . $periodeId . '/' . $opdId . '/';
-
-            $file->storeAs($storagePath, $fileName, 'sftp');
-            $filePath = $storagePath . $fileName;
-        }
-
         $data = [
             'jawaban_text' => $jawabanText,
             'jawaban_angka' => $jawabanAngka,
@@ -348,11 +355,6 @@ class KuesionerController extends Controller
             'created_by' => $user->id,
             'updated_by' => $user->id,
         ];
-
-        // Hanya update file path jika ada file baru yang diupload
-        if ($filePath) {
-            $data['file_path'] = $filePath;
-        }
 
         // Jika ada existing jawaban (untuk update keterangan/file di parent), gunakan itu
         if ($existingJawaban) {
@@ -379,8 +381,9 @@ class KuesionerController extends Controller
                 // Biarkan 'nilai' bisa divaluesi 0 (null di filter jika di set)
                 return $val !== null || $key === 'nilai';
             }, ARRAY_FILTER_USE_BOTH));
+            return $existingJawaban;
         } else {
-            Jawaban::updateOrCreate(
+            return Jawaban::updateOrCreate(
                 [
                     'periode_id' => $periodeId,
                     'opd_id' => $opdId,
@@ -389,6 +392,47 @@ class KuesionerController extends Controller
                 ],
                 $data
             );
+        }
+    }
+
+    /**
+     * Simpan file jawaban (multi-file)
+     */
+    private function simpanFileJawaban(Jawaban $jawaban, array $files, $periodeId, $opdId, $pertanyaanId, $subPertanyaanId = null): void
+    {
+        if (empty($files)) {
+            return;
+        }
+
+        $user = Auth::user();
+        $storagePath = 'kuesioner/' . $periodeId . '/' . $opdId . '/';
+        $lastFilePath = null;
+
+        foreach ($files as $file) {
+            if (!$file || !$file->isValid()) {
+                continue;
+            }
+
+            $ext = strtolower($file->getClientOriginalExtension());
+            $fileName = time() . '_' . $pertanyaanId . ($subPertanyaanId ? '_' . $subPertanyaanId : '') . '_' . Str::random(6) . '.' . $ext;
+
+            $file->storeAs($storagePath, $fileName, 'sftp');
+            $filePath = $storagePath . $fileName;
+
+            JawabanFile::create([
+                'jawaban_id' => $jawaban->id,
+                'original_name' => $file->getClientOriginalName(),
+                'file_path' => $filePath,
+                'size' => $file->getSize(),
+                'mime_type' => $file->getMimeType(),
+                'uploaded_by' => $user ? $user->id : null,
+            ]);
+
+            $lastFilePath = $filePath;
+        }
+
+        if ($lastFilePath) {
+            $jawaban->update(['file_path' => $lastFilePath]);
         }
     }
 
@@ -679,6 +723,33 @@ class KuesionerController extends Controller
         return response($fileContent, 200, [
             'Content-Type' => $mimeType,
             'Content-Disposition' => 'inline; filename="' . basename($jawaban->file_path) . '"'
+        ]);
+    }
+
+    /**
+     * Tampilkan file dokumen jawaban (multi-file)
+     */
+    public function viewFileItem($id)
+    {
+        $file = JawabanFile::with('jawaban')->findOrFail($id);
+        $jawaban = $file->jawaban;
+
+        if (!$file->file_path || !Storage::disk('sftp')->exists($file->file_path)) {
+            abort(404, 'File tidak ditemukan.');
+        }
+
+        $user = Auth::user();
+        // Hanya verifikator, admin, atau OPD yang memiliki jawaban ini yang boleh mengakses
+        if ($user->role === 'operator' && $jawaban->opd_id !== $user->opd_id) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $fileContent = Storage::disk('sftp')->get($file->file_path);
+        $mimeType = Storage::disk('sftp')->mimeType($file->file_path);
+
+        return response($fileContent, 200, [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'inline; filename="' . ($file->original_name ?: basename($file->file_path)) . '"'
         ]);
     }
 }

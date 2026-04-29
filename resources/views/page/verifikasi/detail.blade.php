@@ -191,10 +191,9 @@
                                 <label class="block text-xs font-medium text-gray-700 mb-1.5">
                                     Keterangan (Opsional)
                                 </label>
-                                <textarea name="keterangan[{{ $pertanyaan->id }}]"
-                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none resize-none"
-                                          rows="2"
-                                          readonly>{{ optional($jawabanParent)->keterangan }}</textarea>
+                                <div class="text-sm text-gray-800 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
+                                    {{ optional($jawabanParent)->keterangan ?: 'Tidak ada keterangan.' }}
+                                </div>
                             </div>
 
                             {{-- Upload Dokumen (optional) --}}
@@ -203,30 +202,49 @@
                                     Upload Dokumen Pendukung
                                 </label>
                                 <div class="space-y-2">
-                                    @if($jawabanParent && $jawabanParent->file_path)
-                                    <div class="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg">
-                                        <div class="flex items-center gap-2 overflow-hidden flex-1">
-                                            <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                            </svg>
-                                            <a href="{{ route('kuesioner.file.view', $jawabanParent->id) }}" target="_blank" class="text-xs text-green-700 hover:text-green-800 hover:underline truncate">
-                                                {{ basename($jawabanParent->file_path) }}
+                                    @php
+                                        $uploadedFiles = $jawabanParent ? ($jawabanParent->files ?? collect()) : collect();
+                                    @endphp
+                                    @if($uploadedFiles->count())
+                                        <div class="space-y-2">
+                                            @foreach($uploadedFiles as $file)
+                                            <div class="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg">
+                                                <div class="flex items-center gap-2 overflow-hidden flex-1">
+                                                    <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                                    </svg>
+                                                    <a href="{{ route('kuesioner.file.item.view', $file->id) }}" target="_blank" class="text-xs text-green-700 hover:text-green-800 hover:underline truncate">
+                                                        {{ $file->original_name ?? basename($file->file_path) }}
+                                                    </a>
+                                                </div>
+                                                @if($file->size)
+                                                <span class="text-[10px] text-gray-500">{{ number_format($file->size / 1024, 0) }} KB</span>
+                                                @endif
+                                            </div>
+                                            @endforeach
+                                        </div>
+                                    @elseif($jawabanParent && $jawabanParent->file_path)
+                                        <div class="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg">
+                                            <div class="flex items-center gap-2 overflow-hidden flex-1">
+                                                <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                                </svg>
+                                                <a href="{{ route('kuesioner.file.view', $jawabanParent->id) }}" target="_blank" class="text-xs text-green-700 hover:text-green-800 hover:underline truncate">
+                                                    {{ basename($jawabanParent->file_path) }}
+                                                </a>
+                                            </div>
+                                            <a href="{{ route('kuesioner.file.view', $jawabanParent->id) }}" target="_blank" title="Lihat File" class="text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0 ml-2 p-1 bg-blue-50 rounded">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
                                             </a>
                                         </div>
-                                        <a href="{{ route('kuesioner.file.view', $jawabanParent->id) }}" target="_blank" title="Lihat File" class="text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0 ml-2 p-1 bg-blue-50 rounded">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                            </svg>
-                                        </a>
-                                    </div>
+                                    @else
+                                        <div class="text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
+                                            Tidak ada dokumen diunggah.
+                                        </div>
                                     @endif
-                                    <input type="file"
-                                           name="file[{{ $pertanyaan->id }}]"
-                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
-                                           accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
-                                           disabled>
-                                    <p class="text-xs text-gray-500">Format: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG. Maksimal 5MB.</p>
                                 </div>
                             </div>
 
@@ -234,10 +252,17 @@
                             <div class="mt-4 pt-4 border-t border-gray-200">
                                 <div class="flex items-center gap-3">
                                     <label class="text-xs font-semibold text-gray-900 uppercase w-32">Status Verifikasi:</label>
-                                    <select name="verifikasi[{{ $pertanyaan->id }}][status_verifikasi]" class="text-sm border border-gray-300 rounded-lg px-3 py-2 w-full md:w-64 focus:ring-primary focus:border-primary">
-                                        <option value="belum_diverifikasi" {{ $statusVerifikasi == 'belum_diverifikasi' ? 'selected' : '' }}>Belum Diverifikasi</option>
-                                        <option value="disetujui" {{ $statusVerifikasi == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
-                                    </select>
+                                    <div class="flex items-center gap-2">
+                                        <input type="hidden" name="verifikasi[{{ $pertanyaan->id }}][status_verifikasi]" value="belum_diverifikasi">
+                                        <label class="inline-flex items-center gap-2 text-sm text-gray-700">
+                                            <input type="checkbox"
+                                                   name="verifikasi[{{ $pertanyaan->id }}][status_verifikasi]"
+                                                   value="disetujui"
+                                                   {{ $statusVerifikasi == 'disetujui' ? 'checked' : '' }}
+                                                   class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary/20">
+                                            <span>Disetujui</span>
+                                        </label>
+                                    </div>
                                 </div>
 
                                 @if($pertanyaan->subPertanyaans->count() === 0)
