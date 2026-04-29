@@ -6,6 +6,7 @@
                name="jawaban[{{ $pertanyaan->id }}]"
                value="{{ $opsi['opsi'] }}"
                {{ ($jawaban && $jawaban->jawaban_text === $opsi['opsi']) ? 'checked' : '' }}
+             @if(!empty($isReadonly)) disabled @endif
                class="jawaban-radio mt-0.5 w-4 h-4 text-primary border-gray-300 focus:ring-2 focus:ring-primary/40"
                data-periode-id="{{ $periode->id }}"
                data-pertanyaan-id="{{ $pertanyaan->id }}">

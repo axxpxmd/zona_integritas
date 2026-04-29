@@ -5,6 +5,7 @@
                name="jawaban[{{ $pertanyaan->id }}]"
                value="ya"
                {{ ($jawaban && $jawaban->jawaban_text === 'ya') ? 'checked' : '' }}
+             @if(!empty($isReadonly)) disabled @endif
                class="jawaban-radio w-4 h-4 text-primary border-gray-300 focus:ring-2 focus:ring-primary/20"
                data-periode-id="{{ $periode->id }}"
                data-pertanyaan-id="{{ $pertanyaan->id }}">
@@ -15,6 +16,7 @@
                name="jawaban[{{ $pertanyaan->id }}]"
                value="tidak"
                {{ ($jawaban && $jawaban->jawaban_text === 'tidak') ? 'checked' : '' }}
+             @if(!empty($isReadonly)) disabled @endif
                class="jawaban-radio w-4 h-4 text-primary border-gray-300 focus:ring-2 focus:ring-primary/20"
                data-periode-id="{{ $periode->id }}"
                data-pertanyaan-id="{{ $pertanyaan->id }}">

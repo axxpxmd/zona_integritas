@@ -15,6 +15,7 @@
         <input type="number"
                name="jawaban_sub[{{ $pertanyaan->id }}][{{ $subPertanyaan->id }}]"
                step="{{ $subPertanyaan->tipe_input === 'desimal' ? '0.01' : '1' }}"
+             @if(!empty($isReadonly)) disabled @endif
                class="jawaban-angka-sub flex-1 max-w-xs px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none {{ $isAutoSum ? 'bg-gray-100 cursor-not-allowed sum-target-' . $pertanyaan->id : '' }} {{ $isPartSum ? 'sum-part-' . $pertanyaan->id : '' }}"
                placeholder="{{ $isAutoSum ? 'Otomatis' : 'Masukkan ' . $subPertanyaan->tipe_input . '...' }}"
                value="{{ $jawabans[$pertanyaan->id . '-' . $subPertanyaan->id]->jawaban_angka ?? '' }}"

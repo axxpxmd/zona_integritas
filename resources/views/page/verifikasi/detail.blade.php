@@ -4,166 +4,342 @@
 @section('page-title', 'Pemeriksaan Jawaban')
 
 @section('content')
-<div class="max-w-5xl mx-auto space-y-6">
+<div class="space-y-6">
 
-    {{-- Navigasi Atas --}}
-    <div class="flex items-center gap-4 bg-white p-4 rounded-xl border border-gray-200">
-        <a href="{{ route('verifikasi.show', [$periode->id, $opd->id]) }}" class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-            </svg>
-        </a>
-        <div class="flex-1">
-            <div class="flex items-center gap-2 text-sm text-gray-500 font-medium mb-1">
-                <span>{{ $subKategori->kategori->komponen->nama }}</span>
-                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                <span>{{ $subKategori->kategori->nama }}</span>
+    {{-- Alert Success --}}
+    @if(session('success'))
+    <div class="bg-green-100 border border-green-200 text-green-800 rounded-lg px-4 py-3 mb-4 flex items-center gap-2">
+        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <span class="font-semibold">{{ session('success') }}</span>
+    </div>
+    @endif
+
+    {{-- Header --}}
+    <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <a href="{{ route('verifikasi.show', [$periode->id, $opd->id]) }}"
+               class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </a>
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    {{ $subKategori->nama }}
+                </h2>
+                <p class="text-sm text-gray-500 mt-0.5">{{ $periode->nama_periode }} • {{ $opd->n_opd }}</p>
             </div>
-            <h2 class="text-xl font-bold text-gray-900">{{ $subKategori->nama }}</h2>
         </div>
     </div>
 
-    {{-- Kumpulan Indikator & Pertanyaan --}}
-    <div class="space-y-8">
-        @foreach($subKategori->indikators as $indikatorIndex => $indikator)
-            <div class="bg-white rounded-xl border border-primary/20 overflow-hidden shadow-sm">
-                {{-- Header Indikator --}}
-                <div class="bg-primary/5 border-b border-primary/10 px-6 py-4">
-                    <div class="flex items-center gap-3">
-                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
-                           {{ $indikatorIndex + 1 }}
-                        </div>
-                        <h3 class="text-lg font-bold text-gray-900">{{ $indikator->nama }}</h3>
-                    </div>
-                    @if($indikator->deskripsi)
-                        <p class="text-gray-600 text-sm mt-2 ml-11">{{ $indikator->deskripsi }}</p>
-                    @endif
-                </div>
-
-                <div class="divide-y divide-gray-100">
-                    @foreach($indikator->pertanyaans as $pertanyaanIndex => $pertanyaan)
-                        {{-- Jika tidak ada sub pertanyaan --}}
-                        @if($pertanyaan->subPertanyaans->count() === 0)
-                            @php
-                                $key = $pertanyaan->id;
-                                $jawaban = $jawabanMap[$key] ?? null;
-                            @endphp
-
-                            <div class="px-6 py-6 md:pl-16">
-                                <div class="flex gap-4">
-                                    <div class="text-gray-400 font-medium">{{ $indikatorIndex + 1 }}.{{ $pertanyaanIndex + 1 }}</div>
-                                    <div class="flex-1 space-y-4">
-                                        <h4 class="text-gray-900 font-medium text-base">{{ $pertanyaan->pertanyaan }}</h4>
-
-                                        {{-- Kotak Jawaban Operator --}}
-                                        @if($jawaban)
-                                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                                                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Jawaban Operator</div>
-                                                <div class="grid grid-cols-2 gap-4 text-sm">
-                                                    <div>
-                                                        <span class="text-gray-500 block mb-1">Nilai / Pilihan:</span>
-                                                        <span class="font-medium text-gray-900 bg-white px-3 py-1 border border-gray-200 rounded-md">
-                                                            {{ $jawaban->jawaban_text ?? $jawaban->jawaban_angka ?? '-' }}
-                                                        </span>
-                                                    </div>
-                                                    <div>
-                                                        <span class="text-gray-500 block mb-1">Keterangan / Dokumen:</span>
-                                                        <span class="text-gray-800">{{ $jawaban->keterangan ?: 'Tidak ada keterangan/dokumen.' }}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {{-- Form Verifikasi Simulas --}}
-                                            <div class="mt-4 border-l-2 border-primary pl-4">
-                                                <div class="text-sm font-medium text-primary mb-2">Status Verifikasi</div>
-                                                <div class="flex flex-wrap gap-2 text-sm">
-                                                    @if($jawaban->status_verifikasi == 'disetujui')
-                                                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full font-medium flex items-center gap-1">
-                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Disetujui
-                                                        </span>
-                                                    @elseif($jawaban->status_verifikasi == 'direvisi')
-                                                        <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full font-medium flex items-center gap-1">
-                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> Direvisi
-                                                        </span>
-                                                        <div class="mt-2 w-full text-sm text-gray-700">
-                                                            <span class="font-medium">Catatan Verifikator:</span> {{ $jawaban->catatan_verifikator }}
-                                                        </div>
-                                                    @else
-                                                        <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full">Belum Diverifikasi</span>
-                                                        <span class="text-xs text-gray-400 self-center italic">(Form verifikasi interaktif dapat ditambahkan disini di tahapan selanjutnya)</span>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        @else
-                                            <div class="text-sm text-red-500 italic bg-red-50 p-3 rounded-lg border border-red-100">
-                                                Operator ini tidak mengisi jawaban untuk pertanyaan ini.
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        @else
-                            {{-- Punya Sub Pertanyaan --}}
-                            <div class="px-6 py-5 md:pl-16">
-                                <div class="flex gap-4">
-                                    <div class="text-gray-400 font-medium">{{ $indikatorIndex + 1 }}.{{ $pertanyaanIndex + 1 }}</div>
-                                    <div class="flex-1">
-                                        <h4 class="text-gray-900 font-medium text-base mb-4">{{ $pertanyaan->pertanyaan }}</h4>
-
-                                        <div class="space-y-4">
-                                            @foreach($pertanyaan->subPertanyaans as $spIndex => $sp)
-                                                @php
-                                                    $key = "{$pertanyaan->id}_{$sp->id}";
-                                                    $jawaban = $jawabanMap[$key] ?? null;
-                                                @endphp
-                                                <div class="bg-gray-50/50 p-4 rounded-lg border border-gray-100">
-                                                    <div class="flex gap-3 mb-3">
-                                                        <span class="text-gray-400 text-sm mt-0.5">{{ chr(97 + $spIndex) }}.</span>
-                                                        <span class="text-gray-700 text-sm font-medium">{{ $sp->pertanyaan }}</span>
-                                                    </div>
-
-                                                    @if($jawaban)
-                                                        <div class="ml-7 bg-white border border-gray-200 rounded-lg p-4">
-                                                            <div class="grid grid-cols-2 gap-4 text-sm mb-3">
-                                                                <div>
-                                                                    <span class="text-gray-500 block mb-1">Jawaban:</span>
-                                                                    <span class="font-medium text-gray-900">
-                                                                        {{ $jawaban->jawaban_text ?? $jawaban->jawaban_angka ?? '-' }}
-                                                                    </span>
-                                                                </div>
-                                                                <div>
-                                                                    <span class="text-gray-500 block mb-1">Keterangan:</span>
-                                                                    <span class="text-gray-800">{{ $jawaban->keterangan ?: '-' }}</span>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="flex items-center gap-2 pt-3 border-t border-gray-100">
-                                                                @if($jawaban->status_verifikasi == 'disetujui')
-                                                                    <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded">Disetujui</span>
-                                                                @elseif($jawaban->status_verifikasi == 'direvisi')
-                                                                    <span class="text-xs font-medium text-red-600 bg-red-50 px-2 py-1 rounded">Direvisi</span>
-                                                                    <span class="text-xs text-gray-600 line-clamp-1 flex-1">{{ $jawaban->catatan_verifikator }}</span>
-                                                                @else
-                                                                    <span class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">Belum Diverifikasi</span>
-                                                                @endif
-                                                            </div>
-                                                        </div>
-                                                    @else
-                                                        <div class="ml-7 text-sm text-red-500 italic">Belum dijawab</div>
-                                                    @endif
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-
-                    @endforeach
-                </div>
-            </div>
-        @endforeach
+    {{-- Breadcrumb --}}
+    <div class="bg-white rounded-lg p-4">
+        <div class="flex flex-wrap items-center gap-2 text-sm">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-100 text-purple-700 font-medium">
+                {{ $subKategori->kategori->komponen->kode }}. {{ $subKategori->kategori->komponen->nama }}
+            </span>
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-100 text-blue-700 font-medium">
+                {{ $subKategori->kategori->kode }}. {{ $subKategori->kategori->nama }}
+            </span>
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-white font-medium">
+                {{ $subKategori->kode }}. {{ $subKategori->nama }}
+            </span>
+        </div>
     </div>
 
+    {{-- Sub Kategori Content --}}
+    <div class="bg-white rounded-xl overflow-hidden">
+        {{-- Sub Kategori Header --}}
+        <div class="bg-gradient-to-r from-primary to-primary-dark px-6 py-5">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                    <span class="text-lg font-bold text-white">{{ $subKategori->kode }}</span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">{{ $subKategori->nama }}</h3>
+                    @if($subKategori->deskripsi)
+                    <p class="text-sm text-white/80 mt-1">{{ $subKategori->deskripsi }}</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        {{-- Pagination Info --}}
+        <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="text-sm text-gray-600 mb-1">
+                        <span class="font-semibold text-gray-900">Indikator {{ $currentPage }}</span> dari {{ $totalIndikator }}
+                    </div>
+                    <div class="text-xs text-gray-500">{{ $currentIndikator->kode }}. {{ $currentIndikator->nama }}</div>
+                </div>
+
+                {{-- Page Indicator --}}
+                <div class="flex items-center gap-1.5 overflow-x-auto">
+                    @for($i = 1; $i <= $totalIndikator; $i++)
+                    <a href="{{ route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $i]) }}"
+                       class="w-7 h-7 flex items-center justify-center rounded-lg text-sm font-medium transition-colors flex-shrink-0 {{ $i === $currentPage ? 'bg-primary text-white shadow-sm' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50' }}">
+                        {{ $i }}
+                    </a>
+                    @endfor
+                </div>
+            </div>
+        </div>
+
+        {{-- Indikator Content --}}
+        <form action="{{ route('verifikasi.store', [$periode->id, $opd->id, $subKategori->id]) }}" method="POST" id="verifikasiForm">
+            @csrf
+            <input type="hidden" name="current_page" value="{{ $currentPage }}">
+            <div class="p-6">
+                <div class="mb-6">
+                    {{-- Indikator Header --}}
+                    <div class="flex items-start gap-2 mb-4">
+                        <span class="inline-flex items-center justify-center w-6 h-6 bg-primary/10 text-primary rounded text-sm font-bold flex-shrink-0 mt-0.5">
+                            {{ $currentIndikator->kode }}
+                        </span>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2">
+                                <h6 class="text-base font-semibold text-gray-900">{{ $currentIndikator->nama }}</h6>
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-accent/20 text-gray-700 rounded text-xs font-medium">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/>
+                                    </svg>
+                                    Bobot: {{ $currentIndikator->bobot }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Pertanyaan Loop --}}
+                    <div class="space-y-4">
+                        @foreach($currentIndikator->pertanyaans as $pertanyaanIndex => $pertanyaan)
+                        @php
+                            $jawabanParent = $jawabanMap[$pertanyaan->id] ?? null;
+                            $statusVerifikasi = $jawabanParent ? $jawabanParent->status_verifikasi : 'belum_diverifikasi';
+                            if (!$jawabanParent) {
+                                foreach ($pertanyaan->subPertanyaans as $sp) {
+                                    $spKey = "{$pertanyaan->id}_{$sp->id}";
+                                    if (isset($jawabanMap[$spKey])) {
+                                        $statusVerifikasi = $jawabanMap[$spKey]->status_verifikasi;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            $jawabansForForm = [];
+                            if ($pertanyaan->has_sub_pertanyaan) {
+                                foreach ($pertanyaan->subPertanyaans as $sp) {
+                                    $spKey = "{$pertanyaan->id}_{$sp->id}";
+                                    if (isset($jawabanMap[$spKey])) {
+                                        $jawabansForForm[$pertanyaan->id . '-' . $sp->id] = $jawabanMap[$spKey];
+                                    }
+                                }
+                            }
+                        @endphp
+                        <div class="bg-white rounded-lg p-4 border border-gray-200">
+                            <div class="flex items-start gap-3 mb-3">
+                                <span class="inline-flex items-center justify-center min-w-[24px] h-6 bg-gray-100 text-gray-700 rounded text-xs font-semibold px-2">
+                                    {{ $pertanyaan->urutan ?? ($pertanyaanIndex + 1) }}
+                                </span>
+                                <p class="text-sm text-gray-900 flex-1">{{ $pertanyaan->pertanyaan }}</p>
+                            </div>
+                            {{-- Jawaban Operator (tampilan sama seperti form) --}}
+                            <div class="space-y-3">
+                                @if($pertanyaan->tipe_jawaban === 'ya_tidak')
+                                    @include('page.kuesioner.partials.input-ya-tidak', [
+                                        'pertanyaan' => $pertanyaan,
+                                        'jawaban' => $jawabanParent,
+                                        'periode' => $periode,
+                                        'isReadonly' => true,
+                                    ])
+                                @elseif($pertanyaan->tipe_jawaban === 'pilihan_ganda')
+                                    @include('page.kuesioner.partials.input-pilihan-ganda', [
+                                        'pertanyaan' => $pertanyaan,
+                                        'jawaban' => $jawabanParent,
+                                        'periode' => $periode,
+                                        'isReadonly' => true,
+                                    ])
+                                @elseif($pertanyaan->tipe_jawaban === 'angka')
+                                    @if($pertanyaan->has_sub_pertanyaan)
+                                        @include('page.kuesioner.partials.input-sub-pertanyaan', [
+                                            'pertanyaan' => $pertanyaan,
+                                            'jawabans' => $jawabansForForm,
+                                            'periode' => $periode,
+                                            'isReadonly' => true,
+                                        ])
+                                    @else
+                                        @include('page.kuesioner.partials.input-angka', [
+                                            'pertanyaan' => $pertanyaan,
+                                            'jawaban' => $jawabanParent,
+                                            'periode' => $periode,
+                                            'isReadonly' => true,
+                                        ])
+                                    @endif
+                                @endif
+                            </div>
+
+                            {{-- Keterangan (optional) --}}
+                            <div class="mt-3 pt-3 ml-9 border-t border-gray-100">
+                                <label class="block text-xs font-medium text-gray-700 mb-1.5">
+                                    Keterangan (Opsional)
+                                </label>
+                                <textarea name="keterangan[{{ $pertanyaan->id }}]"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none resize-none"
+                                          rows="2"
+                                          readonly>{{ optional($jawabanParent)->keterangan }}</textarea>
+                            </div>
+
+                            {{-- Upload Dokumen (optional) --}}
+                            <div class="mt-3 pt-3 ml-9 border-t border-gray-100">
+                                <label class="block text-xs font-medium text-gray-700 mb-1.5">
+                                    Upload Dokumen Pendukung
+                                </label>
+                                <div class="space-y-2">
+                                    @if($jawabanParent && $jawabanParent->file_path)
+                                    <div class="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg">
+                                        <div class="flex items-center gap-2 overflow-hidden flex-1">
+                                            <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                            </svg>
+                                            <a href="{{ route('kuesioner.file.view', $jawabanParent->id) }}" target="_blank" class="text-xs text-green-700 hover:text-green-800 hover:underline truncate">
+                                                {{ basename($jawabanParent->file_path) }}
+                                            </a>
+                                        </div>
+                                        <a href="{{ route('kuesioner.file.view', $jawabanParent->id) }}" target="_blank" title="Lihat File" class="text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0 ml-2 p-1 bg-blue-50 rounded">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    @endif
+                                    <input type="file"
+                                           name="file[{{ $pertanyaan->id }}]"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                                           accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                                           disabled>
+                                    <p class="text-xs text-gray-500">Format: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG. Maksimal 5MB.</p>
+                                </div>
+                            </div>
+
+                            {{-- Verifikasi --}}
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <label class="text-xs font-semibold text-gray-900 uppercase w-32">Status Verifikasi:</label>
+                                    <select name="verifikasi[{{ $pertanyaan->id }}][status_verifikasi]" class="text-sm border border-gray-300 rounded-lg px-3 py-2 w-full md:w-64 focus:ring-primary focus:border-primary">
+                                        <option value="belum_diverifikasi" {{ $statusVerifikasi == 'belum_diverifikasi' ? 'selected' : '' }}>Belum Diverifikasi</option>
+                                        <option value="disetujui" {{ $statusVerifikasi == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
+                                    </select>
+                                </div>
+
+                                @if($pertanyaan->subPertanyaans->count() === 0)
+                                    <div class="mt-3 flex items-start gap-3">
+                                        <label class="text-xs text-gray-700 w-32 mt-2">Koreksi Nilai:<br><span class="text-gray-400 font-normal">(opsional)</span></label>
+                                        @if($pertanyaan->tipe_jawaban == 'angka')
+                                            <input type="number" step="0.01" name="verifikasi[{{ $pertanyaan->id }}][verifikator_jawaban_angka][0]"
+                                                   value="{{ optional($jawabanParent)->verifikator_jawaban_angka }}" class="w-full md:w-64 border border-gray-300 rounded-lg px-3 py-2 focus:ring-primary focus:border-primary text-sm" placeholder="Koreksi angka...">
+                                        @else
+                                            <input type="text" name="verifikasi[{{ $pertanyaan->id }}][verifikator_jawaban_text][0]"
+                                                   value="{{ optional($jawabanParent)->verifikator_jawaban_text }}" class="w-full md:w-64 border border-gray-300 rounded-lg px-3 py-2 focus:ring-primary focus:border-primary text-sm" placeholder="Koreksi teks...">
+                                        @endif
+                                    </div>
+                                @else
+                                    <div class="mt-3 space-y-3">
+                                        @foreach($pertanyaan->subPertanyaans as $sp)
+                                            @php
+                                                $key = "{$pertanyaan->id}_{$sp->id}";
+                                                $jawabanSub = $jawabanMap[$key] ?? null;
+                                            @endphp
+                                            <div class="flex items-center gap-3 ml-9">
+                                                <label class="text-xs text-gray-700 w-48 flex-shrink-0">{{ $sp->pertanyaan }}</label>
+                                                @if($sp->tipe_input == 'angka' || $sp->tipe_input == 'jumlah' || $sp->tipe_input == 'persen')
+                                                    <input type="number" step="0.01" name="verifikasi[{{ $pertanyaan->id }}][verifikator_jawaban_angka][{{ $sp->id }}]"
+                                                        value="{{ $jawabanSub->verifikator_jawaban_angka ?? '' }}" class="w-full md:w-48 border border-gray-300 rounded px-2 py-1 text-sm focus:ring-primary focus:border-primary">
+                                                @else
+                                                    <input type="text" name="verifikasi[{{ $pertanyaan->id }}][verifikator_jawaban_text][{{ $sp->id }}]"
+                                                        value="{{ $jawabanSub->verifikator_jawaban_text ?? '' }}" class="w-full md:w-48 border border-gray-300 rounded px-2 py-1 text-sm focus:ring-primary focus:border-primary">
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- Submit Button --}}
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Simpan Verifikasi Halaman Ini
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        {{-- Pagination Navigation --}}
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+            <div class="flex items-center justify-between">
+                {{-- Previous Button --}}
+                @if($currentPage > 1)
+                <a href="{{ route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage - 1]) }}"
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    <span class="text-sm font-medium">Indikator Sebelumnya</span>
+                </a>
+                @else
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 border border-gray-200 text-gray-400 rounded-lg cursor-not-allowed">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    <span class="text-sm font-medium">Indikator Sebelumnya</span>
+                </div>
+                @endif
+
+                {{-- Page Indicator --}}
+                <div class="flex items-center gap-2">
+                    @for($i = 1; $i <= $totalIndikator; $i++)
+                    <a href="{{ route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $i]) }}"
+                       class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors {{ $i === $currentPage ? 'bg-primary text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50' }}">
+                        {{ $i }}
+                    </a>
+                    @endfor
+                </div>
+
+                {{-- Next Button --}}
+                @if($currentPage < $totalIndikator)
+                <a href="{{ route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage + 1]) }}"
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">
+                    <span class="text-sm font-medium">Indikator Selanjutnya</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                @else
+                <a href="{{ route('verifikasi.show', [$periode->id, $opd->id]) }}"
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                    <span class="text-sm font-medium">Selesai</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </a>
+                @endif
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
