@@ -474,8 +474,10 @@ class KuesionerController extends Controller
             $angka = floatval($jawaban);
 
             // Khusus pertanyaan survei eksternal tertentu, nilai maksimalnya adalah 4
-            if (str_contains($pertanyaan->pertanyaan, 'Nilai Survey Persepsi Korupsi (Survei Eksternal)') ||
-                str_contains($pertanyaan->pertanyaan, 'Nilai Persepsi Kualitas Pelayanan (Survei Eksternal)')) {
+            if (
+                str_contains($pertanyaan->pertanyaan, 'Nilai Survey Persepsi Korupsi (Survei Eksternal)') ||
+                str_contains($pertanyaan->pertanyaan, 'Nilai Persepsi Kualitas Pelayanan (Survei Eksternal)')
+            ) {
                 return $angka / 4;
             }
 
@@ -640,9 +642,11 @@ class KuesionerController extends Controller
             'jawaban_sub' => 'nullable|array',
         ]);
 
-        $indikator = Indikator::with(['pertanyaans' => function ($q) {
-            $q->where('status', 1)->orderBy('urutan');
-        }])->findOrFail($request->indikator_id);
+        $indikator = Indikator::with([
+            'pertanyaans' => function ($q) {
+                $q->where('status', 1)->orderBy('urutan');
+            }
+        ])->findOrFail($request->indikator_id);
 
         $jawabanInput = $request->jawaban ?? [];
         $jawabanSubInput = $request->jawaban_sub ?? [];

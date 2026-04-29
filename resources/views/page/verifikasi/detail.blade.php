@@ -317,8 +317,9 @@
 
                             {{-- Verifikasi --}}
                             <div class="mt-4 pt-4 border-t border-gray-200">
-                                <div class="p-3 rounded-xl border-2 transition-all duration-200 {{ $statusVerifikasi === 'belum_diverifikasi' ? 'bg-yellow-50/50 border-yellow-200' : 'bg-gray-50 border-gray-200' }}">
-                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div class="p-4 rounded-xl border-2 transition-all duration-200 {{ $statusVerifikasi === 'belum_diverifikasi' ? 'bg-yellow-50/50 border-yellow-200' : 'bg-gray-50 border-gray-200' }}">
+                                    {{-- Header Status & Toggle --}}
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                                         <div>
                                             <div class="flex items-center gap-3 mb-1.5">
                                                 <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Status Verifikasi</h4>
@@ -357,6 +358,21 @@
                                                 </span>
                                             </label>
                                         </div>
+                                    </div>
+
+                                    {{-- Catatan Verifikator --}}
+                                    <div class="pt-4 mt-2 border-t {{ $statusVerifikasi === 'belum_diverifikasi' ? 'border-yellow-200/60' : 'border-gray-200' }}">
+                                        <label class="flex items-center gap-2 text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
+                                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                            </svg>
+                                            Catatan Verifikator 
+                                            <span class="text-gray-400 font-medium normal-case">(Opsional)</span>
+                                        </label>
+                                        <textarea name="verifikasi[{{ $pertanyaan->id }}][catatan_verifikator]" 
+                                                  rows="2" 
+                                                  class="w-full text-sm bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm placeholder-gray-400 text-gray-700 focus:outline-none focus:border-[#0E7C7B] focus:ring-4 focus:ring-[#0E7C7B]/10 transition-all duration-200 hover:border-gray-300 resize-y"
+                                                  placeholder="Ketik catatan perbaikan atau masukan di sini...">{{ optional($jawabanParent)->catatan_verifikator }}</textarea>
                                     </div>
                                 </div>
 
