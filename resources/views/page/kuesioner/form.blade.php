@@ -258,8 +258,8 @@
                                     Keterangan (Opsional)
                                 </label>
                                 <textarea name="keterangan[{{ $pertanyaan->id }}]"
-                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none resize-none"
-                                            rows="2"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg text-[14px] focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none resize-none"
+                                            rows="4"
                                             placeholder="Tambahkan catatan atau keterangan jika diperlukan...">{{ $jawabans[$pertanyaan->id]->keterangan ?? '' }}</textarea>
                             </div>
 
@@ -310,7 +310,7 @@
                                         </div>
                                     @endif
 
-                                    <label for="file-{{ $pertanyaan->id }}" class="flex items-center justify-between gap-4 p-4 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:bg-white hover:border-primary/60 transition-colors cursor-pointer">
+                                    <label for="file-{{ $pertanyaan->id }}" class="flex items-center justify-between gap-4 p-2 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:bg-white hover:border-primary/60 transition-colors cursor-pointer">
                                         <div class="flex items-center gap-3">
                                             <div class="w-10 h-10 bg-primary/10 text-primary rounded-lg flex items-center justify-center">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -330,6 +330,7 @@
                                            accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
                                            multiple>
                                     <p class="text-xs text-gray-500">Format: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG. Maksimal 5MB per file.</p>
+                                    <div id="selected-files-{{ $pertanyaan->id }}" class="hidden text-xs text-gray-600"></div>
                                 </div>
                             </div>
                         </div>
@@ -568,6 +569,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 targetInput.value = total !== null ? total : '';
             }
+        });
+    });
+
+    // Show selected files before submit
+    form.querySelectorAll('input[type="file"][id^="file-"]').forEach(input => {
+        input.addEventListener('change', function() {
+            const id = this.id.replace('file-', '');
+            const listEl = document.getElementById('selected-files-' + id);
+            if (!listEl) return;
+
+            const files = Array.from(this.files || []);
+            if (files.length === 0) {
+                listEl.classList.add('hidden');
+                listEl.innerHTML = '';
+                return;
+            }
+
+            const items = files.map((file, index) => {
+                return `<div class="truncate">${index + 1}. ${file.name}</div>`;
+            }).join('');
+
+            listEl.innerHTML = `<div class="text-primary ml-4 space-y-1">${items}</div>`;
+            listEl.classList.remove('hidden');
         });
     });
 
