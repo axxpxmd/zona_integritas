@@ -98,34 +98,18 @@ class VerifikasiController extends Controller
                     $totalNilaiSubKategori = 0;
 
                     foreach ($subKategori->indikators as $indikator) {
-                        $indPertanyaanTerjawab = 0;
-                        $indTotalNilai = 0;
-
-                        foreach ($indikator->pertanyaans as $pertanyaan) {
-                            $totalPertanyaan++;
-                            $totalSemuaPertanyaan++;
-
-                            $jawaban = $jawabansParent[$pertanyaan->id] ?? null;
-
-                            if ($jawaban) {
-                                $pertanyaanTerjawab++;
-                                $totalPertanyaanTerjawab++;
-
-                                if ($jawaban->status_verifikasi !== 'belum_diverifikasi') {
-                                    $pertanyaanTerverifikasi++;
-                                    $totalPertanyaanTerverifikasi++;
-                                }
-
-                                if ($jawaban->nilai !== null) {
-                                    $indPertanyaanTerjawab++;
-                                    $indTotalNilai += $jawaban->nilai;
-                                }
-                            }
-                        }
-
-                        $indRataRata = $indPertanyaanTerjawab > 0 ? $indTotalNilai / $indPertanyaanTerjawab : 0;
-                        $indNilaiAkhir = $indRataRata * $indikator->bobot;
-                        $totalNilaiSubKategori += $indNilaiAkhir;
+                        $nilaiIndikatorData = $this->hitungNilaiIndikatorVerifikasi($indikator, $jawabanMap);
+                        
+                        $totalPertanyaan += $nilaiIndikatorData['total_pertanyaan'];
+                        $totalSemuaPertanyaan += $nilaiIndikatorData['total_pertanyaan'];
+                        
+                        $pertanyaanTerjawab += $nilaiIndikatorData['pertanyaan_terjawab'];
+                        $totalPertanyaanTerjawab += $nilaiIndikatorData['pertanyaan_terjawab'];
+                        
+                        $pertanyaanTerverifikasi += $nilaiIndikatorData['pertanyaan_terverifikasi'];
+                        $totalPertanyaanTerverifikasi += $nilaiIndikatorData['pertanyaan_terverifikasi'];
+                        
+                        $totalNilaiSubKategori += $nilaiIndikatorData['nilai_indikator'];
                     }
 
                     $persenCapaian = $subKategori->bobot > 0 ? ($totalNilaiSubKategori / $subKategori->bobot) * 100 : 0;
