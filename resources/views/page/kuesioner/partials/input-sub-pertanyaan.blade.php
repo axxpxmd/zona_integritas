@@ -1,4 +1,8 @@
 {{-- Input Sub Pertanyaan (untuk pertanyaan dengan formula) --}}
+@php
+    $inputNamePrefix = $inputNamePrefix ?? ('jawaban_sub[' . $pertanyaan->id . ']');
+    $inputValues = $inputValues ?? [];
+@endphp
 <div class="space-y-3">
     @foreach($pertanyaan->subPertanyaans as $index => $subPertanyaan)
     @php
@@ -7,18 +11,22 @@
         // Element lain dianggap part dari sum jika ada element yang memiliki formula di pertanyaan ini
         $hasAnyFormula = $pertanyaan->subPertanyaans->where('formula', '!=', null)->count() > 0;
         $isPartSum = !$isAutoSum && $hasAnyFormula && !$loop->last;
+        $defaultKey = $pertanyaan->id . '-' . $subPertanyaan->id;
+        $value = array_key_exists($subPertanyaan->id, $inputValues)
+            ? $inputValues[$subPertanyaan->id]
+            : ($jawabans[$defaultKey]->jawaban_angka ?? '');
     @endphp
     <div class="flex items-center gap-4 ml-9">
         <label class="text-sm text-gray-700 w-48 flex-shrink-0">
             {{ $subPertanyaan->pertanyaan }}
         </label>
         <input type="number"
-               name="jawaban_sub[{{ $pertanyaan->id }}][{{ $subPertanyaan->id }}]"
+               name="{{ $inputNamePrefix }}[{{ $subPertanyaan->id }}]"
                step="{{ $subPertanyaan->tipe_input === 'desimal' ? '0.01' : '1' }}"
              @if(!empty($isReadonly)) disabled @endif
                class="jawaban-angka-sub flex-1 max-w-xs px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none {{ $isAutoSum ? 'bg-gray-100 cursor-not-allowed sum-target-' . $pertanyaan->id : '' }} {{ $isPartSum ? 'sum-part-' . $pertanyaan->id : '' }}"
                placeholder="{{ $isAutoSum ? 'Otomatis' : 'Masukkan ' . $subPertanyaan->tipe_input . '...' }}"
-               value="{{ $jawabans[$pertanyaan->id . '-' . $subPertanyaan->id]->jawaban_angka ?? '' }}"
+               value="{{ $value }}"
                data-periode-id="{{ $periode->id }}"
                data-pertanyaan-id="{{ $pertanyaan->id }}"
                data-sub-pertanyaan-id="{{ $subPertanyaan->id }}"

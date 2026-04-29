@@ -85,12 +85,14 @@ class VerifikasiController extends Controller
         $progress = [];
         $totalSemuaPertanyaan = 0;
         $totalPertanyaanTerjawab = 0;
+        $totalPertanyaanTerverifikasi = 0;
 
         foreach ($komponens as $komponen) {
             foreach ($komponen->kategoris as $kategori) {
                 foreach ($kategori->subKategoris as $subKategori) {
                     $totalPertanyaan = 0;
                     $pertanyaanTerjawab = 0;
+                    $pertanyaanTerverifikasi = 0;
                     $totalNilaiSubKategori = 0;
 
                     foreach ($subKategori->indikators as $indikator) {
@@ -106,6 +108,11 @@ class VerifikasiController extends Controller
                             if ($jawaban) {
                                 $pertanyaanTerjawab++;
                                 $totalPertanyaanTerjawab++;
+
+                                if ($jawaban->status_verifikasi !== 'belum_diverifikasi') {
+                                    $pertanyaanTerverifikasi++;
+                                    $totalPertanyaanTerverifikasi++;
+                                }
 
                                 if ($jawaban->nilai !== null) {
                                     $indPertanyaanTerjawab++;
@@ -123,14 +130,18 @@ class VerifikasiController extends Controller
 
                     $progress[$subKategori->id] = [
                         'total' => $totalPertanyaan,
-                        'terjawab' => $pertanyaanTerjawab,
-                        'persen' => $totalPertanyaan > 0 ? round(($pertanyaanTerjawab / $totalPertanyaan) * 100) : 0,
+                        'terverifikasi' => $pertanyaanTerverifikasi,
+                        'persen' => $totalPertanyaan > 0 ? round(($pertanyaanTerverifikasi / $totalPertanyaan) * 100) : 0,
                         'nilai' => $totalNilaiSubKategori,
                         'capaian' => $persenCapaian,
                     ];
                 }
             }
         }
+
+        $verifikasiStats['total_pertanyaan'] = $totalSemuaPertanyaan;
+        $verifikasiStats['terverifikasi'] = $totalPertanyaanTerverifikasi;
+        $verifikasiStats['belum_terverifikasi'] = max(0, $totalSemuaPertanyaan - $totalPertanyaanTerverifikasi);
 
         $isAllAnswered = ($totalSemuaPertanyaan > 0 && $totalSemuaPertanyaan === $totalPertanyaanTerjawab);
         $isSent = $jawabans->where('status', 'final')->isNotEmpty();

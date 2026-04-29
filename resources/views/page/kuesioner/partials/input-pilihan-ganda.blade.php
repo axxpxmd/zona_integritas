@@ -1,11 +1,15 @@
 {{-- Input Pilihan Ganda --}}
+@php
+        $inputName = $inputName ?? ('jawaban[' . $pertanyaan->id . ']');
+        $selectedValue = $selectedValue ?? ($jawaban->jawaban_text ?? null);
+@endphp
 <div class="space-y-0">
     @foreach($pertanyaan->penjelasan_list as $opsi)
     <label class="flex items-start ml-6 gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
         <input type="radio"
-               name="jawaban[{{ $pertanyaan->id }}]"
+                             name="{{ $inputName }}"
                value="{{ $opsi['opsi'] }}"
-               {{ ($jawaban && $jawaban->jawaban_text === $opsi['opsi']) ? 'checked' : '' }}
+                             {{ ($selectedValue === $opsi['opsi']) ? 'checked' : '' }}
              @if(!empty($isReadonly)) disabled @endif
                class="jawaban-radio mt-0.5 w-4 h-4 text-primary border-gray-300 focus:ring-2 focus:ring-primary/40"
                data-periode-id="{{ $periode->id }}"

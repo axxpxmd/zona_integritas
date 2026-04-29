@@ -50,19 +50,24 @@
         </div>
     @endif
 
-    {{-- Info --}}
-    @if($isSent)
-    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-        <div class="flex gap-3">
-            <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <div class="text-sm text-green-800">
-                <p class="font-medium">Kuesioner Sudah Final</p>
-                <p class="mt-1">Jawaban OPD untuk periode ini sudah final dan siap diverifikasi.</p>
-            </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="bg-white rounded-xl p-4">
+            <p class="text-xs text-gray-500 uppercase font-semibold tracking-wider">Total Pertanyaan</p>
+            <p class="text-2xl font-bold text-gray-900 mt-1">{{ $verifikasiStats['total_pertanyaan'] ?? 0 }}</p>
+        </div>
+        <div class="bg-white rounded-xl p-4">
+            <p class="text-xs text-gray-500 uppercase font-semibold tracking-wider">Terverifikasi</p>
+            <p class="text-2xl font-bold text-green-600 mt-1">{{ $verifikasiStats['terverifikasi'] ?? 0 }}</p>
+        </div>
+        <div class="bg-white rounded-xl p-4">
+            <p class="text-xs text-gray-500 uppercase font-semibold tracking-wider">Belum Diverifikasi</p>
+            <p class="text-2xl font-bold text-gray-700 mt-1">{{ $verifikasiStats['belum_terverifikasi'] ?? 0 }}</p>
         </div>
     </div>
+
+    {{-- Info --}}
+    @if($isSent)
+    {{--  --}}
     @elseif(!$isCanVerify)
     <div class="bg-red-50 border border-red-200 rounded-lg p-4">
         <div class="flex gap-3">
@@ -84,20 +89,6 @@
             <div class="text-sm text-blue-800">
                 <p class="font-medium">Pilih Sub Kategori untuk Verifikasi</p>
                 <p class="mt-1">Pilih salah satu sub kategori di bawah untuk mulai melakukan verifikasi.</p>
-            </div>
-        </div>
-    </div>
-    @endif
-
-    @if($isAllAnswered)
-    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-        <div class="flex gap-3">
-            <svg class="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <div class="text-sm text-yellow-800">
-                <p class="font-medium">Kuesioner Sudah Lengkap</p>
-                <p class="mt-1">Semua pertanyaan telah dijawab oleh OPD. Lanjutkan verifikasi pada setiap sub kategori.</p>
             </div>
         </div>
     </div>
@@ -197,7 +188,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ml-13">
                     @foreach($kategori->subKategoris as $subKategori)
                     @php
-                        $prog = $progress[$subKategori->id] ?? ['total' => 0, 'terjawab' => 0, 'persen' => 0, 'nilai' => 0, 'capaian' => 0];
+                        $prog = $progress[$subKategori->id] ?? ['total' => 0, 'terverifikasi' => 0, 'persen' => 0, 'nilai' => 0, 'capaian' => 0];
                     @endphp
                     <a href="{{ route('verifikasi.detail', [$periode->id, $opd->id, $subKategori->id]) }}"
                        class="flex flex-col h-full bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-primary hover:shadow-lg transition-all group">
@@ -234,8 +225,8 @@
                         {{-- Progress Bar --}}
                         <div class="mt-auto mb-2">
                             <div class="flex items-center justify-between text-xs text-gray-600 mb-1">
-                                <span>Progress</span>
-                                <span class="font-semibold">{{ $prog['terjawab'] }}/{{ $prog['total'] }}</span>
+                                <span>Progress Verifikasi</span>
+                                <span class="font-semibold">{{ $prog['terverifikasi'] }}/{{ $prog['total'] }}</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                                 <div class="h-full transition-all duration-300 rounded-full {{ $prog['persen'] == 100 ? 'bg-green-500' : 'bg-primary' }}"

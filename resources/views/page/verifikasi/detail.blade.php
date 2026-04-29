@@ -135,12 +135,36 @@
                             }
 
                             $jawabansForForm = [];
+                            $verifikatorSubValues = [];
+                            $showOperatorAnswer = false;
                             if ($pertanyaan->has_sub_pertanyaan) {
                                 foreach ($pertanyaan->subPertanyaans as $sp) {
                                     $spKey = "{$pertanyaan->id}_{$sp->id}";
                                     if (isset($jawabanMap[$spKey])) {
                                         $jawabansForForm[$pertanyaan->id . '-' . $sp->id] = $jawabanMap[$spKey];
+                                        $jawabanSub = $jawabanMap[$spKey];
+                                        $verifikatorSubValues[$sp->id] = $jawabanSub->verifikator_jawaban_angka ?? $jawabanSub->jawaban_angka;
+                                        if ($jawabanSub->verifikator_jawaban_angka !== null && $jawabanSub->verifikator_jawaban_angka != $jawabanSub->jawaban_angka) {
+                                            $showOperatorAnswer = true;
+                                        }
                                     }
+                                }
+                            }
+
+                            $verifikatorTextValue = $jawabanParent
+                                ? ($jawabanParent->verifikator_jawaban_text ?? $jawabanParent->jawaban_text)
+                                : null;
+                            $verifikatorAngkaValue = $jawabanParent
+                                ? ($jawabanParent->verifikator_jawaban_angka ?? $jawabanParent->jawaban_angka)
+                                : null;
+
+                            if (!$pertanyaan->has_sub_pertanyaan && $jawabanParent) {
+                                if ($pertanyaan->tipe_jawaban === 'angka') {
+                                    $showOperatorAnswer = $jawabanParent->verifikator_jawaban_angka !== null
+                                        && $jawabanParent->verifikator_jawaban_angka != $jawabanParent->jawaban_angka;
+                                } else {
+                                    $showOperatorAnswer = $jawabanParent->verifikator_jawaban_text !== null
+                                        && $jawabanParent->verifikator_jawaban_text !== $jawabanParent->jawaban_text;
                                 }
                             }
                         @endphp
@@ -151,21 +175,23 @@
                                 </span>
                                 <p class="text-sm text-gray-900 flex-1">{{ $pertanyaan->pertanyaan }}</p>
                             </div>
-                            {{-- Jawaban Operator (tampilan sama seperti form) --}}
+                            {{-- Jawaban Verifikator (ubah langsung di pilihan jawaban) --}}
                             <div class="space-y-3">
                                 @if($pertanyaan->tipe_jawaban === 'ya_tidak')
                                     @include('page.kuesioner.partials.input-ya-tidak', [
                                         'pertanyaan' => $pertanyaan,
                                         'jawaban' => $jawabanParent,
                                         'periode' => $periode,
-                                        'isReadonly' => true,
+                                        'inputName' => 'verifikasi[' . $pertanyaan->id . '][verifikator_jawaban_text][0]',
+                                        'selectedValue' => $verifikatorTextValue,
                                     ])
                                 @elseif($pertanyaan->tipe_jawaban === 'pilihan_ganda')
                                     @include('page.kuesioner.partials.input-pilihan-ganda', [
                                         'pertanyaan' => $pertanyaan,
                                         'jawaban' => $jawabanParent,
                                         'periode' => $periode,
-                                        'isReadonly' => true,
+                                        'inputName' => 'verifikasi[' . $pertanyaan->id . '][verifikator_jawaban_text][0]',
+                                        'selectedValue' => $verifikatorTextValue,
                                     ])
                                 @elseif($pertanyaan->tipe_jawaban === 'angka')
                                     @if($pertanyaan->has_sub_pertanyaan)
@@ -173,14 +199,16 @@
                                             'pertanyaan' => $pertanyaan,
                                             'jawabans' => $jawabansForForm,
                                             'periode' => $periode,
-                                            'isReadonly' => true,
+                                            'inputNamePrefix' => 'verifikasi[' . $pertanyaan->id . '][verifikator_jawaban_angka]',
+                                            'inputValues' => $verifikatorSubValues,
                                         ])
                                     @else
                                         @include('page.kuesioner.partials.input-angka', [
                                             'pertanyaan' => $pertanyaan,
                                             'jawaban' => $jawabanParent,
                                             'periode' => $periode,
-                                            'isReadonly' => true,
+                                            'inputName' => 'verifikasi[' . $pertanyaan->id . '][verifikator_jawaban_angka][0]',
+                                            'inputValue' => $verifikatorAngkaValue,
                                         ])
                                     @endif
                                 @endif
@@ -265,35 +293,42 @@
                                     </div>
                                 </div>
 
-                                @if($pertanyaan->subPertanyaans->count() === 0)
-                                    <div class="mt-3 flex items-start gap-3">
-                                        <label class="text-xs text-gray-700 w-32 mt-2">Koreksi Nilai:<br><span class="text-gray-400 font-normal">(opsional)</span></label>
-                                        @if($pertanyaan->tipe_jawaban == 'angka')
-                                            <input type="number" step="0.01" name="verifikasi[{{ $pertanyaan->id }}][verifikator_jawaban_angka][0]"
-                                                   value="{{ optional($jawabanParent)->verifikator_jawaban_angka }}" class="w-full md:w-64 border border-gray-300 rounded-lg px-3 py-2 focus:ring-primary focus:border-primary text-sm" placeholder="Koreksi angka...">
-                                        @else
-                                            <input type="text" name="verifikasi[{{ $pertanyaan->id }}][verifikator_jawaban_text][0]"
-                                                   value="{{ optional($jawabanParent)->verifikator_jawaban_text }}" class="w-full md:w-64 border border-gray-300 rounded-lg px-3 py-2 focus:ring-primary focus:border-primary text-sm" placeholder="Koreksi teks...">
-                                        @endif
-                                    </div>
-                                @else
-                                    <div class="mt-3 space-y-3">
-                                        @foreach($pertanyaan->subPertanyaans as $sp)
-                                            @php
-                                                $key = "{$pertanyaan->id}_{$sp->id}";
-                                                $jawabanSub = $jawabanMap[$key] ?? null;
-                                            @endphp
-                                            <div class="flex items-center gap-3 ml-9">
-                                                <label class="text-xs text-gray-700 w-48 flex-shrink-0">{{ $sp->pertanyaan }}</label>
-                                                @if($sp->tipe_input == 'angka' || $sp->tipe_input == 'jumlah' || $sp->tipe_input == 'persen')
-                                                    <input type="number" step="0.01" name="verifikasi[{{ $pertanyaan->id }}][verifikator_jawaban_angka][{{ $sp->id }}]"
-                                                        value="{{ $jawabanSub->verifikator_jawaban_angka ?? '' }}" class="w-full md:w-48 border border-gray-300 rounded px-2 py-1 text-sm focus:ring-primary focus:border-primary">
+                                @if($showOperatorAnswer)
+                                    <div class="mt-4 pt-4 border-t border-gray-200">
+                                        <p class="text-xs font-semibold text-gray-900 uppercase mb-2">Jawaban Operator (Pembanding)</p>
+                                        <div class="space-y-3">
+                                            @if($pertanyaan->tipe_jawaban === 'ya_tidak')
+                                                @include('page.kuesioner.partials.input-ya-tidak', [
+                                                    'pertanyaan' => $pertanyaan,
+                                                    'jawaban' => $jawabanParent,
+                                                    'periode' => $periode,
+                                                    'isReadonly' => true,
+                                                ])
+                                            @elseif($pertanyaan->tipe_jawaban === 'pilihan_ganda')
+                                                @include('page.kuesioner.partials.input-pilihan-ganda', [
+                                                    'pertanyaan' => $pertanyaan,
+                                                    'jawaban' => $jawabanParent,
+                                                    'periode' => $periode,
+                                                    'isReadonly' => true,
+                                                ])
+                                            @elseif($pertanyaan->tipe_jawaban === 'angka')
+                                                @if($pertanyaan->has_sub_pertanyaan)
+                                                    @include('page.kuesioner.partials.input-sub-pertanyaan', [
+                                                        'pertanyaan' => $pertanyaan,
+                                                        'jawabans' => $jawabansForForm,
+                                                        'periode' => $periode,
+                                                        'isReadonly' => true,
+                                                    ])
                                                 @else
-                                                    <input type="text" name="verifikasi[{{ $pertanyaan->id }}][verifikator_jawaban_text][{{ $sp->id }}]"
-                                                        value="{{ $jawabanSub->verifikator_jawaban_text ?? '' }}" class="w-full md:w-48 border border-gray-300 rounded px-2 py-1 text-sm focus:ring-primary focus:border-primary">
+                                                    @include('page.kuesioner.partials.input-angka', [
+                                                        'pertanyaan' => $pertanyaan,
+                                                        'jawaban' => $jawabanParent,
+                                                        'periode' => $periode,
+                                                        'isReadonly' => true,
+                                                    ])
                                                 @endif
-                                            </div>
-                                        @endforeach
+                                            @endif
+                                        </div>
                                     </div>
                                 @endif
                             </div>
