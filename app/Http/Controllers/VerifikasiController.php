@@ -393,9 +393,12 @@ class VerifikasiController extends Controller
             return null;
         }
 
+        // Default: sub ke-1 = acuan (penyebut), sub ke-2 = realisasi (pembilang)
+        // Konsisten dengan KuesionerController
         $idAcuan = $subPertanyaans->first()->id;
-        $idRealisasi = $subPertanyaans->last()->id;
+        $idRealisasi = $subPertanyaans->get(1)->id; // index 1 = sub ke-2
 
+        // Penyesuaian untuk pertanyaan spesifik
         if (str_contains($pertanyaan->pertanyaan, 'Penurunan pelanggaran disiplin pegawai')) {
             $idRealisasi = $subPertanyaans->get(1)->id;
         } elseif (str_contains($pertanyaan->pertanyaan, 'Persentase penyampaian LHKPN')) {
