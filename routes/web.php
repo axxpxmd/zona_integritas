@@ -71,5 +71,7 @@ Route::middleware('auth')->group(function () {
     // Verifikator
     Route::prefix('verifikasi')->name('verifikasi.')->group(function () {
         Route::get('/', [VerifikasiController::class, 'index'])->name('index');
+        Route::get('/{periode}/{opd}', [VerifikasiController::class, 'show'])->name('show');
+        Route::get('/{periode}/{opd}/kategori/{subKategori}', [VerifikasiController::class, 'detail'])->name('detail');
     });
 });

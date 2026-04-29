@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Jawaban;
 use App\Models\Opd;
+use App\Models\Komponen;
+use App\Models\SubKategori;
 use App\Models\Periode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,5 +50,57 @@ class VerifikasiController extends Controller
         }
 
         return view('page.verifikasi.index', compact('periodes', 'activePeriode', 'submittedOpds'));
+    }
+
+    public function show(Periode $periode, Opd $opd)
+    {
+        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $komponens = Komponen::with(['kategoris.subKategoris.indikators.pertanyaans.subPertanyaans'])
+            ->orderBy('urutan')
+            ->get();
+
+        // Get all answers by this OPD to calculate progress
+        $jawabans = Jawaban::where('periode_id', $periode->id)
+            ->where('opd_id', $opd->id)
+            ->get();
+
+        $jawabanMap = [];
+        $verifikasiStats = [
+            'total_jawaban' => $jawabans->count(),
+            'belum_diverifikasi' => $jawabans->where('status_verifikasi', 'belum_diverifikasi')->count(),
+            'disetujui' => $jawabans->where('status_verifikasi', 'disetujui')->count(),
+            'direvisi' => $jawabans->where('status_verifikasi', 'direvisi')->count(),
+        ];
+
+        foreach ($jawabans as $j) {
+            $key = $j->sub_pertanyaan_id ? "{$j->pertanyaan_id}_{$j->sub_pertanyaan_id}" : $j->pertanyaan_id;
+            $jawabanMap[$key] = $j;
+        }
+
+        return view('page.verifikasi.show', compact('periode', 'opd', 'komponens', 'jawabanMap', 'verifikasiStats'));
+    }
+
+    public function detail(Periode $periode, Opd $opd, SubKategori $subKategori)
+    {
+        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $subKategori->load(['indikators.pertanyaans.subPertanyaans', 'kategori.komponen']);
+
+        $jawabans = Jawaban::where('periode_id', $periode->id)
+            ->where('opd_id', $opd->id)
+            ->get();
+
+        $jawabanMap = [];
+        foreach ($jawabans as $j) {
+            $key = $j->sub_pertanyaan_id ? "{$j->pertanyaan_id}_{$j->sub_pertanyaan_id}" : $j->pertanyaan_id;
+            $jawabanMap[$key] = $j;
+        }
+
+        return view('page.verifikasi.detail', compact('periode', 'opd', 'subKategori', 'jawabanMap'));
     }
 }
