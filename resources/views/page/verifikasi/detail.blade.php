@@ -16,6 +16,33 @@
     </div>
     @endif
 
+    {{-- Alert Error --}}
+    @if(session('error'))
+    <div class="bg-red-100 border border-red-200 text-red-800 rounded-lg px-4 py-3 mb-4 flex items-center gap-2">
+        <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <span class="font-semibold">{{ session('error') }}</span>
+    </div>
+    @endif
+
+    {{-- Alert Waktu Verifikasi --}}
+    @if(!$isCanVerify)
+    <div class="bg-amber-50 border border-amber-300 text-amber-800 rounded-lg px-4 py-3 mb-4 flex items-center gap-3">
+        <svg class="w-5 h-5 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <div class="text-sm">
+            <p class="font-bold">Mode Lihat Saja — Waktu verifikasi tidak aktif!</p>
+            <p>Anda hanya dapat melihat data.
+            @if($startVerif && $endVerif)
+                Waktu verifikasi: <span class="font-semibold">{{ $startVerif->format('d M Y') }} s/d {{ $endVerif->format('d M Y') }}</span>.
+            @endif
+            </p>
+        </div>
+    </div>
+    @endif
+
     {{-- Header --}}
     <div class="flex items-center justify-between">
         <div class="flex items-center gap-4">
@@ -28,8 +55,22 @@
             <div>
                 <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
                     {{ $subKategori->nama }}
+                    @if($startVerif && $endVerif)
+                        @if(\Carbon\Carbon::now()->lt($startVerif))
+                            <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">Belum Dimulai</span>
+                        @elseif(\Carbon\Carbon::now()->gt($endVerif))
+                            <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">Waktu Habis</span>
+                        @else
+                            <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">Aktif</span>
+                        @endif
+                    @endif
                 </h2>
-                <p class="text-sm text-gray-500 mt-0.5">{{ $periode->nama_periode }} • {{ $opd->n_opd }}</p>
+                <p class="text-sm text-gray-500 mt-0.5">
+                    {{ $periode->nama_periode }} • {{ $opd->n_opd }}
+                    @if($startVerif && $endVerif)
+                        • <span class="font-medium text-gray-700">Waktu Verifikasi: {{ $startVerif->format('d M Y') }} s/d {{ $endVerif->format('d M Y') }}</span>
+                    @endif
+                </p>
             </div>
         </div>
     </div>
@@ -98,6 +139,7 @@
         <form action="{{ route('verifikasi.store', [$periode->id, $opd->id, $subKategori->id]) }}" method="POST" id="verifikasiForm">
             @csrf
             <input type="hidden" name="current_page" value="{{ $currentPage }}">
+            <fieldset @if(!$isCanVerify) disabled @endif>
             <div class="p-6">
                 <div class="mb-6">
                     {{-- Indikator Header --}}
@@ -435,15 +477,27 @@
                 </div>
 
                 {{-- Submit Button --}}
+                @if($isCanVerify)
                 <div class="mt-6 pt-6 border-t border-gray-200">
-                    <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#0E7C7B] text-white rounded-lg hover:bg-[#0E7C7B]-dark transition-colors font-medium">
+                    <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#0E7C7B] text-white rounded-lg hover:bg-[#0B6160] transition-colors font-medium">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         Simpan Verifikasi Halaman Ini
                     </button>
                 </div>
+                @else
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <div class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-gray-400 rounded-lg font-medium border border-gray-200 cursor-not-allowed">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                        Verifikasi Dikunci — Di Luar Masa Verifikasi
+                    </div>
+                </div>
+                @endif
             </div>
+            </fieldset>
         </form>
 
         {{-- Pagination Navigation --}}

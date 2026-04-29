@@ -166,13 +166,37 @@ class VerifikasiController extends Controller
 
         $nilaiIndikator = $this->hitungNilaiIndikatorVerifikasi($currentIndikator, $jawabanMap);
 
-        return view('page.verifikasi.detail', compact('periode', 'opd', 'subKategori', 'currentIndikator', 'currentPage', 'totalIndikator', 'jawabanMap', 'nilaiIndikator'));
+        // Cek apakah masih dalam masa verifikasi
+        $now = \Carbon\Carbon::now()->startOfDay();
+        $startVerif = $periode->tanggal_mulai_verifikasi
+            ? \Carbon\Carbon::parse($periode->tanggal_mulai_verifikasi)->startOfDay()
+            : null;
+        $endVerif = $periode->tanggal_selesai_verifikasi
+            ? \Carbon\Carbon::parse($periode->tanggal_selesai_verifikasi)->endOfDay()
+            : null;
+        $isCanVerify = $startVerif && $endVerif && $now->between($startVerif, $endVerif);
+
+        return view('page.verifikasi.detail', compact('periode', 'opd', 'subKategori', 'currentIndikator', 'currentPage', 'totalIndikator', 'jawabanMap', 'nilaiIndikator', 'isCanVerify', 'startVerif', 'endVerif'));
     }
 
     public function store(Request $request, Periode $periode, Opd $opd, SubKategori $subKategori)
     {
         if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
             abort(403, 'Akses ditolak.');
+        }
+
+        // Blokir penyimpanan jika di luar masa verifikasi
+        $now = \Carbon\Carbon::now()->startOfDay();
+        $startVerif = $periode->tanggal_mulai_verifikasi
+            ? \Carbon\Carbon::parse($periode->tanggal_mulai_verifikasi)->startOfDay()
+            : null;
+        $endVerif = $periode->tanggal_selesai_verifikasi
+            ? \Carbon\Carbon::parse($periode->tanggal_selesai_verifikasi)->endOfDay()
+            : null;
+        $isCanVerify = $startVerif && $endVerif && $now->between($startVerif, $endVerif);
+
+        if (!$isCanVerify) {
+            return redirect()->back()->with('error', 'Verifikasi tidak dapat dilakukan karena di luar masa waktu verifikasi.');
         }
 
         $verifikasiData = $request->input('verifikasi');

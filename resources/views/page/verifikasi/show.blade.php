@@ -6,8 +6,8 @@
 @section('content')
     @php
         $now = \Carbon\Carbon::now()->startOfDay();
-        $start = \Carbon\Carbon::parse($periode->tanggal_mulai)->startOfDay();
-        $end = \Carbon\Carbon::parse($periode->tanggal_selesai)->endOfDay();
+        $start = \Carbon\Carbon::parse($periode->tanggal_mulai_verifikasi)->startOfDay();
+        $end = \Carbon\Carbon::parse($periode->tanggal_selesai_verifikasi)->endOfDay();
         $isCanVerify = $now->between($start, $end);
     @endphp
     <div class="space-y-6">
