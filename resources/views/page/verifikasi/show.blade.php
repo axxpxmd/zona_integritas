@@ -120,7 +120,7 @@
             @endphp
             <div class="bg-white rounded-xl overflow-hidden">
                 {{-- Komponen Header --}}
-                <div class="bg-primary px-6 py-4">
+                <div class="bg-[#0E7C7B] px-6 py-4">
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 class="text-lg font-bold text-white">{{ $komponen->kode }}. {{ $komponen->nama }}</h3>
@@ -208,17 +208,17 @@
                                         $prog = $progress[$subKategori->id] ?? ['total' => 0, 'terverifikasi' => 0, 'persen' => 0, 'nilai' => 0, 'capaian' => 0];
                                     @endphp
                                     <a href="{{ route('verifikasi.detail', [$periode->id, $opd->id, $subKategori->id]) }}"
-                                        class="flex flex-col h-full bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-primary hover:shadow-lg transition-all group">
+                                        class="flex flex-col h-full bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-[#0E7C7B] hover:shadow-lg transition-all group">
                                         {{-- Sub Kategori Header --}}
                                         <div class="flex items-start gap-3 mb-3">
                                             <div
-                                                class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-colors">
+                                                class="w-8 h-8 bg-[#0E7C7B]/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-[#0E7C7B] group-hover:text-white transition-colors">
                                                 <span
-                                                    class="text-xs font-bold text-primary group-hover:text-white">{{ $subKategori->kode }}</span>
+                                                    class="text-xs font-bold text-[#0E7C7B] group-hover:text-white">{{ $subKategori->kode }}</span>
                                             </div>
                                             <div class="flex-1 min-w-0">
                                                 <h5
-                                                    class="text-sm font-semibold text-gray-900 group-hover:text-primary transition-colors line-clamp-2">
+                                                    class="text-sm font-semibold text-gray-900 group-hover:text-[#0E7C7B] transition-colors line-clamp-2">
                                                     {{ $subKategori->nama }}
                                                 </h5>
                                                 <span
@@ -258,7 +258,7 @@
                                                 <span class="font-semibold">{{ $prog['terverifikasi'] }}/{{ $prog['total'] }}</span>
                                             </div>
                                             <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                                                <div class="h-full transition-all duration-300 rounded-full {{ $prog['persen'] == 100 ? 'bg-green-500' : 'bg-primary' }}"
+                                                <div class="h-full transition-all duration-300 rounded-full {{ $prog['persen'] == 100 ? 'bg-green-500' : 'bg-[#0E7C7B]' }}"
                                                     style="width: {{ $prog['persen'] }}%"></div>
                                             </div>
                                         </div>
@@ -294,7 +294,7 @@
                                                 </span>
                                             @endif
 
-                                            <svg class="w-5 h-5 text-gray-400 group-hover:text-primary group-hover:translate-x-1 transition-all"
+                                            <svg class="w-5 h-5 text-gray-400 group-hover:text-[#0E7C7B] group-hover:translate-x-1 transition-all"
                                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M9 5l7 7-7 7" />

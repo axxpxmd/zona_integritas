@@ -49,7 +49,7 @@
             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
             </svg>
-            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-white font-medium">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0E7C7B] text-white font-medium">
                 {{ $subKategori->kode }}. {{ $subKategori->nama }}
             </span>
         </div>
@@ -58,7 +58,7 @@
     {{-- Sub Kategori Content --}}
     <div class="bg-white rounded-xl overflow-hidden">
         {{-- Sub Kategori Header --}}
-        <div class="bg-gradient-to-r from-primary to-primary-dark px-6 py-5">
+        <div class="bg-[#0E7C7B] px-6 py-5">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                     <span class="text-lg font-bold text-white">{{ $subKategori->kode }}</span>
@@ -86,7 +86,7 @@
                 <div class="flex items-center gap-1.5 overflow-x-auto">
                     @for($i = 1; $i <= $totalIndikator; $i++)
                     <a href="{{ route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $i]) }}"
-                       class="w-7 h-7 flex items-center justify-center rounded-lg text-sm font-medium transition-colors flex-shrink-0 {{ $i === $currentPage ? 'bg-primary text-white shadow-sm' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50' }}">
+                       class="w-7 h-7 flex items-center justify-center rounded-lg text-sm font-medium transition-colors flex-shrink-0 {{ $i === $currentPage ? 'bg-[#0E7C7B] text-white shadow-sm' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50' }}">
                         {{ $i }}
                     </a>
                     @endfor
@@ -102,7 +102,7 @@
                 <div class="mb-6">
                     {{-- Indikator Header --}}
                     <div class="flex items-start gap-2 mb-4">
-                        <span class="inline-flex items-center justify-center w-6 h-6 bg-primary/10 text-primary rounded text-sm font-bold flex-shrink-0 mt-0.5">
+                        <span class="inline-flex items-center justify-center w-6 h-6 bg-[#0E7C7B]/10 text-[#0E7C7B] rounded text-sm font-bold flex-shrink-0 mt-0.5">
                             {{ $currentIndikator->kode }}
                         </span>
                         <div class="flex-1">
@@ -129,7 +129,7 @@
                                 <div class="h-10 w-px bg-gray-300"></div>
                                 <div class="text-center">
                                     <p class="text-xs text-gray-500 mb-1">Rata-rata Nilai</p>
-                                    <p class="text-lg font-bold text-primary">{{ number_format($nilaiIndikator['rata_rata_nilai'], 2) }}</p>
+                                    <p class="text-lg font-bold text-[#0E7C7B]">{{ number_format($nilaiIndikator['rata_rata_nilai'], 2) }}</p>
                                 </div>
                                 <div class="h-10 w-px bg-gray-300"></div>
                                 <div class="text-center">
@@ -351,8 +351,8 @@
                                                        value="disetujui"
                                                        {{ $statusVerifikasi == 'disetujui' ? 'checked' : '' }}
                                                        class="sr-only peer">
-                                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                                                <span class="ml-3 text-sm font-bold text-gray-600 peer-checked:text-primary group-hover:text-gray-900 transition-colors">
+                                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#0E7C7B]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0E7C7B]"></div>
+                                                <span class="ml-3 text-sm font-bold text-gray-600 peer-checked:text-[#0E7C7B] group-hover:text-gray-900 transition-colors">
                                                     Verifikasi
                                                 </span>
                                             </label>
@@ -386,7 +386,7 @@
                                                 @endphp
                                                 <div class="ml-6">
                                                     <div class="inline-flex items-start gap-2 text-sm text-gray-700">
-                                                        <span class="inline-flex items-center justify-center w-5 h-5 bg-primary/10 text-primary rounded text-xs font-bold">
+                                                        <span class="inline-flex items-center justify-center w-5 h-5 bg-[#0E7C7B]/10 text-[#0E7C7B] rounded text-xs font-bold">
                                                             {{ $opsiTerpilih ?? '-' }}
                                                         </span>
                                                         <span>{{ $opsiLabel ? $opsiLabel : ('Pilihan ' . ($opsiTerpilih ?? '-')) }}</span>
@@ -420,7 +420,7 @@
 
                 {{-- Submit Button --}}
                 <div class="mt-6 pt-6 border-t border-gray-200">
-                    <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium">
+                    <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#0E7C7B] text-white rounded-lg hover:bg-[#0E7C7B]-dark transition-colors font-medium">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
@@ -455,7 +455,7 @@
                 <div class="flex items-center gap-2">
                     @for($i = 1; $i <= $totalIndikator; $i++)
                     <a href="{{ route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $i]) }}"
-                       class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors {{ $i === $currentPage ? 'bg-primary text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50' }}">
+                       class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors {{ $i === $currentPage ? 'bg-[#0E7C7B] text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50' }}">
                         {{ $i }}
                     </a>
                     @endfor
@@ -464,7 +464,7 @@
                 {{-- Next Button --}}
                 @if($currentPage < $totalIndikator)
                 <a href="{{ route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage + 1]) }}"
-                   class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-[#0E7C7B] text-white rounded-lg hover:bg-[#0E7C7B]-dark transition-colors">
                     <span class="text-sm font-medium">Indikator Selanjutnya</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
