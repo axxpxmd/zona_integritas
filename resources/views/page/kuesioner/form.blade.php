@@ -9,6 +9,7 @@
     $start = \Carbon\Carbon::parse($periode->tanggal_mulai)->startOfDay();
     $end = \Carbon\Carbon::parse($periode->tanggal_selesai)->endOfDay();
     $isCanFill = $now->between($start, $end);
+    $isLocked = !$isCanFill || ($isSent ?? false);
 @endphp
 <div class="space-y-6">
     {{-- Alert Waktu Pengisian --}}
@@ -20,6 +21,19 @@
         <div class="text-sm">
             <p class="font-bold">Waktu pengisian kuesioner tidak aktif!</p>
             <p>Anda hanya dapat melihat data karena saat ini berada di luar rentang waktu pengisian.</p>
+        </div>
+    </div>
+    @endif
+
+    {{-- Alert Kuesioner Final --}}
+    @if($isSent ?? false)
+    <div class="bg-green-50 border border-green-200 text-green-800 rounded-lg px-4 py-3 mb-4 flex items-center gap-3">
+        <svg class="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <div class="text-sm">
+            <p class="font-bold">Kuesioner sudah dikirim ke Verifikator</p>
+            <p>Jawaban bersifat final dan tidak dapat diubah.</p>
         </div>
     </div>
     @endif
@@ -125,7 +139,7 @@
             <input type="hidden" name="indikator_id" value="{{ $currentIndikator->id }}">
             <input type="hidden" name="current_page" value="{{ $currentPage }}">
             <input type="hidden" name="total_indikator" value="{{ $totalIndikator }}">
-            <fieldset @if(!$isCanFill) disabled @endif>
+            <fieldset @if($isLocked) disabled @endif>
             <div class="p-6">
                 <div class="mb-6">
                     {{-- Indikator Header --}}
@@ -287,7 +301,7 @@
 
             {{-- Submit Button --}}
             <div class="mt-6 pt-6 border-t border-gray-200">
-                <button type="submit" id="btnSubmitKuesioner" class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-gray-400">
+                <button type="submit" id="btnSubmitKuesioner" class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium disabled:opacity-70 disabled:cursor-not-allowed disabled:bg-gray-400" @if($isLocked) disabled @endif>
                     <svg id="submitIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>

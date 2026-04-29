@@ -207,7 +207,12 @@ class KuesionerController extends Controller
         // Nilai Indikator = AVERAGE(nilai semua pertanyaan) × bobot
         $nilaiIndikator = $this->hitungNilaiIndikator($currentIndikator, $jawabans);
 
-        return view('page.kuesioner.form', compact('periode', 'opd', 'subKategori', 'jawabans', 'currentIndikator', 'currentPage', 'totalIndikator', 'nilaiIndikator'));
+        $isSent = Jawaban::where('periode_id', $periode_id)
+            ->where('opd_id', $opd->id)
+            ->where('status', 'final')
+            ->exists();
+
+        return view('page.kuesioner.form', compact('periode', 'opd', 'subKategori', 'jawabans', 'currentIndikator', 'currentPage', 'totalIndikator', 'nilaiIndikator', 'isSent'));
     }
 
     /**
