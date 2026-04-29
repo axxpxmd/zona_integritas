@@ -99,16 +99,16 @@ class VerifikasiController extends Controller
 
                     foreach ($subKategori->indikators as $indikator) {
                         $nilaiIndikatorData = $this->hitungNilaiIndikatorVerifikasi($indikator, $jawabanMap);
-                        
+
                         $totalPertanyaan += $nilaiIndikatorData['total_pertanyaan'];
                         $totalSemuaPertanyaan += $nilaiIndikatorData['total_pertanyaan'];
-                        
+
                         $pertanyaanTerjawab += $nilaiIndikatorData['pertanyaan_terjawab'];
                         $totalPertanyaanTerjawab += $nilaiIndikatorData['pertanyaan_terjawab'];
-                        
+
                         $pertanyaanTerverifikasi += $nilaiIndikatorData['pertanyaan_terverifikasi'];
                         $totalPertanyaanTerverifikasi += $nilaiIndikatorData['pertanyaan_terverifikasi'];
-                        
+
                         $totalNilaiSubKategori += $nilaiIndikatorData['nilai_indikator'];
                     }
 
@@ -194,11 +194,11 @@ class VerifikasiController extends Controller
                     }
 
                     if (isset($data['verifikator_jawaban_angka'][$jawaban->sub_pertanyaan_id ?: 0])) {
-                         $jawaban->verifikator_jawaban_angka = $data['verifikator_jawaban_angka'][$jawaban->sub_pertanyaan_id ?: 0];
+                        $jawaban->verifikator_jawaban_angka = $data['verifikator_jawaban_angka'][$jawaban->sub_pertanyaan_id ?: 0];
                     }
 
                     if (isset($data['verifikator_jawaban_text'][$jawaban->sub_pertanyaan_id ?: 0])) {
-                         $jawaban->verifikator_jawaban_text = $data['verifikator_jawaban_text'][$jawaban->sub_pertanyaan_id ?: 0];
+                        $jawaban->verifikator_jawaban_text = $data['verifikator_jawaban_text'][$jawaban->sub_pertanyaan_id ?: 0];
                     }
 
                     if ($jawaban->status_verifikasi != 'belum_diverifikasi') {
@@ -328,8 +328,10 @@ class VerifikasiController extends Controller
         if ($tipe === 'angka') {
             $angka = floatval($jawaban);
 
-            if (str_contains($pertanyaan->pertanyaan, 'Nilai Survey Persepsi Korupsi (Survei Eksternal)') ||
-                str_contains($pertanyaan->pertanyaan, 'Nilai Persepsi Kualitas Pelayanan (Survei Eksternal)')) {
+            if (
+                str_contains($pertanyaan->pertanyaan, 'Nilai Survey Persepsi Korupsi (Survei Eksternal)') ||
+                str_contains($pertanyaan->pertanyaan, 'Nilai Persepsi Kualitas Pelayanan (Survei Eksternal)')
+            ) {
                 return $angka / 4;
             }
 
