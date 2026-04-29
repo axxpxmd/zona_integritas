@@ -1,13 +1,16 @@
 # Zona Integritas - AI Coding Instructions
 
 ## Project Overview
-Laravel 12 untuk pengisian kuesioner Zona Integritas (WBK/WBBM) Tangerang Selatan. Portal manajemen OPD (Organisasi Perangkat Daerah) dengan multi-role user system.
+Aplikasi Zona Integritas (WBK/WBBM) digunakan untuk mengakomodir pengisian dan verifikasi Lembar Kerja Evaluasi (LKE) / Kuesioner untuk OPD (Organisasi Perangkat Daerah). Sistem ini memiliki 3 role utama:
+1. **Admin:** Mengelola master data, periode, struktur kuesioner, dan user.
+2. **Operator:** Mengisi kuesioner evaluasi pada rentang waktu yang ditentukan di `tm_periode`. Jika sudah selesai, akan dikirimkan ke Verifikator.
+3. **Verifikator:** Memverifikasi kuesioner yang dikirim Operator. Bisa menyetujui, merevisi jawaban secara langsung (tetap menyimpan jawaban asli operator sebagai histori), atau mengembalikan pertanyaan/kuesioner ke operator dengan status revisi agar diperbaiki oleh operator.
 
 ## Tech Stack & Architecture
 - **Backend:** Laravel 12, PHP 8.2+, Eloquent ORM
 - **Frontend:** Tailwind CSS via CDN (no build step for styles), Inter font
 - **Database:** MySQL - table prefix `tm_` untuk master data
-- **Auth:** Username-based login (bukan email), roles: admin/operator/verifikator
+- **Auth:** Username-based login (bukan email), roles: `admin`, `operator`, `verifikator`
 
 ## Development Commands
 ```bash
@@ -15,6 +18,11 @@ composer setup           # Full setup (install, key, migrate, npm build)
 composer dev             # Start server + queue + vite concurrently
 php artisan migrate:fresh --seed  # Reset database with seeders
 ```
+
+## Business Logic & Workflow (STRICT)
+- **Struktur Kuesioner (Hierarkis):** `tm_komponen` -> `tm_kategori` -> `tm_sub_kategori` -> `tm_indikator` -> `tm_pertanyaan` -> `tm_sub_pertanyaan` (opsional).
+- **Periode (`tm_periode`):** Memiliki rentang waktu pengerjaan. Operator dan Verifikator hanya bisa bekerja jika tanggal saat ini masuk dalam rentang waktu sesi/periode tersebut.
+- **Histori Jawaban (`jawaban`):** Tabel jawaban menyimpan input asli operator (`jawaban_text`, `jawaban_angka`). Ketika verifikator mengubah, jawaban verifikator disimpan di field terpisah (misal `verifikator_jawaban_text`) sehingga riwayat asli operator tetap aman. Terdapat *flag/status* revisi atau disetujui.
 
 ## Design System (STRICT)
 - **Colors:** Primary `#0164CA`, hover `#0150A8`, accent `#F7D558`
@@ -24,17 +32,18 @@ php artisan migrate:fresh --seed  # Reset database with seeders
 - **Status:** Integer `1` (aktif) / `0` (tidak aktif) - never strings
 
 ## Database Conventions
-| Table | Prefix | Key Columns |
-|-------|--------|-------------|
+| Table | Prefix | Key Columns / Usage |
+|-------|--------|---------------------|
 | `tm_opd` | tm_ | n_opd, alamat, status (tinyInt) |
 | `users` | - | username (unique), opd_id (FK), role (enum) |
+| Kuesioner | tm_ | `komponen`, `kategori`, `sub_kategori`, `indikator`, `pertanyaan`, `sub_pertanyaan` |
 
-Model relationships: User `belongsTo` Opd, Opd `hasMany` Users
+Model relationships: User `belongsTo` Opd, Opd `hasMany` Users. Kuesioner berelasi linear (One to Many).
 
 ## Project Structure
 ```
 app/Http/Controllers/     # Flat structure, no subfolders for main controllers
-app/Models/               # Opd.php (table: tm_opd), User.php
+app/Models/               # Opd.php (table: tm_opd), User.php, dst
 resources/views/
 ├── layouts/app.blade.php # Main layout with sidebar + Tailwind config
 ├── auth/                 # Login pages
