@@ -202,6 +202,8 @@
                             $pertanyaanNilai = $nilaiIndikator['nilai_per_pertanyaan'][$pertanyaan->id] ?? null;
                             $nilaiTampil = $pertanyaanNilai && $pertanyaanNilai['nilai'] !== null ? $pertanyaanNilai['nilai'] : null;
                             $statusVerifikasi = $jawabanParent ? $jawabanParent->status_verifikasi : 'belum_diverifikasi';
+                            $menungguDicekUlang = $jawabanParent ? (bool)$jawabanParent->menunggu_dicek_ulang : false;
+                            $revisiCount = $jawabanParent ? (int)$jawabanParent->revisi_count : 0;
                             if (!$jawabanParent) {
                                 foreach ($pertanyaan->subPertanyaans as $sp) {
                                     $spKey = "{$pertanyaan->id}_{$sp->id}";
@@ -374,7 +376,21 @@
                                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                                                         </svg>
-                                                        Perlu Diverifikasi
+                                                        @if($menungguDicekUlang)
+                                                            Telah Direvisi — Perlu Dicek Ulang
+                                                        @else
+                                                            Perlu Diverifikasi
+                                                        @endif
+                                                    </span>
+                                                @elseif($statusVerifikasi === 'direvisi')
+                                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-orange-100 text-orange-800 border border-orange-200 shadow-sm">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                                        </svg>
+                                                        Perlu Direvisi Operator
+                                                        @if($revisiCount > 0)
+                                                            <span class="ml-1 text-orange-600">({{ $revisiCount }}x)</span>
+                                                        @endif
                                                     </span>
                                                 @else
                                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-green-100 text-green-800 border border-green-200 shadow-sm">
@@ -386,7 +402,15 @@
                                                 @endif
                                             </div>
                                             <p class="text-xs text-gray-500">
-                                                {{ $statusVerifikasi === 'belum_diverifikasi' ? 'Mohon periksa jawaban dan dokumen pendukung sebelum menyetujui.' : 'Jawaban telah diperiksa dan disetujui.' }}
+                                                @if($statusVerifikasi === 'direvisi')
+                                                    Permintaan revisi sudah dikirim ke operator. Menunggu operator melakukan perbaikan.
+                                                @elseif($menungguDicekUlang)
+                                                    Operator telah merevisi jawaban ini. Mohon periksa kembali perubahan yang dilakukan.
+                                                @elseif($statusVerifikasi === 'belum_diverifikasi')
+                                                    Mohon periksa jawaban dan dokumen pendukung sebelum menyetujui.
+                                                @else
+                                                    Jawaban telah diperiksa dan disetujui.
+                                                @endif
                                             </p>
                                         </div>
 
@@ -399,6 +423,17 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                     </svg>
                                                     Batalkan Verifikasi
+                                                </button>
+                                            @endif
+
+                                            @if($statusVerifikasi === 'belum_diverifikasi' || $statusVerifikasi === 'disetujui')
+                                                <button type="button"
+                                                        onclick="toggleRevisiPanel('revisi-panel-{{ $pertanyaan->id }}')"
+                                                        class="px-3 py-2 text-xs font-bold text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg border border-orange-200 transition-colors flex items-center gap-1.5 uppercase tracking-wide">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                                    </svg>
+                                                    Kirim Revisi
                                                 </button>
                                             @endif
 
@@ -415,6 +450,36 @@
                                                         Verifikasi
                                                     </span>
                                                 </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- Panel Kirim Revisi (hidden by default) --}}
+                                    <div id="revisi-panel-{{ $pertanyaan->id }}" class="hidden mt-4 pt-4 border-t border-orange-200">
+                                        <div class="bg-orange-50 rounded-xl p-4 border border-orange-200">
+                                            <h5 class="text-xs font-bold text-orange-800 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                                </svg>
+                                                Kirim Permintaan Revisi ke Operator
+                                            </h5>
+                                            <p class="text-xs text-orange-700 mb-3">Tuliskan catatan perbaikan yang harus dilakukan operator. Operator akan mendapat notifikasi untuk merevisi jawaban ini.</p>
+                                            <textarea id="catatan-revisi-{{ $pertanyaan->id }}"
+                                                      rows="3"
+                                                      class="w-full text-sm border border-orange-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 resize-y mb-3"
+                                                      placeholder="Contoh: Mohon perbaiki nilai realisasi pada kolom b sesuai data terbaru...">{{ $statusVerifikasi === 'direvisi' ? optional($jawabanParent)->catatan_revisi : '' }}</textarea>
+                                            <div class="flex items-center gap-2">
+                                                <button type="button"
+                                                        onclick="submitRevisi('{{ route('verifikasi.kirim-revisi', [$periode->id, $opd->id, $subKategori->id, $pertanyaan->id]) }}', 'catatan-revisi-{{ $pertanyaan->id }}')"
+                                                        class="px-4 py-2 text-xs font-bold text-white bg-orange-500 hover:bg-orange-600 rounded-lg transition-colors flex items-center gap-1.5">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                                                    </svg>
+                                                    Kirim Revisi ke Operator
+                                                </button>
+                                                <button type="button" onclick="toggleRevisiPanel('revisi-panel-{{ $pertanyaan->id }}')" class="px-3 py-2 text-xs font-medium text-gray-600 hover:text-gray-800 transition-colors">
+                                                    Batal
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -577,6 +642,12 @@
         @csrf
         <input type="hidden" name="current_page" value="{{ $currentPage }}">
     </form>
+    {{-- Hidden form for sending revision --}}
+    <form id="kirimRevisiForm" method="POST" class="hidden">
+        @csrf
+        <input type="hidden" name="current_page" value="{{ $currentPage }}">
+        <input type="hidden" name="catatan_revisi" id="kirimRevisiCatatan">
+    </form>
 @endsection
 
 @push('scripts')
@@ -631,6 +702,31 @@ document.addEventListener('DOMContentLoaded', function() {
 function cancelVerification(url) {
     if (confirm('Apakah Anda yakin ingin membatalkan verifikasi untuk pertanyaan ini?')) {
         const form = document.getElementById('cancelVerificationForm');
+        form.action = url;
+        form.submit();
+    }
+}
+
+function toggleRevisiPanel(panelId) {
+    const panel = document.getElementById(panelId);
+    if (panel) {
+        panel.classList.toggle('hidden');
+        if (!panel.classList.contains('hidden')) {
+            panel.querySelector('textarea')?.focus();
+        }
+    }
+}
+
+function submitRevisi(url, textareaId) {
+    const textarea = document.getElementById(textareaId);
+    if (!textarea || textarea.value.trim() === '') {
+        alert('Catatan revisi wajib diisi sebelum mengirim permintaan revisi.');
+        textarea?.focus();
+        return;
+    }
+    if (confirm('Kirim permintaan revisi ke operator untuk pertanyaan ini?')) {
+        const form = document.getElementById('kirimRevisiForm');
+        document.getElementById('kirimRevisiCatatan').value = textarea.value;
         form.action = url;
         form.submit();
     }

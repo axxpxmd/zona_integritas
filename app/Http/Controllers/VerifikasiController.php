@@ -249,7 +249,7 @@ class VerifikasiController extends Controller
         }
 
         return redirect()->route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage])
-            ->with('success', 'Data verifikasi untuk indikator ini berhasil disimpan.');
+            ->with('success', 'Data verifikasi berhasil disimpan.');
     }
 
     public function cancelPertanyaan(Request $request, Periode $periode, Opd $opd, SubKategori $subKategori, Pertanyaan $pertanyaan)
@@ -267,6 +267,7 @@ class VerifikasiController extends Controller
             $jawaban->status_verifikasi = 'belum_diverifikasi';
             $jawaban->verified_by = null;
             $jawaban->verified_at = null;
+            $jawaban->menunggu_dicek_ulang = false;
             $jawaban->save();
         }
 
@@ -274,6 +275,42 @@ class VerifikasiController extends Controller
 
         return redirect()->route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage])
             ->with('success', 'Verifikasi pertanyaan berhasil dibatalkan.');
+    }
+
+    /**
+     * Kirim permintaan revisi ke operator untuk satu pertanyaan.
+     * Status menjadi 'direvisi', catatan verifikator disimpan, dan menunggu_dicek_ulang direset.
+     */
+    public function kirimRevisi(Request $request, Periode $periode, Opd $opd, SubKategori $subKategori, Pertanyaan $pertanyaan)
+    {
+        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $request->validate([
+            'catatan_revisi' => 'required|string|max:2000',
+        ], [
+            'catatan_revisi.required' => 'Catatan revisi wajib diisi sebelum mengirim permintaan revisi.',
+        ]);
+
+        $jawabans = Jawaban::where('periode_id', $periode->id)
+            ->where('opd_id', $opd->id)
+            ->where('pertanyaan_id', $pertanyaan->id)
+            ->get();
+
+        foreach ($jawabans as $jawaban) {
+            $jawaban->status_verifikasi = 'direvisi';
+            $jawaban->catatan_revisi = $request->input('catatan_revisi');
+            $jawaban->verified_by = Auth::id();
+            $jawaban->verified_at = now();
+            $jawaban->menunggu_dicek_ulang = false; // operator belum merespons
+            $jawaban->save();
+        }
+
+        $currentPage = $request->input('current_page', 1);
+
+        return redirect()->route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage])
+            ->with('success', 'Permintaan revisi berhasil dikirim ke operator.');
     }
 
     public function verifyAllDev(Request $request, Periode $periode, Opd $opd)

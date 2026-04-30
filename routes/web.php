@@ -77,5 +77,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/{periode}/{opd}/kategori/{subKategori}', [VerifikasiController::class, 'detail'])->name('detail');
         Route::post('/{periode}/{opd}/kategori/{subKategori}', [VerifikasiController::class, 'store'])->name('store');
         Route::post('/{periode}/{opd}/kategori/{subKategori}/cancel-pertanyaan/{pertanyaan}', [VerifikasiController::class, 'cancelPertanyaan'])->name('cancel-pertanyaan');
+        Route::post('/{periode}/{opd}/kategori/{subKategori}/kirim-revisi/{pertanyaan}', [VerifikasiController::class, 'kirimRevisi'])->name('kirim-revisi');
     });
 });

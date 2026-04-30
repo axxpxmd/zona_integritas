@@ -20,6 +20,8 @@ return new class () extends Migration {
             $table->timestamp('revised_at')->nullable()->after('revisi_count')->comment('Kapan terakhir operator mengirim revisi');
             $table->foreignId('revised_by')->nullable()->after('revised_at')->constrained('users')->onDelete('set null')->comment('User (operator) yang terakhir merevisi jawaban');
             $table->boolean('menunggu_dicek_ulang')->default(false)->after('revised_by')->comment('True jika operator sudah merevisi dan menunggu verifikator mengecek ulang');
+            $table->text('catatan_revisi')->nullable()->comment('catatan revisi dari verifikator');
+
         });
     }
 
