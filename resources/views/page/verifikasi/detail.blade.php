@@ -420,7 +420,7 @@
                                 </div>
 
                                 @if($showOperatorAnswer)
-                                    <div class="mt-4 pt-4 border-t border-gray-200">
+                                    <div class="mt-4 pt-4 border-t bg-[#FEF2F2] rounded-xl p-4 border-gray-200">
                                         <p class="text-xs font-semibold text-gray-900 uppercase mb-2">Jawaban Operator</p>
                                         <div class="space-y-3">
                                             @if($pertanyaan->tipe_jawaban === 'ya_tidak')
