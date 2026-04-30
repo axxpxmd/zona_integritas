@@ -225,21 +225,20 @@ class VerifikasiController extends Controller
                         $jawaban->catatan_verifikator = $data['catatan_verifikator'];
                     }
 
+                    if (isset($data['verifikator_jawaban_angka']) && array_key_exists($jawaban->sub_pertanyaan_id ?: 0, $data['verifikator_jawaban_angka'])) {
+                        $val = $data['verifikator_jawaban_angka'][$jawaban->sub_pertanyaan_id ?: 0];
+                        $jawaban->verifikator_jawaban_angka = ($val !== null && $val !== '') ? $val : null;
+                    }
+
+                    if (isset($data['verifikator_jawaban_text']) && array_key_exists($jawaban->sub_pertanyaan_id ?: 0, $data['verifikator_jawaban_text'])) {
+                        $val = $data['verifikator_jawaban_text'][$jawaban->sub_pertanyaan_id ?: 0];
+                        $jawaban->verifikator_jawaban_text = ($val !== null && $val !== '') ? $val : null;
+                    }
+
                     if ($jawaban->status_verifikasi != 'belum_diverifikasi') {
-                        if (array_key_exists($jawaban->sub_pertanyaan_id ?: 0, $data['verifikator_jawaban_angka'] ?? [])) {
-                            $val = $data['verifikator_jawaban_angka'][$jawaban->sub_pertanyaan_id ?: 0];
-                            $jawaban->verifikator_jawaban_angka = ($val !== null && $val !== '') ? $val : null;
-                        }
-
-                        if (array_key_exists($jawaban->sub_pertanyaan_id ?: 0, $data['verifikator_jawaban_text'] ?? [])) {
-                            $val = $data['verifikator_jawaban_text'][$jawaban->sub_pertanyaan_id ?: 0];
-                            $jawaban->verifikator_jawaban_text = ($val !== null && $val !== '') ? $val : null;
-                        }
-
                         $jawaban->verified_by = Auth::id();
                         $jawaban->verified_at = now();
                     } else {
-                        // Jangan simpan value form jika statusnya belum diverifikasi.
                         $jawaban->verified_by = null;
                         $jawaban->verified_at = null;
                     }
