@@ -33,10 +33,18 @@ class VerifikasiController extends Controller
 
         if ($activePeriode) {
             // Get distinct OPDs that have submitted their answers (status = 'final') for the selected period
-            $opdIds = Jawaban::where('periode_id', $activePeriode->id)
+            $query = Jawaban::where('periode_id', $activePeriode->id)
                 ->where('status', 'final')
-                ->distinct()
-                ->pluck('opd_id');
+                ->distinct();
+
+            if (Auth::user()->role === 'verifikator') {
+                $assignedOpdIds = \Illuminate\Support\Facades\DB::table('opd_verifikator')
+                    ->where('user_id', Auth::id())
+                    ->pluck('opd_id');
+                $query->whereIn('opd_id', $assignedOpdIds);
+            }
+
+            $opdIds = $query->pluck('opd_id');
 
             $submittedOpds = Opd::whereIn('id', $opdIds)->get();
 
