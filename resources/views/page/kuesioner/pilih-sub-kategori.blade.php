@@ -171,7 +171,7 @@
                 <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-100">
                     <div class="flex items-center gap-2">
                         <div class="w-2 h-2 rounded-full bg-green-500"></div>
-                        <span class="text-sm font-medium text-green-800">Disetujui</span>
+                        <span class="text-sm font-medium text-green-800">Sudah Diverifikasi</span>
                     </div>
                     <span class="font-bold text-green-700">{{ $totalDisetujui }}</span>
                 </div>
