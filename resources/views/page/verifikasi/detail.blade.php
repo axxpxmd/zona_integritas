@@ -139,7 +139,7 @@
         <form action="{{ route('verifikasi.store', [$periode->id, $opd->id, $subKategori->id]) }}" method="POST" id="verifikasiForm">
             @csrf
             <input type="hidden" name="current_page" value="{{ $currentPage }}">
-            <fieldset @if(!$isCanVerify) disabled @endif>
+
             <div class="p-6">
                 <div class="mb-6">
                     {{-- Indikator Header --}}
@@ -247,6 +247,7 @@
                             }
                         @endphp
                         <div class="bg-white rounded-lg p-4 border border-gray-200">
+                            <fieldset @if(!$isCanVerify || $statusVerifikasi !== 'belum_diverifikasi') disabled @endif>
                             <div class="flex items-start gap-3 mb-3">
                                 <span class="inline-flex items-center justify-center min-w-[24px] h-6 bg-gray-100 text-gray-700 rounded text-xs font-semibold px-2">
                                     {{ $pertanyaan->urutan ?? ($pertanyaanIndex + 1) }}
@@ -359,7 +360,7 @@
 
                             {{-- Verifikasi --}}
                             <div class="mt-4 pt-4 border-t border-gray-200">
-                                <div class="p-4 rounded-xl border-2 transition-all duration-200 {{ $statusVerifikasi === 'belum_diverifikasi' ? 'bg-yellow-50/50 border-yellow-200' : 'bg-gray-50 border-gray-200' }}">
+                                <div class="p-4 rounded-xl border transition-all duration-200 {{ $statusVerifikasi === 'belum_diverifikasi' ? 'bg-yellow-50/50 border-yellow-200' : 'bg-gray-50 border-gray-200' }}">
                                     {{-- Header Status & Toggle --}}
                                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                                         <div>
@@ -472,6 +473,7 @@
                                     </div>
                                 @endif
                             </div>
+                            </fieldset>
                         </div>
                         @endforeach
                     </div>
