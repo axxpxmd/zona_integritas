@@ -278,7 +278,7 @@
                             {{-- Upload Dokumen (optional) --}}
                             <div class="mt-3 pt-3 ml-9 border-t border-gray-100">
                                 <label class="block text-xs font-medium text-gray-700 mb-1.5">
-                                    Upload Dokumen Pendukung
+                                    Dokumen Pendukung
                                 </label>
                                 @php
                                     $jawabanItem = $jawabans[$pertanyaan->id] ?? null;
@@ -286,39 +286,35 @@
                                 @endphp
                                 <div class="space-y-3">
                                     @if($uploadedFiles->count())
-                                        <div class="space-y-2">
+                                        <ol class="list-decimal list-inside space-y-1 mt-1 text-[13px] ml-1">
                                             @foreach($uploadedFiles as $file)
-                                            <div class="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg">
-                                                <div class="flex items-center gap-2 overflow-hidden flex-1">
-                                                    <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                            <li class="text-gray-600">
+                                                <a href="{{ route('kuesioner.file.item.view', $file->id) }}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1 align-middle">
+                                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
                                                     </svg>
-                                                    <a href="{{ route('kuesioner.file.item.view', $file->id) }}" target="_blank" class="text-xs text-green-700 hover:text-green-800 hover:underline truncate">
-                                                        {{ $file->original_name ?? basename($file->file_path) }}
-                                                    </a>
-                                                </div>
+                                                    {{ $file->original_name ?? basename($file->file_path) }}
+                                                </a>
                                                 @if($file->size)
-                                                <span class="text-[10px] text-gray-500">{{ number_format($file->size / 1024, 0) }} KB</span>
+                                                <span class="text-xs text-gray-400 ml-0.5">({{ number_format($file->size / 1024, 0) }} KB)</span>
                                                 @endif
-                                            </div>
+                                            </li>
                                             @endforeach
-                                        </div>
+                                        </ol>
                                     @elseif($jawabanItem && $jawabanItem->file_path)
-                                        <div class="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg">
-                                            <div class="flex items-center gap-2 overflow-hidden flex-1">
-                                                <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                                </svg>
-                                                <a href="{{ route('kuesioner.file.view', $jawabanItem->id) }}" target="_blank" class="text-xs text-green-700 hover:text-green-800 hover:underline truncate">
+                                        <ul class="list-disc list-inside mt-1 text-[13px] ml-1">
+                                            <li class="text-gray-600">
+                                                <a href="{{ route('kuesioner.file.view', $jawabanItem->id) }}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1 align-middle">
+                                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                                                    </svg>
                                                     {{ basename($jawabanItem->file_path) }}
                                                 </a>
-                                            </div>
-                                            <a href="{{ route('kuesioner.file.view', $jawabanItem->id) }}" target="_blank" title="Lihat File" class="text-blue-600 hover:text-blue-800 transition-colors flex-shrink-0 ml-2 p-1 bg-blue-50 rounded">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                </svg>
-                                            </a>
+                                            </li>
+                                        </ul>
+                                    @else
+                                        <div class="text-[12px] text-gray-500 italic mt-1">
+                                            Belum ada dokumen yang diupload.
                                         </div>
                                     @endif
 
@@ -348,14 +344,14 @@
 
                             {{-- Jawaban Verifikator Sections --}}
                             @if($isDisetujui)
-                                <div class="mt-4 pt-4 border-t bg-[#F0FDF4] rounded-xl p-4 border-green-200">
+                               <div class="mt-4 pt-4 border-t bg-[#FEF2F2] rounded-xl p-4 border-gray-200">
                                     <p class="text-xs font-semibold text-green-900 uppercase mb-3 flex items-center gap-1.5">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
                                         Jawaban Verifikator
                                     </p>
-                                    <div class="space-y-3 p-3 rounded-lg bg-white border border-green-100">
+                                    <div class="space-y-3">
                                         @if($pertanyaan->tipe_jawaban === 'ya_tidak')
                                             @include('page.kuesioner.partials.input-ya-tidak', [
                                                 'pertanyaan' => $pertanyaan,
@@ -382,12 +378,10 @@
                                             @endphp
                                             <div class="ml-6">
                                                 <div class="inline-flex items-start gap-2 text-sm text-gray-700">
-                                                    <span class="inline-flex items-center justify-center w-5 h-5 bg-green-100 text-green-700 rounded text-xs font-bold">
+                                                    <span class="inline-flex items-center justify-center w-5 h-5 bg-[#0E7C7B]/10 text-[#0E7C7B] rounded text-xs font-bold">
                                                         {{ $opsiTerpilih ?? '-' }}
                                                     </span>
-                                                    <span class="font-medium text-gray-900 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200">
-                                                        {{ $opsiLabel ?? ($opsiTerpilih ?? '-') }}
-                                                    </span>
+                                                    <span>{{ $opsiLabel ? $opsiLabel : ('Pilihan ' . ($opsiTerpilih ?? '-')) }}</span>
                                                 </div>
                                             </div>
                                         @elseif($pertanyaan->tipe_jawaban === 'angka')
