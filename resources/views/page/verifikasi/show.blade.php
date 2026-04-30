@@ -57,19 +57,91 @@
             </div>
         @endif
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div class="bg-white rounded-xl p-4">
-                <p class="text-xs text-gray-500 uppercase font-semibold tracking-wider">Total Pertanyaan</p>
-                <p class="text-2xl font-bold text-gray-900 mt-1">{{ $verifikasiStats['total_pertanyaan'] ?? 0 }}</p>
+        {{-- Stats Dashboard --}}
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+
+            {{-- Card 1: Total Pertanyaan --}}
+            <div class="bg-white rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-gray-900 font-bold text-base">Total Pertanyaan</h3>
+                </div>
+                <div class="flex justify-between items-end mb-2">
+                    <span class="text-3xl font-bold text-gray-900">{{ $verifikasiStats['total_pertanyaan'] ?? 0 }}</span>
+                    <span class="text-sm font-semibold text-blue-600">{{ $verifikasiStats['total_pertanyaan'] > 0 ? round(($verifikasiStats['terverifikasi'] / $verifikasiStats['total_pertanyaan']) * 100) : 0 }}% terverifikasi</span>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-2">
+                    <div class="bg-blue-500 h-2 rounded-full" style="width: {{ $verifikasiStats['total_pertanyaan'] > 0 ? round(($verifikasiStats['terverifikasi'] / $verifikasiStats['total_pertanyaan']) * 100) : 0 }}%"></div>
+                </div>
             </div>
-            <div class="bg-white rounded-xl p-4">
-                <p class="text-xs text-gray-500 uppercase font-semibold tracking-wider">Terverifikasi</p>
-                <p class="text-2xl font-bold text-green-600 mt-1">{{ $verifikasiStats['terverifikasi'] ?? 0 }}</p>
+
+            {{-- Card 2: Terverifikasi --}}
+            <div class="bg-white rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-gray-900 font-bold text-base">Terverifikasi</h3>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between p-2.5 bg-green-50 rounded-lg border border-green-100">
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                            <span class="text-sm font-medium text-green-800">Disetujui</span>
+                        </div>
+                        <span class="font-bold text-green-700 text-lg">{{ $verifikasiStats['terverifikasi'] ?? 0 }}</span>
+                    </div>
+                </div>
             </div>
-            <div class="bg-white rounded-xl p-4">
-                <p class="text-xs text-gray-500 uppercase font-semibold tracking-wider">Belum Diverifikasi</p>
-                <p class="text-2xl font-bold text-gray-700 mt-1">{{ $verifikasiStats['belum_terverifikasi'] ?? 0 }}</p>
+
+            {{-- Card 3: Direvisi --}}
+            <div class="bg-white rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-gray-900 font-bold text-base">Perlu Revisi</h3>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between p-2.5 bg-orange-50 rounded-lg border border-orange-100">
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-orange-500"></div>
+                            <span class="text-sm font-medium text-orange-800">Dikirim ke Operator</span>
+                        </div>
+                        <span class="font-bold text-orange-600 text-lg">{{ $verifikasiStats['direvisi'] ?? 0 }}</span>
+                    </div>
+                </div>
             </div>
+
+            {{-- Card 4: Belum Diverifikasi --}}
+            <div class="bg-white rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-gray-900 font-bold text-base">Belum Diverifikasi</h3>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg border border-gray-100">
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-gray-400"></div>
+                            <span class="text-sm font-medium text-gray-700">Menunggu Dicek</span>
+                        </div>
+                        <span class="font-bold text-gray-700 text-lg">{{ $verifikasiStats['belum_terverifikasi'] ?? 0 }}</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         {{-- Info --}}
@@ -100,17 +172,22 @@
                         </svg>
                         <div class="text-sm text-blue-800">
                             <p class="font-medium">Pilih Sub Kategori untuk Verifikasi</p>
-                            <p class="mt-1">Pilih salah satu sub kategori di bawah untuk mulai melakukan verifikasi secara spesifik.</p>
+                            <p class="mt-1">Pilih salah satu sub kategori di bawah untuk mulai melakukan verifikasi secara
+                                spesifik.</p>
                         </div>
                     </div>
                 </div>
             </div>
         @endif
         @if(config('app.debug') || env('APP_ENV') === 'local')
-            <form action="{{ route('verifikasi.verify-all-dev', [$periode->id, $opd->id]) }}" method="POST" onsubmit="return confirm('Yakin ingin verifikasi semua pertanyaan untuk OPD ini secara otomatis (DEV ONLY)?');">
+            <form action="{{ route('verifikasi.verify-all-dev', [$periode->id, $opd->id]) }}" method="POST"
+                onsubmit="return confirm('Yakin ingin verifikasi semua pertanyaan untuk OPD ini secara otomatis (DEV ONLY)?');">
                 @csrf
-                <button type="submit" class="shrink-0 inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-sm gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <button type="submit"
+                    class="shrink-0 inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-sm gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
                     [DEV] Verifikasi Semua
                 </button>
             </form>

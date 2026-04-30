@@ -135,7 +135,8 @@ class VerifikasiController extends Controller
 
         $verifikasiStats['total_pertanyaan'] = $totalSemuaPertanyaan;
         $verifikasiStats['terverifikasi'] = $totalPertanyaanTerverifikasi;
-        $verifikasiStats['belum_terverifikasi'] = max(0, $totalSemuaPertanyaan - $totalPertanyaanTerverifikasi);
+        $verifikasiStats['direvisi'] = $jawabans->whereNull('sub_pertanyaan_id')->where('status_verifikasi', 'direvisi')->count();
+        $verifikasiStats['belum_terverifikasi'] = max(0, $totalSemuaPertanyaan - $totalPertanyaanTerverifikasi - $verifikasiStats['direvisi']);
 
         $isAllAnswered = ($totalSemuaPertanyaan > 0 && $totalSemuaPertanyaan === $totalPertanyaanTerjawab);
         $isSent = $jawabans->where('status', 'final')->isNotEmpty();
@@ -391,7 +392,7 @@ class VerifikasiController extends Controller
                     $key = $pertanyaan->id . '_' . $subPertanyaan->id;
                     $jawabanSubModel = $jawabanMap[$key] ?? null;
                     if ($jawabanSubModel) {
-                        if ($jawabanSubModel->status_verifikasi !== 'belum_diverifikasi') {
+                        if ($jawabanSubModel->status_verifikasi === 'disetujui') {
                             $isVerified = true;
                         }
                         $value = $jawabanSubModel->verifikator_jawaban_angka;
@@ -411,7 +412,7 @@ class VerifikasiController extends Controller
             } else {
                 $jawaban = $jawabanMap[$pertanyaan->id] ?? null;
                 if ($jawaban) {
-                    if ($jawaban->status_verifikasi !== 'belum_diverifikasi') {
+                    if ($jawaban->status_verifikasi === 'disetujui') {
                         $isVerified = true;
                     }
                     if (in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda'])) {
