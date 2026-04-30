@@ -91,18 +91,29 @@
             </div>
         @else
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div class="flex gap-3">
-                    <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <div class="text-sm text-blue-800">
-                        <p class="font-medium">Pilih Sub Kategori untuk Verifikasi</p>
-                        <p class="mt-1">Pilih salah satu sub kategori di bawah untuk mulai melakukan verifikasi.</p>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="flex gap-3">
+                        <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div class="text-sm text-blue-800">
+                            <p class="font-medium">Pilih Sub Kategori untuk Verifikasi</p>
+                            <p class="mt-1">Pilih salah satu sub kategori di bawah untuk mulai melakukan verifikasi secara spesifik.</p>
+                        </div>
                     </div>
                 </div>
             </div>
+        @endif
+        @if(config('app.debug') || env('APP_ENV') === 'local')
+            <form action="{{ route('verifikasi.verify-all-dev', [$periode->id, $opd->id]) }}" method="POST" onsubmit="return confirm('Yakin ingin verifikasi semua pertanyaan untuk OPD ini secara otomatis (DEV ONLY)?');">
+                @csrf
+                <button type="submit" class="shrink-0 inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-sm gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    [DEV] Verifikasi Semua
+                </button>
+            </form>
         @endif
 
         {{-- Komponen Loop --}}

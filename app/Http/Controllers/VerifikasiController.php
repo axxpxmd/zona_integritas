@@ -253,6 +253,34 @@ class VerifikasiController extends Controller
             ->with('success', 'Data verifikasi untuk indikator ini berhasil disimpan.');
     }
 
+    public function verifyAllDev(Request $request, Periode $periode, Opd $opd)
+    {
+        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        // Ambil semua jawaban OPD terkait di periode ini yang masih "belum_diverifikasi"
+        $jawabans = Jawaban::where('periode_id', $periode->id)
+            ->where('opd_id', $opd->id)
+            ->where('status_verifikasi', 'belum_diverifikasi')
+            ->get();
+
+        foreach ($jawabans as $jawaban) {
+            $jawaban->status_verifikasi = 'disetujui';
+
+            // Set nilai verifikator agar tidak (Null) dengan menduplikat jawaban operator
+            $jawaban->verifikator_jawaban_text = $jawaban->jawaban_text;
+            $jawaban->verifikator_jawaban_angka = $jawaban->jawaban_angka;
+
+            $jawaban->verified_by = Auth::id();
+            $jawaban->verified_at = now();
+            $jawaban->save();
+        }
+
+        return redirect()->route('verifikasi.show', ['periode' => $periode->id, 'opd' => $opd->id])
+            ->with('success', '[DEV] Semua kuesioner pada OPD ini telah berhasil diverifikasi secara otomatis.');
+    }
+
     private function hitungNilaiIndikatorVerifikasi(Indikator $indikator, array $jawabanMap): array
     {
         $pertanyaans = $indikator->pertanyaans;
