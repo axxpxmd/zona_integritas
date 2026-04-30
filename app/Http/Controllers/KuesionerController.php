@@ -238,20 +238,29 @@ class KuesionerController extends Controller
             ->get()
             ->keyBy(fn($j) => $j->pertanyaan_id . '-' . $j->sub_pertanyaan_id);
 
-        // Muat struktur pertanyaan yang direvisi, dikelompokkan per sub-kategori
-        $pertanyaanRevisi = Pertanyaan::whereIn('id', $pertanyaanIds)
+        // Muat struktur pertanyaan yang direvisi, dikelompokkan per sub-kategori → per indikator
+        $pertanyaanAllRevisi = Pertanyaan::whereIn('id', $pertanyaanIds)
             ->with([
                 'subPertanyaans' => fn($q) => $q->where('status', 1)->orderBy('urutan'),
                 'indikator.subKategori.kategori.komponen',
             ])
-            ->get()
-            ->groupBy(fn($p) => $p->indikator->sub_kategori_id ?? 0);
+            ->get();
+
+        // Nested groupBy: [sub_kategori_id][indikator_id] → collection of pertanyaan
+        $pertanyaanRevisi = $pertanyaanAllRevisi->groupBy([
+            fn($p) => $p->indikator->sub_kategori_id ?? 0,
+            fn($p) => $p->indikator_id ?? 0,
+        ]);
 
         // Kumpulkan objek sub-kategori unik untuk tampilan
         $subKategoris = \App\Models\SubKategori::whereIn('id', $pertanyaanRevisi->keys())
             ->with('kategori.komponen')
             ->get()
             ->keyBy('id');
+
+        // Kumpulkan objek indikator unik untuk tampilan
+        $indikatorIds = $pertanyaanAllRevisi->pluck('indikator_id')->unique()->toArray();
+        $indikators = \App\Models\Indikator::whereIn('id', $indikatorIds)->get()->keyBy('id');
 
         $totalRevisi = $jawabanRevisis->count();
 
@@ -262,6 +271,7 @@ class KuesionerController extends Controller
             'subJawabansRevisi',
             'pertanyaanRevisi',
             'subKategoris',
+            'indikators',
             'totalRevisi'
         ));
     }

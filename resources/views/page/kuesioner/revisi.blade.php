@@ -114,14 +114,32 @@
                     </div>
                 </div>
 
-                {{-- Pertanyaan List --}}
-                <div class="divide-y divide-gray-100">
-                    @foreach($pertanyaans as $pertanyaan)
+                {{-- Pertanyaan dikelompokkan per Indikator --}}
+                <div class="divide-y divide-gray-200">
+                    @foreach($pertanyaans as $indikatorId => $indikatorPertanyaans)
+                    @php $indikator = $indikators[$indikatorId] ?? null; @endphp
+
+                    {{-- Indikator Header --}}
+                    <div class="bg-orange-50/60 px-6 py-3 border-b border-orange-100 flex items-center gap-3">
+                        <div class="w-7 h-7 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="text-[11px] font-bold text-orange-600">{{ $indikator?->kode ?? $indikatorId }}</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-orange-900 leading-snug">{{ $indikator?->nama ?? 'Indikator' }}</p>
+                        </div>
+                        @if($indikator?->bobot)
+                        <span class="text-xs font-medium text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full flex-shrink-0">Bobot: {{ $indikator->bobot }}</span>
+                        @endif
+                    </div>
+
+                    {{-- Daftar Pertanyaan dalam Indikator ini --}}
+                    <div class="divide-y divide-gray-100">
+                    @foreach($indikatorPertanyaans as $pertanyaan)
                     @php
                         $jawaban = $jawabanRevisis[$pertanyaan->id] ?? null;
                     @endphp
 
-                    <div class="p-6 ">
+                    <div class="p-6">
                         <input type="hidden" name="pertanyaan_id[]" value="{{ $pertanyaan->id }}">
 
                         {{-- Catatan Revisi Verifikator --}}
@@ -287,8 +305,10 @@
                         </div>
                     </div>
                     @endforeach
-                </div>
-            </div>
+                    </div>{{-- /div.divide-y pertanyaan --}}
+                    @endforeach
+                </div>{{-- /div.divide-y indikator --}}
+            </div>{{-- /sub-kategori card --}}
             @endforeach
         </div>
 
