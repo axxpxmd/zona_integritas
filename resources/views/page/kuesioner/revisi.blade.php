@@ -121,7 +121,7 @@
                         $jawaban = $jawabanRevisis[$pertanyaan->id] ?? null;
                     @endphp
 
-                    <div class="p-6">
+                    <div class="p-6 ">
                         <input type="hidden" name="pertanyaan_id[]" value="{{ $pertanyaan->id }}">
 
                         {{-- Catatan Revisi Verifikator --}}
