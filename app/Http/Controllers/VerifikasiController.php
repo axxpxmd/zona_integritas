@@ -253,6 +253,30 @@ class VerifikasiController extends Controller
             ->with('success', 'Data verifikasi untuk indikator ini berhasil disimpan.');
     }
 
+    public function cancelPertanyaan(Request $request, Periode $periode, Opd $opd, SubKategori $subKategori, Pertanyaan $pertanyaan)
+    {
+        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $jawabans = Jawaban::where('periode_id', $periode->id)
+            ->where('opd_id', $opd->id)
+            ->where('pertanyaan_id', $pertanyaan->id)
+            ->get();
+
+        foreach ($jawabans as $jawaban) {
+            $jawaban->status_verifikasi = 'belum_diverifikasi';
+            $jawaban->verified_by = null;
+            $jawaban->verified_at = null;
+            $jawaban->save();
+        }
+
+        $currentPage = $request->input('current_page', 1);
+
+        return redirect()->route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage])
+            ->with('success', 'Verifikasi pertanyaan berhasil dibatalkan.');
+    }
+
     public function verifyAllDev(Request $request, Periode $periode, Opd $opd)
     {
         if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {

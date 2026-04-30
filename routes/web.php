@@ -76,5 +76,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/{periode}/{opd}/verify-all-dev', [VerifikasiController::class, 'verifyAllDev'])->name('verify-all-dev');
         Route::get('/{periode}/{opd}/kategori/{subKategori}', [VerifikasiController::class, 'detail'])->name('detail');
         Route::post('/{periode}/{opd}/kategori/{subKategori}', [VerifikasiController::class, 'store'])->name('store');
+        Route::post('/{periode}/{opd}/kategori/{subKategori}/cancel-pertanyaan/{pertanyaan}', [VerifikasiController::class, 'cancelPertanyaan'])->name('cancel-pertanyaan');
     });
 });

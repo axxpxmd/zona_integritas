@@ -358,8 +358,11 @@
                                 </div>
                             </div>
 
+                            </fieldset>
+                            
                             {{-- Verifikasi --}}
                             <div class="mt-4 pt-4 border-t border-gray-200">
+                                <fieldset @if(!$isCanVerify) disabled @endif>
                                 <div class="p-4 rounded-xl border transition-all duration-200 {{ $statusVerifikasi === 'belum_diverifikasi' ? 'bg-yellow-50/50 border-yellow-200' : 'bg-gray-50 border-gray-200' }}">
                                     {{-- Header Status & Toggle --}}
                                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
@@ -387,19 +390,32 @@
                                             </p>
                                         </div>
 
-                                        <div class="flex items-center shrink-0 bg-white px-4 py-2.5 rounded-lg border border-gray-200 shadow-sm">
-                                            <input type="hidden" name="verifikasi[{{ $pertanyaan->id }}][status_verifikasi]" value="belum_diverifikasi">
-                                            <label class="relative inline-flex items-center cursor-pointer group">
-                                                <input type="checkbox"
-                                                       name="verifikasi[{{ $pertanyaan->id }}][status_verifikasi]"
-                                                       value="disetujui"
-                                                       {{ $statusVerifikasi == 'disetujui' ? 'checked' : '' }}
-                                                       class="sr-only peer">
-                                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#0E7C7B]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0E7C7B]"></div>
-                                                <span class="ml-3 text-sm font-bold text-gray-600 peer-checked:text-[#0E7C7B] group-hover:text-gray-900 transition-colors">
-                                                    Verifikasi
-                                                </span>
-                                            </label>
+                                        <div class="flex items-center gap-3 shrink-0">
+                                            @if($statusVerifikasi !== 'belum_diverifikasi')
+                                                <button type="button" 
+                                                        onclick="cancelVerification('{{ route('verifikasi.cancel-pertanyaan', [$periode->id, $opd->id, $subKategori->id, $pertanyaan->id]) }}')"
+                                                        class="px-3 py-2 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg border border-red-200 transition-colors flex items-center gap-1.5 uppercase tracking-wide">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    Batalkan Verifikasi
+                                                </button>
+                                            @endif
+
+                                            <div class="flex items-center bg-white px-4 py-2.5 rounded-lg border border-gray-200 shadow-sm">
+                                                <input type="hidden" name="verifikasi[{{ $pertanyaan->id }}][status_verifikasi]" value="belum_diverifikasi">
+                                                <label class="relative inline-flex items-center cursor-pointer group">
+                                                    <input type="checkbox"
+                                                           name="verifikasi[{{ $pertanyaan->id }}][status_verifikasi]"
+                                                           value="disetujui"
+                                                           {{ $statusVerifikasi == 'disetujui' ? 'checked' : '' }}
+                                                           class="sr-only peer">
+                                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#0E7C7B]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0E7C7B]"></div>
+                                                    <span class="ml-3 text-sm font-bold text-gray-600 peer-checked:text-[#0E7C7B] group-hover:text-gray-900 transition-colors">
+                                                        Verifikasi
+                                                    </span>
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -556,6 +572,11 @@
         </div>
     </div>
 </div>
+    {{-- Hidden form for canceling verification --}}
+    <form id="cancelVerificationForm" method="POST" class="hidden">
+        @csrf
+        <input type="hidden" name="current_page" value="{{ $currentPage }}">
+    </form>
 @endsection
 
 @push('scripts')
@@ -606,5 +627,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+function cancelVerification(url) {
+    if (confirm('Apakah Anda yakin ingin membatalkan verifikasi untuk pertanyaan ini?')) {
+        const form = document.getElementById('cancelVerificationForm');
+        form.action = url;
+        form.submit();
+    }
+}
 </script>
 @endpush
