@@ -415,7 +415,7 @@
                                         </div>
 
                                         <div class="flex items-center gap-3 shrink-0">
-                                            @if($statusVerifikasi !== 'belum_diverifikasi')
+                                            @if($statusVerifikasi == 'disetujui')
                                                 <button type="button" 
                                                         onclick="cancelVerification('{{ route('verifikasi.cancel-pertanyaan', [$periode->id, $opd->id, $subKategori->id, $pertanyaan->id]) }}')"
                                                         class="px-3 py-2 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg border border-red-200 transition-colors flex items-center gap-1.5 uppercase tracking-wide">
@@ -424,9 +424,18 @@
                                                     </svg>
                                                     Batalkan Verifikasi
                                                 </button>
+                                            @elseif($statusVerifikasi === 'direvisi')
+                                                <button type="button" 
+                                                        onclick="cancelRevisi('{{ route('verifikasi.cancel-revisi', [$periode->id, $opd->id, $subKategori->id, $pertanyaan->id]) }}')"
+                                                        class="px-3 py-2 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg border border-red-200 transition-colors flex items-center gap-1.5 uppercase tracking-wide">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    Batalkan Revisi
+                                                </button>
                                             @endif
 
-                                            @if($statusVerifikasi === 'belum_diverifikasi' || $statusVerifikasi === 'disetujui')
+                                            @if($statusVerifikasi === 'belum_diverifikasi')
                                                 <button type="button"
                                                         onclick="toggleRevisiPanel('revisi-panel-{{ $pertanyaan->id }}')"
                                                         class="px-3 py-2 text-xs font-bold text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg border border-orange-200 transition-colors flex items-center gap-1.5 uppercase tracking-wide">
@@ -701,6 +710,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function cancelVerification(url) {
     if (confirm('Apakah Anda yakin ingin membatalkan verifikasi untuk pertanyaan ini?')) {
+        const form = document.getElementById('cancelVerificationForm');
+        form.action = url;
+        form.submit();
+    }
+}
+
+function cancelRevisi(url) {
+    if (confirm('Apakah Anda yakin ingin membatalkan permintaan revisi untuk pertanyaan ini?')) {
         const form = document.getElementById('cancelVerificationForm');
         form.action = url;
         form.submit();
