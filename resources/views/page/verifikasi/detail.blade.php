@@ -385,7 +385,7 @@
                                                 {{ $statusVerifikasi === 'belum_diverifikasi' ? 'Mohon periksa jawaban dan dokumen pendukung sebelum menyetujui.' : 'Jawaban telah diperiksa dan disetujui.' }}
                                             </p>
                                         </div>
-                                        
+
                                         <div class="flex items-center shrink-0 bg-white px-4 py-2.5 rounded-lg border border-gray-200 shadow-sm">
                                             <input type="hidden" name="verifikasi[{{ $pertanyaan->id }}][status_verifikasi]" value="belum_diverifikasi">
                                             <label class="relative inline-flex items-center cursor-pointer group">
@@ -408,13 +408,14 @@
                                             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                             </svg>
-                                            Catatan Verifikator 
+                                            Catatan Verifikator
                                             <span class="text-gray-400 font-medium normal-case">(Opsional)</span>
                                         </label>
-                                        <textarea name="verifikasi[{{ $pertanyaan->id }}][catatan_verifikator]" 
-                                                  rows="2" 
-                                                  class="w-full text-sm bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm placeholder-gray-400 text-gray-700 focus:outline-none focus:border-[#0E7C7B] focus:ring-4 focus:ring-[#0E7C7B]/10 transition-all duration-200 hover:border-gray-300 resize-y"
-                                                  placeholder="Ketik catatan perbaikan atau masukan di sini...">{{ optional($jawabanParent)->catatan_verifikator }}</textarea>
+                                        <textarea name="verifikasi[{{ $pertanyaan->id }}][catatan_verifikator]"
+                                                  rows="2"
+                                                  class="w-full text-sm border border-gray-200 rounded-xl px-4 py-3 shadow-sm placeholder-gray-400 text-gray-700 focus:outline-none transition-all duration-200 resize-y {{ $statusVerifikasi !== 'belum_diverifikasi' ? 'bg-gray-100 cursor-not-allowed opacity-75' : 'bg-white focus:border-[#0E7C7B] focus:ring-4 focus:ring-[#0E7C7B]/10 hover:border-gray-300' }}"
+                                                  placeholder="Ketik catatan perbaikan atau masukan di sini..."
+                                                  {{ $statusVerifikasi !== 'belum_diverifikasi' ? 'readonly' : '' }}>{{ optional($jawabanParent)->catatan_verifikator }}</textarea>
                                     </div>
                                 </div>
 
