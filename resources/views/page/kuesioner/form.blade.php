@@ -381,7 +381,7 @@
                                 @endphp
 
                                 @if($isDifferent)
-                                    <div class="mt-4 pt-4 border-t bg-[#FEF2F2] rounded-xl p-4 border-gray-200">
+                                    <div class="mt-4 pt-4 border-t bg-[#DCFCE7] rounded-xl p-4 border-gray-200">
                                         <p class="text-xs font-semibold text-green-900 uppercase mb-3 flex items-center gap-1.5">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>

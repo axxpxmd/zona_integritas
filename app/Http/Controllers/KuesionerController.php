@@ -67,6 +67,13 @@ class KuesionerController extends Controller
             ->get()
             ->keyBy('pertanyaan_id');
 
+        // Preload sub-jawabans untuk perhitungan nilai yang diverifikasi
+        $subJawabansAll = Jawaban::where('periode_id', $periode_id)
+            ->where('opd_id', $opd->id)
+            ->whereNotNull('sub_pertanyaan_id')
+            ->get()
+            ->keyBy(fn($j) => $j->pertanyaan_id . '-' . $j->sub_pertanyaan_id);
+
         $totalSemuaPertanyaan = 0;
         $totalPertanyaanTerjawab = 0;
 
@@ -92,9 +99,40 @@ class KuesionerController extends Controller
                                 $pertanyaanTerjawab++;
                                 $totalPertanyaanTerjawab++;
 
-                                if ($jawaban->nilai !== null) {
+                                $nilaiEfektif = null;
+                                $isVerified = $jawaban->status_verifikasi === 'disetujui';
+
+                                if ($isVerified && $pertanyaan->has_sub_pertanyaan) {
+                                    // Ambil sub-jawaban dari collection yang sudah di-preload
+                                    $subJawabanAngka = [];
+                                    foreach ($pertanyaan->subPertanyaans as $sp) {
+                                        $spKey = $pertanyaan->id . '-' . $sp->id;
+                                        $spJawaban = $subJawabansAll[$spKey] ?? null;
+                                        if ($spJawaban) {
+                                            $effVal = $spJawaban->verifikator_jawaban_angka ?? $spJawaban->jawaban_angka;
+                                            if ($effVal !== null) {
+                                                $subJawabanAngka[$sp->id] = $effVal;
+                                            }
+                                        }
+                                    }
+                                    $nilaiEfektif = count($subJawabanAngka) >= 2
+                                        ? $this->hitungNilaiSubPertanyaan($pertanyaan, $subJawabanAngka)
+                                        : $jawaban->nilai;
+
+                                } elseif ($isVerified) {
+                                    if (in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda'])) {
+                                        $effJawaban = $jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text;
+                                    } else {
+                                        $effJawaban = $jawaban->verifikator_jawaban_angka ?? $jawaban->jawaban_angka;
+                                    }
+                                    $nilaiEfektif = $effJawaban !== null ? $this->hitungNilai($pertanyaan, $effJawaban) : $jawaban->nilai;
+                                } else {
+                                    $nilaiEfektif = $jawaban->nilai;
+                                }
+
+                                if ($nilaiEfektif !== null) {
                                     $indPertanyaanTerjawab++;
-                                    $indTotalNilai += $jawaban->nilai;
+                                    $indTotalNilai += $nilaiEfektif;
                                 }
                             }
                         }
@@ -607,6 +645,7 @@ class KuesionerController extends Controller
     /**
      * Hitung nilai indikator berdasarkan formula Excel:
      * Nilai Indikator = AVERAGE(nilai semua pertanyaan) × bobot
+     * Jika pertanyaan sudah diverifikasi, gunakan jawaban verifikator untuk menghitung nilai.
      */
     private function hitungNilaiIndikator(Indikator $indikator, $jawabans): array
     {
@@ -618,11 +657,47 @@ class KuesionerController extends Controller
 
         foreach ($pertanyaans as $pertanyaan) {
             $jawaban = $jawabans[$pertanyaan->id] ?? null;
-            $nilai = $jawaban ? $jawaban->nilai : null;
+            $nilai = null;
+
+            if ($jawaban) {
+                $isVerified = $jawaban->status_verifikasi === 'disetujui';
+
+                if ($isVerified && $pertanyaan->has_sub_pertanyaan) {
+                    // Kumpulkan nilai sub dari jawaban verifikator
+                    $subJawabanAngka = [];
+                    foreach ($pertanyaan->subPertanyaans as $sp) {
+                        $spKey = $pertanyaan->id . '-' . $sp->id;
+                        $spJawaban = $jawabans[$spKey] ?? null;
+                        if ($spJawaban) {
+                            $effVal = $spJawaban->verifikator_jawaban_angka ?? $spJawaban->jawaban_angka;
+                            if ($effVal !== null) {
+                                $subJawabanAngka[$sp->id] = $effVal;
+                            }
+                        }
+                    }
+                    $nilai = count($subJawabanAngka) >= 2
+                        ? $this->hitungNilaiSubPertanyaan($pertanyaan, $subJawabanAngka)
+                        : $jawaban->nilai;
+
+                } elseif ($isVerified) {
+                    // Gunakan jawaban verifikator (fallback ke operator jika null)
+                    $effJawaban = null;
+                    if (in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda'])) {
+                        $effJawaban = $jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text;
+                    } else {
+                        $effJawaban = $jawaban->verifikator_jawaban_angka ?? $jawaban->jawaban_angka;
+                    }
+                    $nilai = $effJawaban !== null ? $this->hitungNilai($pertanyaan, $effJawaban) : $jawaban->nilai;
+
+                } else {
+                    // Belum diverifikasi: gunakan nilai operator dari DB
+                    $nilai = $jawaban->nilai;
+                }
+            }
 
             $nilaiPerPertanyaan[$pertanyaan->id] = [
                 'nilai' => $nilai,
-                'terjawab' => $jawaban !== null && $jawaban->jawaban_text !== null || $jawaban !== null && $jawaban->jawaban_angka !== null,
+                'terjawab' => $jawaban !== null && ($jawaban->jawaban_text !== null || $jawaban->jawaban_angka !== null),
             ];
 
             if ($nilai !== null) {
