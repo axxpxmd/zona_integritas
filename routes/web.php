@@ -67,6 +67,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/{periode}/{subKategori}', [KuesionerController::class, 'fill'])->name('fill');
         Route::post('/submit', [KuesionerController::class, 'submit'])->name('submit');
         Route::post('/hitung-nilai', [KuesionerController::class, 'hitungNilaiPreview'])->name('hitung-nilai');
+        // Revisi
+        Route::get('/{periode}/revisi/daftar', [KuesionerController::class, 'revisiIndex'])->name('revisi.index');
+        Route::post('/revisi/submit', [KuesionerController::class, 'revisiSubmit'])->name('revisi.submit');
     });
 
     // Verifikator

@@ -31,13 +31,41 @@
             @if (Auth::user()->role === 'operator')
                 <a href="{{ route('kuesioner.index') }}" data-tooltip="Kuesioner"
                     class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                                  {{ request()->routeIs('kuesioner.*') ? 'bg-white text-primary shadow-lg shadow-black/10' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
+                                  {{ request()->routeIs('kuesioner.*') && !request()->routeIs('kuesioner.revisi.*') ? 'bg-white text-primary shadow-lg shadow-black/10' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     <span class="sidebar-text transition-all duration-300 whitespace-nowrap">Lembar Kerja Evaluasi</span>
                 </a>
+                @php
+                    $opd = Auth::user()->opd;
+                    $periodeAktif = $opd ? \App\Models\Periode::where('status', 'aktif')->where('is_template', false)->orderByDesc('tahun')->first() : null;
+                    $totalRevisiSidebar = 0;
+                    if ($periodeAktif && $opd) {
+                        $totalRevisiSidebar = \App\Models\Jawaban::where('periode_id', $periodeAktif->id)
+                            ->where('opd_id', $opd->id)
+                            ->where('status_verifikasi', 'direvisi')
+                            ->whereNull('sub_pertanyaan_id')
+                            ->count();
+                    }
+                @endphp
+                @if($periodeAktif)
+                <a href="{{ route('kuesioner.revisi.index', $periodeAktif->id) }}" data-tooltip="Revisi Jawaban"
+                    class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                                  {{ request()->routeIs('kuesioner.revisi.*') ? 'bg-white text-primary shadow-lg shadow-black/10' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    <span class="sidebar-text transition-all duration-300 whitespace-nowrap flex items-center gap-2">
+                        Revisi Jawaban
+                        @if($totalRevisiSidebar > 0)
+                        <span class="inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold bg-orange-400 text-white">{{ $totalRevisiSidebar }}</span>
+                        @endif
+                    </span>
+                </a>
+                @endif
             @endif
             @if (in_array(Auth::user()->role, ['admin', 'verifikator']))
                 <a href="{{ route('verifikasi.index') }}" data-tooltip="Verifikasi"

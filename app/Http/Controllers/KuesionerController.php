@@ -208,6 +208,177 @@ class KuesionerController extends Controller
     }
 
     /**
+     * Halaman daftar pertanyaan yang perlu direvisi oleh operator
+     */
+    public function revisiIndex($periode_id)
+    {
+        $periode = Periode::findOrFail($periode_id);
+        $user    = Auth::user();
+        $opd     = $user->opd;
+
+        if (!$opd) {
+            return redirect()->route('kuesioner.index')->with('error', 'User Anda belum terhubung dengan OPD');
+        }
+
+        // Ambil semua jawaban yang berstatus 'direvisi' milik OPD ini
+        $jawabanRevisis = Jawaban::where('periode_id', $periode_id)
+            ->where('opd_id', $opd->id)
+            ->where('status_verifikasi', 'direvisi')
+            ->whereNull('sub_pertanyaan_id')
+            ->with(['files'])
+            ->get()
+            ->keyBy('pertanyaan_id');
+
+        // Kumpulkan sub-jawabans untuk pertanyaan yang direvisi
+        $pertanyaanIds = $jawabanRevisis->keys()->toArray();
+        $subJawabansRevisi = Jawaban::where('periode_id', $periode_id)
+            ->where('opd_id', $opd->id)
+            ->whereIn('pertanyaan_id', $pertanyaanIds)
+            ->whereNotNull('sub_pertanyaan_id')
+            ->get()
+            ->keyBy(fn($j) => $j->pertanyaan_id . '-' . $j->sub_pertanyaan_id);
+
+        // Muat struktur pertanyaan yang direvisi, dikelompokkan per sub-kategori
+        $pertanyaanRevisi = Pertanyaan::whereIn('id', $pertanyaanIds)
+            ->with([
+                'subPertanyaans' => fn($q) => $q->where('status', 1)->orderBy('urutan'),
+                'indikator.subKategori.kategori.komponen',
+            ])
+            ->get()
+            ->groupBy(fn($p) => $p->indikator->sub_kategori_id ?? 0);
+
+        // Kumpulkan objek sub-kategori unik untuk tampilan
+        $subKategoris = \App\Models\SubKategori::whereIn('id', $pertanyaanRevisi->keys())
+            ->with('kategori.komponen')
+            ->get()
+            ->keyBy('id');
+
+        $totalRevisi = $jawabanRevisis->count();
+
+        return view('page.kuesioner.revisi', compact(
+            'periode',
+            'opd',
+            'jawabanRevisis',
+            'subJawabansRevisi',
+            'pertanyaanRevisi',
+            'subKategoris',
+            'totalRevisi'
+        ));
+    }
+
+    /**
+     * Simpan jawaban revisi dari operator dan tandai sebagai menunggu dicek ulang
+     */
+    public function revisiSubmit(Request $request)
+    {
+        $user = Auth::user();
+        $opd  = $user->opd;
+
+        if (!$opd) {
+            return redirect()->back()->with('error', 'User belum terhubung dengan OPD');
+        }
+
+        $request->validate([
+            'periode_id'    => 'required|exists:tm_periode,id',
+            'pertanyaan_id' => 'required|array',
+            'jawaban'       => 'nullable|array',
+            'keterangan'    => 'nullable|array',
+            'file'          => 'nullable|array',
+            'file.*.*'      => 'file|max:5120',
+        ]);
+
+        $periodeId      = $request->periode_id;
+        $pertanyaanIds  = $request->pertanyaan_id;
+        $jawabanData    = $request->jawaban ?? [];
+        $jawabanSubData = $request->jawaban_sub ?? [];
+        $keteranganData = $request->keterangan ?? [];
+        $fileData       = $request->file('file') ?? [];
+
+        foreach ($pertanyaanIds as $pertanyaanId) {
+            $pertanyaan = Pertanyaan::find($pertanyaanId);
+            if (!$pertanyaan) continue;
+
+            // Cari jawaban yang direvisi
+            $existingJawaban = Jawaban::where('periode_id', $periodeId)
+                ->where('opd_id', $opd->id)
+                ->where('pertanyaan_id', $pertanyaanId)
+                ->whereNull('sub_pertanyaan_id')
+                ->where('status_verifikasi', 'direvisi')
+                ->first();
+
+            if (!$existingJawaban) continue;
+
+            if (!$pertanyaan->has_sub_pertanyaan) {
+                $jawaban    = $jawabanData[$pertanyaanId] ?? null;
+                $keterangan = $keteranganData[$pertanyaanId] ?? null;
+                $files      = $fileData[$pertanyaanId] ?? [];
+
+                if (!is_array($files)) $files = [$files];
+
+                // Update jawaban
+                if ($jawaban !== null) {
+                    if (in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda'])) {
+                        $existingJawaban->jawaban_text  = $jawaban;
+                        $existingJawaban->jawaban_angka = null;
+                    } else {
+                        $existingJawaban->jawaban_angka = is_numeric($jawaban) ? $jawaban : null;
+                        $existingJawaban->jawaban_text  = null;
+                    }
+                    $existingJawaban->nilai = $this->hitungNilai($pertanyaan, $jawaban);
+                }
+                if ($keterangan !== null) {
+                    $existingJawaban->keterangan = $keterangan;
+                }
+            } else {
+                // Sub-pertanyaan
+                $keterangan = $keteranganData[$pertanyaanId] ?? null;
+                $files      = $fileData[$pertanyaanId] ?? [];
+                if (!is_array($files)) $files = [$files];
+
+                if (isset($jawabanSubData[$pertanyaanId])) {
+                    $nilaiGabungan = $this->hitungNilaiSubPertanyaan($pertanyaan, $jawabanSubData[$pertanyaanId]);
+                    foreach ($jawabanSubData[$pertanyaanId] as $subId => $subVal) {
+                        $subJawaban = Jawaban::where('periode_id', $periodeId)
+                            ->where('opd_id', $opd->id)
+                            ->where('pertanyaan_id', $pertanyaanId)
+                            ->where('sub_pertanyaan_id', $subId)
+                            ->first();
+                        if ($subJawaban) {
+                            $subJawaban->jawaban_angka        = is_numeric($subVal) ? $subVal : null;
+                            $subJawaban->menunggu_dicek_ulang = true;
+                            $subJawaban->revised_at           = now();
+                            $subJawaban->revised_by           = $user->id;
+                            $subJawaban->revisi_count         = ($subJawaban->revisi_count ?? 0) + 1;
+                            $subJawaban->status_verifikasi    = 'belum_diverifikasi';
+                            $subJawaban->updated_by           = $user->id;
+                            $subJawaban->save();
+                        }
+                    }
+                    $existingJawaban->nilai = $nilaiGabungan;
+                }
+                if ($keterangan !== null) {
+                    $existingJawaban->keterangan = $keterangan;
+                }
+            }
+
+            // Tandai sudah direvisi operator → menunggu dicek ulang verifikator
+            $existingJawaban->status_verifikasi    = 'belum_diverifikasi';
+            $existingJawaban->menunggu_dicek_ulang = true;
+            $existingJawaban->revised_at           = now();
+            $existingJawaban->revised_by           = $user->id;
+            $existingJawaban->revisi_count         = ($existingJawaban->revisi_count ?? 0) + 1;
+            $existingJawaban->updated_by           = $user->id;
+            $existingJawaban->save();
+
+            // Simpan file jika ada
+            $this->simpanFileJawaban($existingJawaban, array_filter($files), $periodeId, $opd->id, $pertanyaanId);
+        }
+
+        return redirect()->route('kuesioner.revisi.index', $periodeId)
+            ->with('success', 'Revisi berhasil dikirim. Verifikator akan memeriksa kembali jawaban Anda.');
+    }
+
+    /**
      * Halaman form isi kuesioner per sub kategori
      */
     public function fill(Request $request, $periode_id, $sub_kategori_id)
