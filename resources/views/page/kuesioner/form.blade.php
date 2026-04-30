@@ -201,6 +201,18 @@
                         @php
                             $pertanyaanNilai = $nilaiIndikator['nilai_per_pertanyaan'][$pertanyaan->id] ?? null;
                             $nilaiTampil = $pertanyaanNilai && $pertanyaanNilai['nilai'] !== null ? $pertanyaanNilai['nilai'] : null;
+
+                            $jawabanItem = $jawabans[$pertanyaan->id] ?? null;
+                            if (!$jawabanItem) {
+                                foreach ($pertanyaan->subPertanyaans as $sp) {
+                                    $spKey = "{$pertanyaan->id}-{$sp->id}";
+                                    if (isset($jawabans[$spKey])) {
+                                        $jawabanItem = $jawabans[$spKey];
+                                        break;
+                                    }
+                                }
+                            }
+                            $isDisetujui = $jawabanItem && $jawabanItem->status_verifikasi === 'disetujui';
                         @endphp
                         <div class="bg-[#FFFFF] rounded-lg p-4 border border-gray-200 {{ $nilaiTampil !== null ? 'border-l-4 border-l-green-500' : '' }}">
                             {{-- Pertanyaan --}}
@@ -333,6 +345,94 @@
                                     <div id="selected-files-{{ $pertanyaan->id }}" class="hidden text-xs text-gray-600"></div>
                                 </div>
                             </div>
+
+                            {{-- Jawaban Verifikator Sections --}}
+                            @if($isDisetujui)
+                                <div class="mt-4 pt-4 border-t bg-[#F0FDF4] rounded-xl p-4 border-green-200">
+                                    <p class="text-xs font-semibold text-green-900 uppercase mb-3 flex items-center gap-1.5">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        Jawaban Verifikator
+                                    </p>
+                                    <div class="space-y-3 p-3 rounded-lg bg-white border border-green-100">
+                                        @if($pertanyaan->tipe_jawaban === 'ya_tidak')
+                                            @include('page.kuesioner.partials.input-ya-tidak', [
+                                                'pertanyaan' => $pertanyaan,
+                                                'jawaban' => (object) [
+                                                    'jawaban_text' => $jawabanItem->verifikator_jawaban_text ?? $jawabanItem->jawaban_text,
+                                                    'jawaban_angka' => $jawabanItem->verifikator_jawaban_angka ?? $jawabanItem->jawaban_angka,
+                                                ],
+                                                'periode' => $periode,
+                                                'inputName' => 'dummy_verifikator_' . $pertanyaan->id,
+                                                'isReadonly' => true,
+                                            ])
+                                        @elseif($pertanyaan->tipe_jawaban === 'pilihan_ganda')
+                                            @php
+                                                $opsiTerpilih = $jawabanItem->verifikator_jawaban_text ?? $jawabanItem->jawaban_text ?? null;
+                                                $opsiLabel = null;
+                                                if ($opsiTerpilih && isset($pertanyaan->penjelasan_list)) {
+                                                    foreach ($pertanyaan->penjelasan_list as $opsi) {
+                                                        if (($opsi['opsi'] ?? null) === $opsiTerpilih) {
+                                                            $opsiLabel = $opsi['text'] ?? null;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            @endphp
+                                            <div class="ml-6">
+                                                <div class="inline-flex items-start gap-2 text-sm text-gray-700">
+                                                    <span class="inline-flex items-center justify-center w-5 h-5 bg-green-100 text-green-700 rounded text-xs font-bold">
+                                                        {{ $opsiTerpilih ?? '-' }}
+                                                    </span>
+                                                    <span class="font-medium text-gray-900 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200">
+                                                        {{ $opsiLabel ?? ($opsiTerpilih ?? '-') }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        @elseif($pertanyaan->tipe_jawaban === 'angka')
+                                            @if($pertanyaan->has_sub_pertanyaan)
+                                                @php
+                                                    $verifikatorSubJawabans = [];
+                                                    foreach ($jawabans as $k => $v) {
+                                                        if (str_starts_with($k, $pertanyaan->id . '-')) {
+                                                            $verifikatorSubJawabans[$k] = (object) [
+                                                                'jawaban_text' => $v->verifikator_jawaban_text ?? $v->jawaban_text,
+                                                                'jawaban_angka' => $v->verifikator_jawaban_angka ?? $v->jawaban_angka,
+                                                            ];
+                                                        }
+                                                    }
+                                                @endphp
+                                                @include('page.kuesioner.partials.input-sub-pertanyaan', [
+                                                    'pertanyaan' => $pertanyaan,
+                                                    'jawabans' => $verifikatorSubJawabans,
+                                                    'periode' => $periode,
+                                                    'inputNamePrefix' => 'dummy_verifikator_sub_' . $pertanyaan->id,
+                                                    'isReadonly' => true,
+                                                ])
+                                            @else
+                                                @include('page.kuesioner.partials.input-angka', [
+                                                    'pertanyaan' => $pertanyaan,
+                                                    'jawaban' => (object) [
+                                                        'jawaban_text' => $jawabanItem->verifikator_jawaban_text ?? $jawabanItem->jawaban_text,
+                                                        'jawaban_angka' => $jawabanItem->verifikator_jawaban_angka ?? $jawabanItem->jawaban_angka,
+                                                    ],
+                                                    'periode' => $periode,
+                                                    'inputName' => 'dummy_verifikator_' . $pertanyaan->id,
+                                                    'isReadonly' => true,
+                                                ])
+                                            @endif
+                                        @endif
+
+                                        @if($jawabanItem->catatan_verifikator)
+                                        <div class="mt-4 pt-3 border-t border-green-100">
+                                            <p class="text-[11px] font-bold text-green-700 uppercase tracking-wide mb-1.5 px-0.5">Catatan Verifikator</p>
+                                            <p class="text-sm text-gray-700 bg-green-50 p-3 rounded-lg border border-green-100">{{ $jawabanItem->catatan_verifikator }}</p>
+                                        </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                         @endforeach
                     </div>
