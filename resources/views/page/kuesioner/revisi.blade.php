@@ -8,7 +8,6 @@
     $now       = \Carbon\Carbon::now()->startOfDay();
     $startRevisi = $periode->tanggal_mulai_revisi ? \Carbon\Carbon::parse($periode->tanggal_mulai_revisi)->startOfDay() : null;
     $endRevisi   = $periode->tanggal_selesai_revisi ? \Carbon\Carbon::parse($periode->tanggal_selesai_revisi)->endOfDay() : null;
-
     // Cek apakah dalam masa revisi
     $isCanRevisi = true; // Default bisa revisi jika tidak ada rentang waktu revisi
     if ($startRevisi && $endRevisi) {
