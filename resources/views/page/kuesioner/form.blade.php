@@ -298,28 +298,52 @@
                                     @if($uploadedFiles->count())
                                         <ol class="list-decimal list-inside space-y-1 mt-1 text-[13px] ml-1">
                                             @foreach($uploadedFiles as $file)
-                                            <li class="text-gray-600">
-                                                <a href="{{ route('kuesioner.file.item.view', $file->id) }}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1 align-middle">
-                                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                                            <li class="text-gray-600 flex items-center justify-between gap-3 p-1.5 hover:bg-gray-50 rounded-lg transition-colors group">
+                                                <div class="flex items-center gap-2 min-w-0">
+                                                    <div class="w-7 h-7 bg-blue-50 text-blue-600 rounded flex items-center justify-center flex-shrink-0">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                                                        </svg>
+                                                    </div>
+                                                    <div class="flex flex-col min-w-0">
+                                                        <a href="{{ route('kuesioner.file.item.view', $file->id) }}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline font-medium truncate">
+                                                            {{ $file->original_name ?? basename($file->file_path) }}
+                                                        </a>
+                                                        @if($file->size)
+                                                        <span class="text-[10px] text-gray-400">{{ number_format($file->size / 1024, 0) }} KB</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                @if(!$isLocked)
+                                                <button type="button" onclick="deleteFile({{ $file->id }}, this)" class="flex-shrink-0 p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Hapus File">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                                     </svg>
-                                                    {{ $file->original_name ?? basename($file->file_path) }}
-                                                </a>
-                                                @if($file->size)
-                                                <span class="text-xs text-gray-400 ml-0.5">({{ number_format($file->size / 1024, 0) }} KB)</span>
+                                                </button>
                                                 @endif
                                             </li>
                                             @endforeach
                                         </ol>
                                     @elseif($jawabanItem && $jawabanItem->file_path)
-                                        <ul class="list-disc list-inside mt-1 text-[13px] ml-1">
-                                            <li class="text-gray-600">
-                                                <a href="{{ route('kuesioner.file.view', $jawabanItem->id) }}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1 align-middle">
-                                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                                        <ul class="space-y-1 mt-1 text-[13px] ml-1">
+                                            <li class="text-gray-600 flex items-center justify-between gap-3 p-1.5 hover:bg-gray-50 rounded-lg transition-colors group">
+                                                <div class="flex items-center gap-2 min-w-0">
+                                                    <div class="w-7 h-7 bg-blue-50 text-blue-600 rounded flex items-center justify-center flex-shrink-0">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                                                        </svg>
+                                                    </div>
+                                                    <a href="{{ route('kuesioner.file.view', $jawabanItem->id) }}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline font-medium truncate">
+                                                        {{ basename($jawabanItem->file_path) }}
+                                                    </a>
+                                                </div>
+                                                @if(!$isLocked)
+                                                <button type="button" onclick="deleteLegacyFile({{ $jawabanItem->id }}, this)" class="flex-shrink-0 p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Hapus File Legacy">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                                     </svg>
-                                                    {{ basename($jawabanItem->file_path) }}
-                                                </a>
+                                                </button>
+                                                @endif
                                             </li>
                                         </ul>
                                     @else
@@ -745,6 +769,79 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update the text
         if (text) text.textContent = 'Menyimpan Jawaban...';
     });
+
+    // Function to delete file via AJAX
+    window.deleteFile = function(fileId, element) {
+        if (!confirm('Apakah Anda yakin ingin menghapus file ini?')) return;
+
+        const li = element.closest('li');
+        const originalContent = li.innerHTML;
+        li.innerHTML = '<span class="text-xs text-gray-400">Menghapus...</span>';
+
+        fetch('{{ route("kuesioner.file.item.delete", ":id") }}'.replace(':id', fileId), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                const list = li.parentElement;
+                li.remove();
+                // Check if list is empty, show "Belum ada dokumen" if so
+                if (list && list.children.length === 0) {
+                    const container = list.parentElement;
+                    list.remove();
+                    container.insertAdjacentHTML('afterbegin', '<div class="text-[12px] text-gray-500 italic mt-1">Belum ada dokumen yang diupload.</div>');
+                }
+            } else {
+                alert(result.message || 'Gagal menghapus file');
+                li.innerHTML = originalContent;
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting file:', error);
+            alert('Terjadi kesalahan saat menghapus file');
+            li.innerHTML = originalContent;
+        });
+    }
+
+    // Function to delete legacy file via AJAX
+    window.deleteLegacyFile = function(jawabanId, element) {
+        if (!confirm('Apakah Anda yakin ingin menghapus file ini?')) return;
+
+        const li = element.closest('li');
+        const originalContent = li.innerHTML;
+        li.innerHTML = '<span class="text-xs text-gray-400">Menghapus...</span>';
+
+        fetch('{{ route("kuesioner.file.delete.legacy", ":id") }}'.replace(':id', jawabanId), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                const container = li.closest('.space-y-3');
+                li.remove();
+                if (container) {
+                    container.insertAdjacentHTML('afterbegin', '<div class="text-[12px] text-gray-500 italic mt-1">Belum ada dokumen yang diupload.</div>');
+                }
+            } else {
+                alert(result.message || 'Gagal menghapus file');
+                li.innerHTML = originalContent;
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting legacy file:', error);
+            alert('Terjadi kesalahan saat menghapus file');
+            li.innerHTML = originalContent;
+        });
+    }
 });
 </script>
 @endpush

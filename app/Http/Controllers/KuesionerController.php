@@ -1032,4 +1032,39 @@ class KuesionerController extends Controller
             'Content-Disposition' => 'inline; filename="' . ($file->original_name ?: basename($file->file_path)) . '"'
         ]);
     }
+
+    /**
+     * Hapus file dokumen kuesioner
+     */
+    public function deleteFile($id)
+    {
+        $file = JawabanFile::with('jawaban')->findOrFail($id);
+        $jawaban = $file->jawaban;
+
+        $user = Auth::user();
+        // Hanya pemilik (operator OPD) atau admin yang bisa menghapus
+        if ($user->role === 'operator' && $jawaban->opd_id !== $user->opd_id) {
+            return response()->json(['success' => false, 'message' => 'Akses ditolak.'], 403);
+        }
+
+        try {
+            // Hapus dari storage
+            if (Storage::disk('sftp')->exists($file->file_path)) {
+                Storage::disk('sftp')->delete($file->file_path);
+            }
+
+            // Hapus dari database
+            $file->delete();
+
+            // Jika jawaban.file_path sama dengan file yang dihapus, update ke file lain atau null
+            if ($jawaban->file_path === $file->file_path) {
+                $lastFile = $jawaban->files()->latest()->first();
+                $jawaban->update(['file_path' => $lastFile ? $lastFile->file_path : null]);
+            }
+
+            return response()->json(['success' => true, 'message' => 'File berhasil dihapus.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal menghapus file: ' . $e->getMessage()], 500);
+        }
+    }
 }

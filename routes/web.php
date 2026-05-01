@@ -62,6 +62,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [KuesionerController::class, 'index'])->name('index');
         Route::get('/file/{id}', [KuesionerController::class, 'viewFile'])->name('file.view');
         Route::get('/file-item/{id}', [KuesionerController::class, 'viewFileItem'])->name('file.item.view');
+        Route::post('/file-item/delete/{id}', [KuesionerController::class, 'deleteFile'])->name('file.item.delete');
+        Route::post('/file/delete-legacy/{id}', [KuesionerController::class, 'deleteLegacyFile'])->name('file.delete.legacy');
         Route::get('/{periode}', [KuesionerController::class, 'show'])->name('show');
         Route::post('/kirim', [KuesionerController::class, 'kirimVerifikator'])->name('kirim.verifikator');
         Route::get('/{periode}/{subKategori}', [KuesionerController::class, 'fill'])->name('fill');
