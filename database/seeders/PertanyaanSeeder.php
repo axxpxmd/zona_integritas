@@ -1408,6 +1408,48 @@ class PertanyaanSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+
+            [
+                'indikator_id' => 43,
+                'kode' => 'a',
+                'pertanyaan' => 'Nilai Survey Persepsi Korupsi (Survei Eksternal)',
+                'penjelasan' => '',
+                'tipe_jawaban' => 'angka',
+                'pilihan_jawaban' => json_encode([]),
+                'urutan' => 1,
+                'status' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'indikator_id' => 44,
+                'kode' => 'b',
+                'pertanyaan' => 'Capaian Kinerja Lebih Baik dari pada Capaian Kinerja Sebelumnya',
+                'penjelasan' => 'a. Target kinerja utama tercapai lebih dari 100% dan lebih baik dari capaian kinerja utama tahun sebelumnya serta lebih baik dari capaian kinerja nasional/rata-rata capaian kinerja unit yang sejenis;
+b.Target kinerja utama tercapai 100% dan lebih baik dari capaian kinerja utama tahun sebelumnya;
+c.Target kinerja utama tercapai 100% atau lebih, namun tidak lebih baik dari capaian kinerja utama tahun sebelumnya;
+d. Kinerja utama sudah orientasi hasil akan tetapi masih terdapat target kinerja utama yang tidak tercapai;
+e. Kinerja utama tidak berorientasi hasil
+',
+                'tipe_jawaban' => 'pilihan_ganda',
+                'pilihan_jawaban' => json_encode(['A', 'B', 'C', 'D', 'E']),
+                'urutan' => 2,
+                'status' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'indikator_id' => 45,
+                'kode' => 'a',
+                'pertanyaan' => 'Nilai Persepsi Kualitas Pelayanan (Survei Eksternal)',
+                'penjelasan' => '',
+                'tipe_jawaban' => 'angka',
+                'pilihan_jawaban' => json_encode([]),
+                'urutan' => 1,
+                'status' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ];
 
         DB::table('tm_pertanyaan')->insert($pertanyaans);
