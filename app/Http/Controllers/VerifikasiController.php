@@ -48,6 +48,8 @@ class VerifikasiController extends Controller
 
             $submittedOpds = Opd::whereIn('id', $opdIds)->get();
 
+            $totalRequired = \App\Models\Pertanyaan::where('status', 1)->count();
+
             // For each OPD, we can also get the date they submitted (max updated_at where status=final)
             foreach ($submittedOpds as $opd) {
                 $lastSubmit = Jawaban::where('periode_id', $activePeriode->id)
@@ -56,6 +58,21 @@ class VerifikasiController extends Controller
                     ->max('updated_at');
 
                 $opd->submitted_at = $lastSubmit;
+
+                // Verifikasi stats per OPD
+                $opd_base = Jawaban::where('periode_id', $activePeriode->id)
+                    ->where('opd_id', $opd->id)
+                    ->whereNull('sub_pertanyaan_id');
+
+                $opd->total_jawaban = $opd_base->count();
+                $opd->terverifikasi = (clone $opd_base)->where('status_verifikasi', 'disetujui')->count();
+                $opd->direvisi = (clone $opd_base)->where('status_verifikasi', 'direvisi')->count();
+                $opd->belum_terverifikasi = (clone $opd_base)->where('status_verifikasi', 'belum_diverifikasi')->count();
+                $opd->menunggu_dicek_ulang = (clone $opd_base)->where('menunggu_dicek_ulang', true)->count();
+                $opd->total_pertanyaan = $totalRequired;
+                $opd->persen = $opd->total_jawaban > 0 
+                    ? min(100, round((($opd->terverifikasi + $opd->direvisi) / $opd->total_jawaban) * 100)) 
+                    : 0;
             }
         }
 

@@ -60,60 +60,63 @@
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                            <thead class="bg-gray-50 border-b border-gray-100">
                                 <tr>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">
-                                        No</th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit
-                                        Kerja / OPD</th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Tanggal Kirim</th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Status</th>
-                                    <th scope="col"
-                                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi
-                                    </th>
+                                    <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">No</th>
+                                    <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Kerja / OPD</th>
+                                    <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Disetujui</th>
+                                    <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Direvisi</th>
+                                    <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Belum</th>
+                                    <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
+                                    <th scope="col" class="px-5 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach($submittedOpds as $index => $opd)
-                                    <tr class="hover:bg-gray-50 transition-colors">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $index + 1 }}
-                                        </td>
-                                        <td class="px-6 py-4">
+                                    <tr class="hover:bg-gray-50/50 transition-colors">
+                                        <td class="px-5 py-3 whitespace-nowrap text-sm text-gray-500">{{ $index + 1 }}</td>
+                                        <td class="px-5 py-3">
                                             <div class="text-sm font-medium text-gray-900">{{ $opd->n_opd }}</div>
-                                            <div class="text-xs text-gray-500 mt-0.5 truncate max-w-xs">{{ $opd->alamat }}</div>
+                                            <div class="text-xs text-gray-500 mt-0.5">Dikirim: {{ \Carbon\Carbon::parse($opd->submitted_at)->format('d M Y, H:i') }} WIB</div>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900">
-                                                {{ \Carbon\Carbon::parse($opd->submitted_at)->format('d M Y') }}
+                                        <td class="px-5 py-3 text-center">
+                                            <div class="flex flex-col items-center justify-center gap-1.5">
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-green-100 text-green-800">
+                                                    Final
+                                                </span>
+                                                <span class="text-[10px] text-gray-500 font-medium">Terisi: {{ $opd->total_jawaban }}/{{ $opd->total_pertanyaan }}</span>
                                             </div>
-                                            <div class="text-xs text-gray-500">
-                                                {{ \Carbon\Carbon::parse($opd->submitted_at)->format('H:i') }} WIB
+                                        </td>
+                                        <td class="px-5 py-3 text-center"><span class="font-semibold text-green-700">{{ $opd->terverifikasi }}</span></td>
+                                        <td class="px-5 py-3 text-center"><span class="font-semibold {{ $opd->direvisi > 0 ? 'text-red-600' : 'text-gray-400' }}">{{ $opd->direvisi }}</span></td>
+                                        <td class="px-5 py-3 text-center">
+                                            <div class="flex flex-col items-center justify-center gap-1">
+                                                <span class="font-semibold text-gray-500">{{ $opd->belum_terverifikasi }}</span>
+                                                @if($opd->menunggu_dicek_ulang > 0)
+                                                    <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold" title="{{ $opd->menunggu_dicek_ulang }} jawaban menunggu dicek ulang">{{ $opd->menunggu_dicek_ulang }}</span>
+                                                @endif
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span
-                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                Final (Terkirim)
-                                            </span>
+                                        <td class="px-5 py-3">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-24 bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                                    <div class="h-1.5 rounded-full {{ $opd->persen >= 100 ? 'bg-green-500' : 'bg-teal-500' }}" style="width: {{ $opd->persen }}%"></div>
+                                                </div>
+                                                <span class="text-xs font-semibold text-gray-600">{{ $opd->persen }}%</span>
+                                            </div>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <td class="px-5 py-3 whitespace-nowrap text-right text-sm font-medium">
                                             <a href="{{ route('verifikasi.show', [$activePeriode->id, $opd->id]) }}"
-                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
-                                                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor"
+                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors text-xs">
+                                                <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor"
                                                     viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                 </svg>
-                                                Verifikasi Jawaban
+                                                Verifikasi
                                             </a>
                                         </td>
                                     </tr>
