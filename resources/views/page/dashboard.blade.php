@@ -447,17 +447,22 @@
 												<p class="font-medium text-gray-900 text-sm">{{ $row->opd->n_opd }}</p>
 											</td>
 											<td class="px-5 py-3 text-center">
-												@if($row->isFinal)
-													<span
-														class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-700">
-														<span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> Sudah Kirim
+												<div class="flex flex-col items-center justify-center gap-1.5">
+													@if($row->isFinal)
+														<span
+															class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-700">
+															<span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> Sudah Kirim
+														</span>
+													@else
+														<span
+															class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-500">
+															Belum Kirim
+														</span>
+													@endif
+													<span class="text-[10px] text-gray-500 font-medium">
+														Terisi: {{ $row->totalDiisi }}/{{ $row->totalRequired }}
 													</span>
-												@else
-													<span
-														class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-500">
-														Belum Kirim
-													</span>
-												@endif
+												</div>
 											</td>
 											<td class="px-5 py-3 text-center"><span
 													class="font-semibold text-green-700">{{ $row->disetujui }}</span></td>

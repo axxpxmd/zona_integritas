@@ -255,6 +255,8 @@ class DashboardController extends Controller
         $periodeId = $activePeriode->id;
         $now = Carbon::now()->startOfDay();
 
+        $totalRequired = \App\Models\Pertanyaan::where('status', 1)->count();
+
         // OPD yang di-assign ke verifikator ini (atau semua OPD jika admin)
         if ($user->role === 'admin') {
             $assignedOpdIds = Opd::pluck('id');
@@ -324,6 +326,8 @@ class DashboardController extends Controller
                     'total' => $jmlTotal,
                     'menunggu' => $jmlMenunggu,
                     'persen' => $persen,
+                    'totalDiisi' => $jmlTotal,
+                    'totalRequired' => $totalRequired,
                 ]);
             }
             $opdProgressVerif = $opdProgressVerif->sortByDesc('isFinal')->sortByDesc('persen')->values();
