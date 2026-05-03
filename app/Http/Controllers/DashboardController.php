@@ -102,9 +102,9 @@ class DashboardController extends Controller
             $operatorStats = $this->getOperatorStats($activePeriode, $user->opd);
         }
 
-        // Hitung stats verifikasi khusus verifikator
+        // Hitung stats verifikasi khusus verifikator/admin
         $verifikatorStats = [];
-        if ($user->role === 'verifikator') {
+        if ($user->role === 'verifikator' || $user->role === 'admin') {
             $verifikatorStats = $this->getVerifikatorStats($activePeriode, $user);
         }
 
@@ -255,10 +255,14 @@ class DashboardController extends Controller
         $periodeId = $activePeriode->id;
         $now = Carbon::now()->startOfDay();
 
-        // OPD yang di-assign ke verifikator ini
-        $assignedOpdIds = \Illuminate\Support\Facades\DB::table('opd_verifikator')
-            ->where('user_id', $user->id)
-            ->pluck('opd_id');
+        // OPD yang di-assign ke verifikator ini (atau semua OPD jika admin)
+        if ($user->role === 'admin') {
+            $assignedOpdIds = Opd::pluck('id');
+        } else {
+            $assignedOpdIds = \Illuminate\Support\Facades\DB::table('opd_verifikator')
+                ->where('user_id', $user->id)
+                ->pluck('opd_id');
+        }
 
         $totalOpdAssigned = $assignedOpdIds->count();
 
@@ -276,11 +280,11 @@ class DashboardController extends Controller
             ->whereIn('opd_id', $assignedOpdIds)
             ->whereNull('sub_pertanyaan_id');
 
-        $totalDisetujui          = (clone $baseQuery)->where('status_verifikasi', 'disetujui')->count();
-        $totalDirevisi           = (clone $baseQuery)->where('status_verifikasi', 'direvisi')->count();
-        $totalBelumDiverifikasi  = (clone $baseQuery)->where('status_verifikasi', 'belum_diverifikasi')->count();
+        $totalDisetujui = (clone $baseQuery)->where('status_verifikasi', 'disetujui')->count();
+        $totalDirevisi = (clone $baseQuery)->where('status_verifikasi', 'direvisi')->count();
+        $totalBelumDiverifikasi = (clone $baseQuery)->where('status_verifikasi', 'belum_diverifikasi')->count();
         $totalMenungguDicekUlang = (clone $baseQuery)->where('menunggu_dicek_ulang', true)->count();
-        $totalJawaban            = (clone $baseQuery)->count();
+        $totalJawaban = (clone $baseQuery)->count();
 
         // Progress verifikasi keseluruhan (disetujui + direvisi = sudah ditindaklanjuti)
         $persenVerifikasi = $totalJawaban > 0
@@ -302,24 +306,24 @@ class DashboardController extends Controller
                     ->whereNull('sub_pertanyaan_id');
 
                 $jmlDisetujui = (clone $opd_base)->where('status_verifikasi', 'disetujui')->count();
-                $jmlDirevisi  = (clone $opd_base)->where('status_verifikasi', 'direvisi')->count();
-                $jmlBelum     = (clone $opd_base)->where('status_verifikasi', 'belum_diverifikasi')->count();
-                $jmlTotal     = (clone $opd_base)->count();
-                $jmlMenunggu  = (clone $opd_base)->where('menunggu_dicek_ulang', true)->count();
+                $jmlDirevisi = (clone $opd_base)->where('status_verifikasi', 'direvisi')->count();
+                $jmlBelum = (clone $opd_base)->where('status_verifikasi', 'belum_diverifikasi')->count();
+                $jmlTotal = (clone $opd_base)->count();
+                $jmlMenunggu = (clone $opd_base)->where('menunggu_dicek_ulang', true)->count();
 
                 $persen = $jmlTotal > 0
                     ? min(100, round((($jmlDisetujui + $jmlDirevisi) / $jmlTotal) * 100))
                     : 0;
 
                 $opdProgressVerif->push((object) [
-                    'opd'       => $opd,
-                    'isFinal'   => $isFinal,
+                    'opd' => $opd,
+                    'isFinal' => $isFinal,
                     'disetujui' => $jmlDisetujui,
-                    'direvisi'  => $jmlDirevisi,
-                    'belum'     => $jmlBelum,
-                    'total'     => $jmlTotal,
-                    'menunggu'  => $jmlMenunggu,
-                    'persen'    => $persen,
+                    'direvisi' => $jmlDirevisi,
+                    'belum' => $jmlBelum,
+                    'total' => $jmlTotal,
+                    'menunggu' => $jmlMenunggu,
+                    'persen' => $persen,
                 ]);
             }
             $opdProgressVerif = $opdProgressVerif->sortByDesc('isFinal')->sortByDesc('persen')->values();
@@ -333,19 +337,19 @@ class DashboardController extends Controller
         $isVerifActive = ($startVerif && $endVerif) ? $now->between($startVerif, $endVerif) : false;
 
         return [
-            'totalOpdAssigned'        => $totalOpdAssigned,
-            'opdSudahKirim'           => $opdSudahKirim,
-            'opdBelumKirim'           => $opdBelumKirim,
-            'totalDisetujui'          => $totalDisetujui,
-            'totalDirevisi'           => $totalDirevisi,
-            'totalBelumDiverifikasi'  => $totalBelumDiverifikasi,
+            'totalOpdAssigned' => $totalOpdAssigned,
+            'opdSudahKirim' => $opdSudahKirim,
+            'opdBelumKirim' => $opdBelumKirim,
+            'totalDisetujui' => $totalDisetujui,
+            'totalDirevisi' => $totalDirevisi,
+            'totalBelumDiverifikasi' => $totalBelumDiverifikasi,
             'totalMenungguDicekUlang' => $totalMenungguDicekUlang,
-            'totalJawaban'            => $totalJawaban,
-            'persenVerifikasi'        => $persenVerifikasi,
-            'opdProgressVerif'        => $opdProgressVerif,
-            'isVerifActive'           => $isVerifActive,
-            'startVerif'              => $startVerif,
-            'endVerif'                => $endVerif,
+            'totalJawaban' => $totalJawaban,
+            'persenVerifikasi' => $persenVerifikasi,
+            'opdProgressVerif' => $opdProgressVerif,
+            'isVerifActive' => $isVerifActive,
+            'startVerif' => $startVerif,
+            'endVerif' => $endVerif,
         ];
     }
 }
