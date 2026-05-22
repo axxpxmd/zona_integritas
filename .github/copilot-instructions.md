@@ -4,7 +4,8 @@
 Aplikasi Zona Integritas (WBK/WBBM) digunakan untuk mengakomodir pengisian dan verifikasi Lembar Kerja Evaluasi (LKE) / Kuesioner untuk OPD (Organisasi Perangkat Daerah). Sistem ini memiliki 3 role utama:
 1. **Admin:** Mengelola master data, periode, struktur kuesioner, dan user.
 2. **Operator:** Mengisi kuesioner evaluasi pada rentang waktu yang ditentukan di `tm_periode`. Jika sudah selesai, akan dikirimkan ke Verifikator.
-3. **Verifikator:** Memverifikasi kuesioner yang dikirim Operator. Bisa menyetujui, merevisi jawaban secara langsung (tetap menyimpan jawaban asli operator sebagai histori), atau mengembalikan pertanyaan/kuesioner ke operator dengan status revisi agar diperbaiki oleh operator.
+3. **Verifikator:** Memverifikasi kuesioner yang dikirim Operator. Bisa menyetujui, merevisi jawaban secara langsung (tetap menyimpan jawaban asli operator sebagai histori), atau mengembalikan pertanyaan/kuesioner ke operator dengan status revisi agar diperbaiki oleh operator. Setelah selesai memverifikasi, bisa mengirimkan hasil verifikasi ke Verifikator Menhan untuk tahap finalisasi.
+4. **Verifikator Menhan:** Role khusus untuk memverifikasi kuesioner yang sudah diverifikasi oleh Verifikator biasa. Hanya bisa mengubah jawaban yang sudah disetujui Verifikator biasa, tidak bisa merevisi. Merevisi jawaban Verifikator biasa berarti mengubah jawaban yang sudah disetujui tersebut, sehingga tetap menyimpan histori jawaban operator dan verifikator biasa.
 
 ## Tech Stack & Architecture
 - **Backend:** Laravel 12, PHP 8.2+, Eloquent ORM
