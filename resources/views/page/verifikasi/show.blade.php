@@ -188,7 +188,7 @@
                 </div>
             </div>
         @endif
-        @if(config('app.debug') || env('APP_ENV') === 'local')
+        {{-- @if(config('app.debug') || env('APP_ENV') === 'local')
             <form action="{{ route('verifikasi.verify-all-dev', [$periode->id, $opd->id]) }}" method="POST"
                 onsubmit="return confirm('Yakin ingin verifikasi semua pertanyaan untuk OPD ini secara otomatis (DEV ONLY)?');">
                 @csrf
@@ -200,7 +200,7 @@
                     [DEV] Verifikasi Semua
                 </button>
             </form>
-        @endif
+        @endif --}}
 
         {{-- Komponen Loop --}}
         @foreach($komponens as $komponen)
