@@ -51,7 +51,7 @@
     @endif
 
     {{-- Info --}}
-    @if($isSent)
+    @if($statusFinal)
     <div class="bg-green-50 border border-green-200 rounded-lg p-4">
         <div class="flex gap-3">
             <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -77,7 +77,7 @@
     </div>
     @endif
 
-    @if($isAllAnswered && !$isSent && $isCanFill)
+    @if($isAllAnswered && !$statusFinal && $isCanFill)
     <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-center justify-between">
         <div class="flex gap-3">
             <svg class="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -140,7 +140,7 @@
             </div>
 
             <div class="flex flex-col h-[calc(100%-3rem)] justify-center items-center text-center">
-                @if($isSent)
+                @if($statusFinal)
                     <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-3">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                     </div>

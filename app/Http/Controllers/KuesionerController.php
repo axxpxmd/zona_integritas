@@ -179,7 +179,8 @@ class KuesionerController extends Controller
             'totalBelumTerjawab',
             'totalDisetujui',
             'totalRevisi',
-            'totalBelumDiverifikasi'
+            'totalBelumDiverifikasi',
+            'statusFinal'
         ));
     }
 

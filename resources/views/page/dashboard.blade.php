@@ -431,7 +431,7 @@
 								<thead class="bg-gray-50 border-b border-gray-100">
 									<tr>
 										<th class="px-5 py-3 font-medium text-gray-700">Nama OPD</th>
-										<th class="px-5 py-3 font-medium text-gray-700 text-center">Status</th>
+										<th class="px-5 py-3 font-medium text-gray-700 text-center">Status Pengisian</th>
 										<th class="px-5 py-3 font-medium text-gray-700 text-center">Disetujui</th>
 										<th class="px-5 py-3 font-medium text-gray-700 text-center">Direvisi</th>
 										<th class="px-5 py-3 font-medium text-gray-700 text-center">Belum</th>
