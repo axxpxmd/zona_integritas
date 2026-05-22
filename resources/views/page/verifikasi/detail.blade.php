@@ -329,7 +329,7 @@
                                         <ol class="list-decimal list-inside space-y-1 mt-1 text-[13px] ml-1">
                                             @foreach($uploadedFiles as $file)
                                             <li class="text-gray-600">
-                                                <a href="{{ route('kuesioner.file.item.view', $file->id) }}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1 align-middle">
+                                                <a href="{{ route('kuesioner.file.item.view', $file->id) }}" target="_blank" data-file-url="{{ route('kuesioner.file.item.view', $file->id) }}" class="js-view-file text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1 align-middle">
                                                     <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
                                                     </svg>
@@ -344,7 +344,7 @@
                                     @elseif($jawabanParent && $jawabanParent->file_path)
                                         <ul class="list-disc list-inside mt-1 text-[13px] ml-1">
                                             <li class="text-gray-600">
-                                                <a href="{{ route('kuesioner.file.view', $jawabanParent->id) }}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1 align-middle">
+                                                <a href="{{ route('kuesioner.file.view', $jawabanParent->id) }}" target="_blank" data-file-url="{{ route('kuesioner.file.view', $jawabanParent->id) }}" class="js-view-file text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1 align-middle">
                                                     <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
                                                     </svg>
@@ -361,7 +361,7 @@
                             </div>
 
                             </fieldset>
-                            
+
                             {{-- Verifikasi --}}
                             <div class="mt-4 pt-4 border-t border-gray-200">
                                 <fieldset @if(!$isCanVerify) disabled @endif>
@@ -416,7 +416,7 @@
 
                                         <div class="flex items-center gap-3 shrink-0">
                                             @if($statusVerifikasi == 'disetujui')
-                                                <button type="button" 
+                                                <button type="button"
                                                         onclick="cancelVerification('{{ route('verifikasi.cancel-pertanyaan', [$periode->id, $opd->id, $subKategori->id, $pertanyaan->id]) }}')"
                                                         class="px-3 py-2 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg border border-red-200 transition-colors flex items-center gap-1.5 uppercase tracking-wide">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -425,7 +425,7 @@
                                                     Batalkan Verifikasi
                                                 </button>
                                             @elseif($statusVerifikasi === 'direvisi')
-                                                <button type="button" 
+                                                <button type="button"
                                                         onclick="cancelRevisi('{{ route('verifikasi.cancel-revisi', [$periode->id, $opd->id, $subKategori->id, $pertanyaan->id]) }}')"
                                                         class="px-3 py-2 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg border border-red-200 transition-colors flex items-center gap-1.5 uppercase tracking-wide">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -646,7 +646,24 @@
         </div>
     </div>
 </div>
-    {{-- Hidden form for canceling verification --}}
+
+{{-- Modal Preview File --}}
+<div id="filePreviewModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/50" data-file-preview-close></div>
+    <div class="relative w-full max-w-4xl h-[80vh] bg-white rounded-xl overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-3 bg-gray-50">
+            <p class="text-sm font-semibold text-gray-800">Preview Dokumen</p>
+            <button type="button" id="closeFilePreview" class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg" aria-label="Tutup">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <iframe id="filePreviewFrame" class="w-full h-full" src="" title="Preview Dokumen"></iframe>
+    </div>
+</div>
+
+{{-- Hidden form for canceling verification --}}
     <form id="cancelVerificationForm" method="POST" class="hidden">
         @csrf
         <input type="hidden" name="current_page" value="{{ $currentPage }}">
@@ -663,6 +680,57 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('verifikasiForm');
+
+    const filePreviewModal = document.getElementById('filePreviewModal');
+    const filePreviewFrame = document.getElementById('filePreviewFrame');
+    const closeFilePreview = document.getElementById('closeFilePreview');
+
+    function openFilePreview(url) {
+        if (!filePreviewModal || !filePreviewFrame) {
+            window.open(url, '_blank');
+            return;
+        }
+        filePreviewFrame.src = url;
+        filePreviewModal.classList.remove('hidden');
+        filePreviewModal.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
+    }
+
+    function closeFilePreviewModal() {
+        if (!filePreviewModal || !filePreviewFrame) return;
+        filePreviewFrame.src = '';
+        filePreviewModal.classList.add('hidden');
+        filePreviewModal.classList.remove('flex');
+        document.body.classList.remove('overflow-hidden');
+    }
+
+    document.querySelectorAll('.js-view-file').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const url = this.dataset.fileUrl || this.getAttribute('href');
+            if (!url) return;
+            e.preventDefault();
+            openFilePreview(url);
+        });
+    });
+
+    if (filePreviewModal) {
+        filePreviewModal.addEventListener('click', function(e) {
+            if (e.target.matches('[data-file-preview-close]')) {
+                closeFilePreviewModal();
+            }
+        });
+    }
+
+    if (closeFilePreview) {
+        closeFilePreview.addEventListener('click', closeFilePreviewModal);
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && filePreviewModal && !filePreviewModal.classList.contains('hidden')) {
+            closeFilePreviewModal();
+        }
+    });
+
     if (!form) return;
 
     // Auto-sum logic: sama seperti di form kuesioner
