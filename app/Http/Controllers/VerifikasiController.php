@@ -234,6 +234,7 @@ class VerifikasiController extends Controller
                 $jawabans = Jawaban::where('periode_id', $periode->id)
                     ->where('opd_id', $opd->id)
                     ->where('pertanyaan_id', $pertanyaanId)
+                    ->where('status_verifikasi', '!=', 'direvisi')
                     ->get();
 
                 foreach ($jawabans as $jawaban) {
