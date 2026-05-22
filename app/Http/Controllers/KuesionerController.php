@@ -72,7 +72,7 @@ class KuesionerController extends Controller
             ->where('opd_id', $opd->id)
             ->whereNotNull('sub_pertanyaan_id')
             ->get()
-            ->keyBy(fn($j) => $j->pertanyaan_id . '-' . $j->sub_pertanyaan_id);
+            ->keyBy(fn ($j) => $j->pertanyaan_id . '-' . $j->sub_pertanyaan_id);
 
         $totalSemuaPertanyaan = 0;
         $totalPertanyaanTerjawab = 0;
@@ -236,20 +236,20 @@ class KuesionerController extends Controller
             ->whereIn('pertanyaan_id', $pertanyaanIds)
             ->whereNotNull('sub_pertanyaan_id')
             ->get()
-            ->keyBy(fn($j) => $j->pertanyaan_id . '-' . $j->sub_pertanyaan_id);
+            ->keyBy(fn ($j) => $j->pertanyaan_id . '-' . $j->sub_pertanyaan_id);
 
         // Muat struktur pertanyaan yang direvisi, dikelompokkan per sub-kategori → per indikator
         $pertanyaanAllRevisi = Pertanyaan::whereIn('id', $pertanyaanIds)
             ->with([
-                'subPertanyaans' => fn($q) => $q->where('status', 1)->orderBy('urutan'),
+                'subPertanyaans' => fn ($q) => $q->where('status', 1)->orderBy('urutan'),
                 'indikator.subKategori.kategori.komponen',
             ])
             ->get();
 
         // Nested groupBy: [sub_kategori_id][indikator_id] → collection of pertanyaan
         $pertanyaanRevisi = $pertanyaanAllRevisi->groupBy([
-            fn($p) => $p->indikator->sub_kategori_id ?? 0,
-            fn($p) => $p->indikator_id ?? 0,
+            fn ($p) => $p->indikator->sub_kategori_id ?? 0,
+            fn ($p) => $p->indikator_id ?? 0,
         ]);
 
         // Kumpulkan objek sub-kategori unik untuk tampilan
@@ -306,7 +306,9 @@ class KuesionerController extends Controller
 
         foreach ($pertanyaanIds as $pertanyaanId) {
             $pertanyaan = Pertanyaan::find($pertanyaanId);
-            if (!$pertanyaan) continue;
+            if (!$pertanyaan) {
+                continue;
+            }
 
             // Cari jawaban yang direvisi
             $existingJawaban = Jawaban::where('periode_id', $periodeId)
@@ -316,14 +318,18 @@ class KuesionerController extends Controller
                 ->where('status_verifikasi', 'direvisi')
                 ->first();
 
-            if (!$existingJawaban) continue;
+            if (!$existingJawaban) {
+                continue;
+            }
 
             if (!$pertanyaan->has_sub_pertanyaan) {
                 $jawaban    = $jawabanData[$pertanyaanId] ?? null;
                 $keterangan = $keteranganData[$pertanyaanId] ?? null;
                 $files      = $fileData[$pertanyaanId] ?? [];
 
-                if (!is_array($files)) $files = [$files];
+                if (!is_array($files)) {
+                    $files = [$files];
+                }
 
                 // Update jawaban
                 if ($jawaban !== null) {
@@ -343,7 +349,9 @@ class KuesionerController extends Controller
                 // Sub-pertanyaan
                 $keterangan = $keteranganData[$pertanyaanId] ?? null;
                 $files      = $fileData[$pertanyaanId] ?? [];
-                if (!is_array($files)) $files = [$files];
+                if (!is_array($files)) {
+                    $files = [$files];
+                }
 
                 if (isset($jawabanSubData[$pertanyaanId])) {
                     $nilaiGabungan = $this->hitungNilaiSubPertanyaan($pertanyaan, $jawabanSubData[$pertanyaanId]);
@@ -499,6 +507,9 @@ class KuesionerController extends Controller
             // Handle jawaban untuk pertanyaan utama (non-sub)
             if (!$pertanyaan->has_sub_pertanyaan) {
                 $jawaban = $jawabanData[$pertanyaanId] ?? null;
+                if ($jawaban === null || $jawaban === '') {
+                    continue;
+                }
                 $keterangan = $keteranganData[$pertanyaanId] ?? null;
                 $files = $fileData[$pertanyaanId] ?? [];
 
@@ -516,14 +527,24 @@ class KuesionerController extends Controller
             // Handle jawaban untuk sub-pertanyaan
             else {
                 $nilaiGabungan = null;
-                if (isset($jawabanSubData[$pertanyaanId])) {
-                    // Hitung relasi acuan <=> capaian
-                    $nilaiGabungan = $this->hitungNilaiSubPertanyaan($pertanyaan, $jawabanSubData[$pertanyaanId]);
+                $jawabanSubRaw = $jawabanSubData[$pertanyaanId] ?? [];
+                if (!is_array($jawabanSubRaw)) {
+                    $jawabanSubRaw = [];
+                }
+                $jawabanSub = array_filter($jawabanSubRaw, function ($val) {
+                    return $val !== null && $val !== '';
+                });
 
-                    foreach ($jawabanSubData[$pertanyaanId] as $subPertanyaanId => $subJawaban) {
-                        // Untuk sub-pertanyaan
-                        $this->simpanJawaban($periodeId, $opd->id, $pertanyaanId, $subPertanyaanId, $subJawaban, null, null);
-                    }
+                if (empty($jawabanSub)) {
+                    continue;
+                }
+
+                // Hitung relasi acuan <=> capaian
+                $nilaiGabungan = $this->hitungNilaiSubPertanyaan($pertanyaan, $jawabanSub);
+
+                foreach ($jawabanSub as $subPertanyaanId => $subJawaban) {
+                    // Untuk sub-pertanyaan
+                    $this->simpanJawaban($periodeId, $opd->id, $pertanyaanId, $subPertanyaanId, $subJawaban, null, null);
                 }
 
                 // Simpan keterangan & file (dan nilai) untuk pertanyaan utamanya (parent)
