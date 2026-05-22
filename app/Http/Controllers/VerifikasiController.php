@@ -70,8 +70,8 @@ class VerifikasiController extends Controller
                 $opd->belum_terverifikasi = (clone $opd_base)->where('status_verifikasi', 'belum_diverifikasi')->count();
                 $opd->menunggu_dicek_ulang = (clone $opd_base)->where('menunggu_dicek_ulang', true)->count();
                 $opd->total_pertanyaan = $totalRequired;
-                $opd->persen = $opd->total_jawaban > 0 
-                    ? min(100, round((($opd->terverifikasi + $opd->direvisi) / $opd->total_jawaban) * 100)) 
+                $opd->persen = $opd->total_jawaban > 0
+                    ? min(100, round((($opd->terverifikasi + $opd->direvisi) / $opd->total_jawaban) * 100))
                     : 0;
             }
         }

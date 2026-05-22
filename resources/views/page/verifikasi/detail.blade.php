@@ -404,6 +404,14 @@
                                             <p class="text-xs text-gray-500">
                                                 @if($statusVerifikasi === 'direvisi')
                                                     Permintaan revisi sudah dikirim ke operator. Menunggu operator melakukan perbaikan.
+                                                    @if($statusVerifikasi === 'direvisi' && $jawabanParent?->catatan_revisi)
+                                                    <div class="mt-1 pt-3">
+                                                        <div class="bg-orange-50 border border-orange-200 rounded-lg px-3 py-2">
+                                                            <p class="text-[11px] font-bold text-orange-800 uppercase tracking-wide mb-1">Pesan Revisi ke Operator</p>
+                                                            <p class="text-sm text-orange-900">{{ $jawabanParent->catatan_revisi }}</p>
+                                                        </div>
+                                                    </div>
+                                                    @endif
                                                 @elseif($menungguDicekUlang)
                                                     Operator telah merevisi jawaban ini. Mohon periksa kembali perubahan yang dilakukan.
                                                 @elseif($statusVerifikasi === 'belum_diverifikasi')

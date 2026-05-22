@@ -268,7 +268,7 @@
                                                     </svg>
                                                 </div>
                                                 <div class="flex flex-col min-w-0">
-                                                    <a href="{{ route('kuesioner.file.item.view', $file->id) }}" target="_blank" class="text-blue-600 hover:text-blue-800 hover:underline font-medium truncate">
+                                                    <a href="{{ route('kuesioner.file.item.view', $file->id) }}" target="_blank" data-file-url="{{ route('kuesioner.file.item.view', $file->id) }}" class="js-view-file text-blue-600 hover:text-blue-800 hover:underline font-medium truncate">
                                                         {{ $file->original_name ?? basename($file->file_path) }}
                                                     </a>
                                                     @if($file->size)
@@ -347,6 +347,22 @@
     @endif
 
 </div>
+
+{{-- Modal Preview File --}}
+<div id="filePreviewModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/50" data-file-preview-close></div>
+    <div class="relative w-full max-w-4xl h-[80vh] bg-white rounded-xl overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-3 bg-gray-50">
+            <p class="text-sm font-semibold text-gray-800">Preview Dokumen</p>
+            <button type="button" id="closeFilePreview" class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg" aria-label="Tutup">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <iframe id="filePreviewFrame" class="w-full h-full" src="" title="Preview Dokumen"></iframe>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -405,6 +421,56 @@ document.addEventListener('DOMContentLoaded', function() {
             if (text) text.textContent = 'Mengirim...';
         });
     }
+
+    const filePreviewModal = document.getElementById('filePreviewModal');
+    const filePreviewFrame = document.getElementById('filePreviewFrame');
+    const closeFilePreview = document.getElementById('closeFilePreview');
+
+    function openFilePreview(url) {
+        if (!filePreviewModal || !filePreviewFrame) {
+            window.open(url, '_blank');
+            return;
+        }
+        filePreviewFrame.src = url;
+        filePreviewModal.classList.remove('hidden');
+        filePreviewModal.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
+    }
+
+    function closeFilePreviewModal() {
+        if (!filePreviewModal || !filePreviewFrame) return;
+        filePreviewFrame.src = '';
+        filePreviewModal.classList.add('hidden');
+        filePreviewModal.classList.remove('flex');
+        document.body.classList.remove('overflow-hidden');
+    }
+
+    document.querySelectorAll('.js-view-file').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const url = this.dataset.fileUrl || this.getAttribute('href');
+            if (!url) return;
+            e.preventDefault();
+            openFilePreview(url);
+        });
+    });
+
+    if (filePreviewModal) {
+        filePreviewModal.addEventListener('click', function(e) {
+            if (e.target.matches('[data-file-preview-close]')) {
+                closeFilePreviewModal();
+            }
+        });
+    }
+
+    if (closeFilePreview) {
+        closeFilePreview.addEventListener('click', closeFilePreviewModal);
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && filePreviewModal && !filePreviewModal.classList.contains('hidden')) {
+            closeFilePreviewModal();
+        }
+    });
 
     // Function to delete file via AJAX
     window.deleteFile = function(fileId, element) {
