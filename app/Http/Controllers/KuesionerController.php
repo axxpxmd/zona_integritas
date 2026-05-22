@@ -162,7 +162,7 @@ class KuesionerController extends Controller
 
         $totalDisetujui = Jawaban::where('periode_id', $periode_id)->where('opd_id', $opd->id)->whereNull('sub_pertanyaan_id')->where('status_verifikasi', 'disetujui')->count();
         $totalRevisi = Jawaban::where('periode_id', $periode_id)->where('opd_id', $opd->id)->whereNull('sub_pertanyaan_id')->where('status_verifikasi', 'direvisi')->count();
-        $totalBelumDiverifikasi = Jawaban::where('periode_id', $periode_id)->where('opd_id', $opd->id)->whereNull('sub_pertanyaan_id')->where('status_verifikasi', 'belum_diverifikasi')->whereNotNull('jawaban_text')->count();
+        $totalBelumDiverifikasi = Jawaban::where('periode_id', $periode_id)->where('opd_id', $opd->id)->where('status_verifikasi', 'belum_diverifikasi')->groupBy('sub_pertanyaan_id')->count();
         $totalBelumTerjawab = max(0, $totalSemuaPertanyaan - $totalPertanyaanTerjawab);
 
         $isSent = $statusFinal || $totalDisetujui > 0 || $totalRevisi > 0 || $totalBelumDiverifikasi > 0;
