@@ -391,8 +391,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-        if (text) text.textContent = 'Mengirim...';
-    });
+    const btn = document.getElementById('btnSubmitRevisi');
+    const icon = document.getElementById('revisiIcon');
+    const spinner = document.getElementById('revisiSpinner');
+    const text = document.getElementById('revisiText');
+
+    if (btn) {
+        form.addEventListener('submit', function() {
+            btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            if (spinner) spinner.classList.remove('hidden');
+            if (icon) icon.classList.add('hidden');
+            if (text) text.textContent = 'Mengirim...';
+        });
+    }
 
     // Function to delete file via AJAX
     window.deleteFile = function(fileId, element) {
