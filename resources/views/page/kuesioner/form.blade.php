@@ -369,9 +369,9 @@
                                     <input id="file-{{ $pertanyaan->id }}" type="file"
                                            name="file[{{ $pertanyaan->id }}][]"
                                            class="hidden"
-                                           accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                                         accept=".pdf"
                                            multiple>
-                                    <p class="text-xs text-gray-500">Format: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG. Maksimal 5MB per file.</p>
+                                     <p class="text-xs text-gray-500">Format: PDF. Maksimal 5MB per file.</p>
                                     <div id="selected-files-{{ $pertanyaan->id }}" class="hidden text-xs text-gray-600"></div>
                                 </div>
                             </div>

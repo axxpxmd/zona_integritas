@@ -294,7 +294,7 @@ class KuesionerController extends Controller
             'jawaban'       => 'nullable|array',
             'keterangan'    => 'nullable|array',
             'file'          => 'nullable|array',
-            'file.*.*'      => 'file|max:5120',
+            'file.*.*'      => 'file|mimes:pdf|max:5120',
         ]);
 
         $periodeId      = $request->periode_id;
@@ -485,7 +485,7 @@ class KuesionerController extends Controller
             'keterangan' => 'nullable|array',
             'file' => 'nullable|array',
             'file.*' => 'nullable|array',
-            'file.*.*' => 'file|max:5120',
+            'file.*.*' => 'file|mimes:pdf|max:5120',
         ]);
 
         $periodeId = $request->periode_id;

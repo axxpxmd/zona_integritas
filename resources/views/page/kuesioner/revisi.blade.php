@@ -299,7 +299,7 @@
                                             </div>
                                             <div>
                                                 <p class="text-sm font-medium text-gray-800">Upload dokumen baru</p>
-                                                <p class="text-xs text-gray-500">PDF, DOC, DOCX, XLS, XLSX, JPG, PNG — Maks 5MB</p>
+                                                <p class="text-xs text-gray-500">PDF — Maks 5MB</p>
                                             </div>
                                         </div>
                                         <span class="px-3 py-1.5 text-xs font-medium bg-orange-500 text-white rounded-lg">Pilih File</span>
@@ -307,7 +307,7 @@
                                     <input id="file-{{ $pertanyaan->id }}" type="file"
                                            name="file[{{ $pertanyaan->id }}][]"
                                            class="hidden"
-                                           accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+                                           accept=".pdf"
                                            multiple>
                                     <div id="selected-files-{{ $pertanyaan->id }}" class="hidden text-xs text-gray-600"></div>
                                     @endif
