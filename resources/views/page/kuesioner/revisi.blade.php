@@ -88,11 +88,7 @@
     </div>
 
     {{-- Form Revisi --}}
-    <form action="{{ route('kuesioner.revisi.submit') }}" method="POST" enctype="multipart/form-data" id="revisiForm">
-        @csrf
-        <input type="hidden" name="periode_id" value="{{ $periode->id }}">
-
-        <div class="space-y-8">
+    <div class="space-y-8">
             @foreach($pertanyaanRevisi as $subKategoriId => $pertanyaans)
             @php $subKategori = $subKategoris[$subKategoriId] ?? null; @endphp
 
@@ -138,7 +134,9 @@
                         $jawaban = $jawabanRevisis[$pertanyaan->id] ?? null;
                     @endphp
 
-                    <div class="p-6">
+                    <form action="{{ route('kuesioner.revisi.submit') }}" method="POST" enctype="multipart/form-data" class="p-6 revisiForm">
+                        @csrf
+                        <input type="hidden" name="periode_id" value="{{ $periode->id }}">
                         <input type="hidden" name="pertanyaan_id[]" value="{{ $pertanyaan->id }}">
 
                         {{-- Catatan Revisi Verifikator --}}
@@ -314,36 +312,29 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+
+                        @if($isCanRevisi)
+                        <div class="mt-5 flex items-center justify-end">
+                            <button type="submit" class="btn-submit-revisi inline-flex items-center gap-2 px-5 py-2.5 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-semibold text-xs">
+                                <svg class="revisi-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                                </svg>
+                                <svg class="revisi-spinner hidden w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span class="revisi-text">Kirim Revisi Pertanyaan Ini</span>
+                            </button>
+                        </div>
+                        @endif
+                    </form>
                     @endforeach
                     </div>{{-- /div.divide-y pertanyaan --}}
                     @endforeach
                 </div>{{-- /div.divide-y indikator --}}
             </div>{{-- /sub-kategori card --}}
             @endforeach
-        </div>
-
-        {{-- Submit Button --}}
-        @if($isCanRevisi)
-        <div class="mt-6 flex items-center justify-end gap-3">
-            <a href="{{ route('kuesioner.show', $periode->id) }}"
-               class="px-5 py-2.5 text-sm font-medium text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                Batal
-            </a>
-            <button type="submit" id="btnSubmitRevisi"
-                    class="inline-flex items-center gap-2 px-6 py-2.5 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-semibold text-sm">
-                <svg id="revisiIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-                </svg>
-                <svg id="revisiSpinner" class="hidden w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <span id="revisiText">Kirim Revisi ke Verifikator</span>
-            </button>
-        </div>
-        @endif
-    </form>
+    </div>
     @endif
 
 </div>
@@ -368,59 +359,65 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('revisiForm');
-    if (!form) return;
+    const forms = document.querySelectorAll('.revisiForm');
+    if (!forms.length) return;
 
-    // Show selected file names
-    form.querySelectorAll('input[type="file"][id^="file-"]').forEach(input => {
-        input.addEventListener('change', function() {
-            const id = this.id.replace('file-', '');
-            const listEl = document.getElementById('selected-files-' + id);
-            if (!listEl) return;
-            const files = Array.from(this.files || []);
-            if (files.length === 0) {
-                listEl.classList.add('hidden');
-                listEl.innerHTML = '';
-                return;
-            }
-            const items = files.map((f, i) => `<div class="truncate">${i + 1}. ${f.name}</div>`).join('');
-            listEl.innerHTML = `<div class="text-orange-600 ml-4 space-y-0.5">${items}</div>`;
-            listEl.classList.remove('hidden');
+    forms.forEach(form => {
+        // Show selected file names
+        form.querySelectorAll('input[type="file"][id^="file-"]').forEach(input => {
+            input.addEventListener('change', function() {
+                const id = this.id.replace('file-', '');
+                const listEl = document.getElementById('selected-files-' + id);
+                if (!listEl) return;
+                const files = Array.from(this.files || []);
+                if (files.length === 0) {
+                    listEl.classList.add('hidden');
+                    listEl.innerHTML = '';
+                    return;
+                }
+                const items = files.map((f, i) => `<div class="truncate">${i + 1}. ${f.name}</div>`).join('');
+                listEl.innerHTML = `<div class="text-orange-600 ml-4 space-y-0.5">${items}</div>`;
+                listEl.classList.remove('hidden');
+            });
         });
+
+        // Auto-sum untuk sub pertanyaan
+        form.querySelectorAll('input[class*="sum-part-"]').forEach(input => {
+            input.addEventListener('input', function() {
+                const pid = this.dataset.pertanyaanId;
+                const targetInput = form.querySelector('.sum-target-' + pid);
+                if (targetInput) {
+                    let total = null;
+                    form.querySelectorAll('.sum-part-' + pid).forEach(part => {
+                        if (part.value !== '') {
+                            const val = parseFloat(part.value);
+                            if (!isNaN(val)) { if (total === null) total = 0; total += val; }
+                        }
+                    });
+                    targetInput.value = total !== null ? total : '';
+                }
+            });
+        });
+
+        const btn = form.querySelector('.btn-submit-revisi');
+        const icon = form.querySelector('.revisi-icon');
+        const spinner = form.querySelector('.revisi-spinner');
+        const text = form.querySelector('.revisi-text');
+
+        if (btn) {
+            form.addEventListener('submit', function(e) {
+                if (!confirm('Apakah anda sudah yakin untuk mengirim revisi untuk pertanyaan ini? Pastikan semua jawaban sudah benar dan dokumen pendukung sudah terupload dengan benar.')) {
+                    e.preventDefault();
+                    return;
+                }
+                btn.disabled = true;
+                btn.classList.add('opacity-75', 'cursor-not-allowed');
+                if (spinner) spinner.classList.remove('hidden');
+                if (icon) icon.classList.add('hidden');
+                if (text) text.textContent = 'Mengirim...';
+            });
+        }
     });
-
-    // Auto-sum untuk sub pertanyaan
-    form.querySelectorAll('input[class*="sum-part-"]').forEach(input => {
-        input.addEventListener('input', function() {
-            const pid = this.dataset.pertanyaanId;
-            const targetInput = form.querySelector('.sum-target-' + pid);
-            if (targetInput) {
-                let total = null;
-                form.querySelectorAll('.sum-part-' + pid).forEach(part => {
-                    if (part.value !== '') {
-                        const val = parseFloat(part.value);
-                        if (!isNaN(val)) { if (total === null) total = 0; total += val; }
-                    }
-                });
-                targetInput.value = total !== null ? total : '';
-            }
-        });
-    });
-
-    const btn = document.getElementById('btnSubmitRevisi');
-    const icon = document.getElementById('revisiIcon');
-    const spinner = document.getElementById('revisiSpinner');
-    const text = document.getElementById('revisiText');
-
-    if (btn) {
-        form.addEventListener('submit', function() {
-            btn.disabled = true;
-            btn.classList.add('opacity-75', 'cursor-not-allowed');
-            if (spinner) spinner.classList.remove('hidden');
-            if (icon) icon.classList.add('hidden');
-            if (text) text.textContent = 'Mengirim...';
-        });
-    }
 
     const filePreviewModal = document.getElementById('filePreviewModal');
     const filePreviewFrame = document.getElementById('filePreviewFrame');
