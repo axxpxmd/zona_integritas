@@ -298,21 +298,20 @@
                                     @if($uploadedFiles->count())
                                         <ol class="list-decimal list-inside space-y-1 mt-1 text-[13px] ml-1">
                                             @foreach($uploadedFiles as $file)
-                                            <li class="text-gray-600 flex items-center justify-between gap-3 p-1.5 hover:bg-gray-50 rounded-lg transition-colors group">
-                                                <div class="flex items-center gap-2 min-w-0">
-                                                    <div class="w-7 h-7 bg-blue-50 text-blue-600 rounded flex items-center justify-center flex-shrink-0">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <li class="text-gray-600 flex items-center justify-between gap-3">
+                                                <div class="min-w-0">
+                                                    <a href="{{ route('kuesioner.file.item.view', $file->id) }}" target="_blank" data-file-url="{{ route('kuesioner.file.item.view', $file->id) }}" class="js-view-file text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1 align-middle">
+                                                        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
                                                         </svg>
-                                                    </div>
-                                                    <div class="flex flex-col min-w-0">
-                                                        <a href="{{ route('kuesioner.file.item.view', $file->id) }}" target="_blank" data-file-url="{{ route('kuesioner.file.item.view', $file->id) }}" class="js-view-file text-blue-600 hover:text-blue-800 hover:underline font-medium truncate">
-                                                            {{ $file->original_name ?? basename($file->file_path) }}
-                                                        </a>
-                                                        @if($file->size)
-                                                        <span class="text-[10px] text-gray-400">{{ number_format($file->size / 1024, 0) }} KB</span>
-                                                        @endif
-                                                    </div>
+                                                        {{ $file->original_name ?? basename($file->file_path) }}
+                                                    </a>
+                                                    @if($file->size)
+                                                    <span class="text-xs text-gray-400 ml-0.5">({{ number_format($file->size / 1024, 0) }} KB)</span>
+                                                    @endif
+                                                    @if($file->revisi_ke)
+                                                    <span class="ml-1 text-[11px] font-semibold text-orange-600">Revisi ke-{{ $file->revisi_ke }}</span>
+                                                    @endif
                                                 </div>
                                                 @if(!$isLocked)
                                                 <button type="button" onclick="deleteFile({{ $file->id }}, this)" class="flex-shrink-0 p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Hapus File">
@@ -326,14 +325,12 @@
                                         </ol>
                                     @elseif($jawabanItem && $jawabanItem->file_path)
                                         <ul class="space-y-1 mt-1 text-[13px] ml-1">
-                                            <li class="text-gray-600 flex items-center justify-between gap-3 p-1.5 hover:bg-gray-50 rounded-lg transition-colors group">
-                                                <div class="flex items-center gap-2 min-w-0">
-                                                    <div class="w-7 h-7 bg-blue-50 text-blue-600 rounded flex items-center justify-center flex-shrink-0">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <li class="text-gray-600 flex items-center justify-between gap-3">
+                                                <div class="min-w-0">
+                                                    <a href="{{ route('kuesioner.file.view', $jawabanItem->id) }}" target="_blank" data-file-url="{{ route('kuesioner.file.view', $jawabanItem->id) }}" class="js-view-file text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1 align-middle">
+                                                        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
                                                         </svg>
-                                                    </div>
-                                                    <a href="{{ route('kuesioner.file.view', $jawabanItem->id) }}" target="_blank" data-file-url="{{ route('kuesioner.file.view', $jawabanItem->id) }}" class="js-view-file text-blue-600 hover:text-blue-800 hover:underline font-medium truncate">
                                                         {{ basename($jawabanItem->file_path) }}
                                                     </a>
                                                 </div>

@@ -10,6 +10,7 @@ class JawabanFile extends Model
 
     protected $fillable = [
         'jawaban_id',
+        'revisi_ke',
         'original_name',
         'file_path',
         'size',

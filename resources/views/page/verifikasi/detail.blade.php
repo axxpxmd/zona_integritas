@@ -338,6 +338,9 @@
                                                 @if($file->size)
                                                 <span class="text-xs text-gray-400 ml-0.5">({{ number_format($file->size / 1024, 0) }} KB)</span>
                                                 @endif
+                                                @if($file->revisi_ke)
+                                                <span class="ml-1 text-[11px] font-semibold text-orange-600">Revisi ke-{{ $file->revisi_ke }}</span>
+                                                @endif
                                             </li>
                                             @endforeach
                                         </ol>

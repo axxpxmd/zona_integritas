@@ -390,7 +390,15 @@ class KuesionerController extends Controller
             $existingJawaban->save();
 
             // Simpan file jika ada
-            $this->simpanFileJawaban($existingJawaban, array_filter($files), $periodeId, $opd->id, $pertanyaanId);
+            $this->simpanFileJawaban(
+                $existingJawaban,
+                array_filter($files),
+                $periodeId,
+                $opd->id,
+                $pertanyaanId,
+                null,
+                $existingJawaban->revisi_count
+            );
         }
 
         return redirect()->route('kuesioner.revisi.index', $periodeId)
@@ -659,7 +667,15 @@ class KuesionerController extends Controller
     /**
      * Simpan file jawaban (multi-file)
      */
-    private function simpanFileJawaban(Jawaban $jawaban, array $files, $periodeId, $opdId, $pertanyaanId, $subPertanyaanId = null): void
+    private function simpanFileJawaban(
+        Jawaban $jawaban,
+        array $files,
+        $periodeId,
+        $opdId,
+        $pertanyaanId,
+        $subPertanyaanId = null,
+        $revisiKe = null
+    ): void
     {
         if (empty($files)) {
             return;
@@ -682,6 +698,7 @@ class KuesionerController extends Controller
 
             JawabanFile::create([
                 'jawaban_id' => $jawaban->id,
+                'revisi_ke' => $revisiKe,
                 'original_name' => $file->getClientOriginalName(),
                 'file_path' => $filePath,
                 'size' => $file->getSize(),
