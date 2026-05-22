@@ -1,0 +1,217 @@
+stages:
+  - deploy_staging
+  - test
+  - missconfig_scan
+  - pentest
+  - deploy
+
+variables:
+  GIT_STRATEGY: fetch
+  TEMP_REPO_DIR: "scan-$CI_PROJECT_NAME"
+  HASIL_DIR: "/home/pipeline-output"
+
+# =======================
+# 🚀 DEPLOY TO STAGING
+# =======================
+deploy_to_staging:
+  stage: deploy_staging
+  only:
+    - main
+  allow_failure: true
+
+  variables:
+    GIT_DEPTH: 0  # pastikan clone full history untuk fetch tag
+
+  before_script:
+    # Set git user
+    - git config --global user.email "ci-bot@example.com"
+    - git config --global user.name "CI Bot"
+
+    # Pastikan token CI/CD tersedia
+    - echo "[LOG] GITLAB_TOKEN length=${#GITLAB_TOKEN}"
+
+    # Set remote URL origin dengan PAT
+    - git remote set-url origin "https://oauth2:$GITLAB_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git"
+
+  script:
+    # Mulai deployment
+    - echo "===== CI/CD DEPLOY TO STAGING DIMULAI =====" | tee deploy_log.adoc
+    - echo "[LOG] Menunggu sshpass tersedia/di-install..."
+    - |
+      command -v sshpass >/dev/null || (apt-get update -qq && apt-get install -y sshpass) | tee -a deploy_log.adoc
+
+    # SSH ke staging
+    - echo "[NOTE] Updated $CI_PROJECT_PATH" | tee -a deploy_log.adoc
+    - echo "Silahkan cek ke staging https://$SSH_HOST:$HTTPS_PORT" | tee -a deploy_log.adoc
+    - |
+      {
+        echo "Menyambung ke $CI_SSH_USER@$CI_SSH_HOST:$CI_SSH_PORT ..."
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" '
+           echo "[LOG] Menjalankan pull.sh di staging";
+           curl -sL --header "PRIVATE-TOKEN: glpat-W3EasicxWz5f9bzUMBzt" "https://git.tangerangselatankota.go.id/api/v4/projects/136/repository/files/pull.sh/raw?ref=main" \
+           | tr -d "\r" > /bin/pull.sh;
+           chmod +x /bin/pull.sh;
+           GITLAB_TOKEN='"$GITLAB_TOKEN"' GITLAB_USER='"$GITLAB_USER"' GIT_REPO='"$GIT_REPO"' bash /bin/pull.sh
+         '
+        echo "[LOG] Selesai SSH & deploy ke staging."
+        echo "✅ Deployment to staging selesai!"
+      } | tee -a deploy_log.adoc
+
+    # Fetch semua tag
+    - git fetch --tags
+
+    # Ambil tag terakhir atau fallback
+    - |
+      LAST_TAG=$(git tag --sort=-creatordate | head -n1)
+      if [ -n "$LAST_TAG" ]; then
+        DEPLOY_VERSION="Catatan-Perubahan-$LAST_TAG"
+      else
+        DEPLOY_VERSION="v0.0.0-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA"
+      fi
+      echo "[LOG] DEPLOY_VERSION=$DEPLOY_VERSION"
+
+    # Tentukan folder wiki
+    - WIKI_FOLDER="wiki-$CI_PROJECT_PATH_SLUG"
+    - echo "[LOG] WIKI_FOLDER=$WIKI_FOLDER"
+    # Push log ke Wiki
+    - echo "[LOG] Meng-clone wiki repo..."
+    - rm -rf "$WIKI_FOLDER"
+    - git clone "https://oauth2:$GITLAB_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.wiki.git" "$WIKI_FOLDER"
+    - cd "$WIKI_FOLDER"
+    - mkdir -p DEPLOYMENT
+    - DEPLOY_FILE="DEPLOYMENT/${DEPLOY_VERSION}.adoc"
+    - cp ../deploy_log.adoc "$DEPLOY_FILE"
+    - git config user.email "ci-bot@example.com"
+    - git config user.name "CI Bot"
+    - git add "$DEPLOY_FILE"
+    - git commit -m "Add deployment log $DEPLOY_VERSION" || echo "[LOG] Tidak ada perubahan untuk di-commit"
+    - git push origin HEAD
+        # Kirim hasil deploy via WAHA
+    - echo "📢 Mengirim hasil scan via WAHA..."
+    - |
+      log_text=$(cat ../deploy_log.adoc)
+      json_body=$(jq -n --arg chatId "$CHAT_ID2" --arg text "$log_text" --arg session "$WAHA_SESSION" \
+      '{chatId: $chatId, text: $text, session: $session}')
+      curl -sX POST "$WAHA_URL" -H "Content-Type: application/json" -d "$json_body"
+    - |
+      log_text=$(cat ../deploy_log.adoc)
+      json_body=$(jq -n --arg chatId "$CHAT_ID3" --arg text "$log_text" --arg session "$WAHA_SESSION" \
+      '{chatId: $chatId, text: $text, session: $session}')
+      curl -sX POST "$WAHA_URL" -H "Content-Type: application/json" -d "$json_body"
+    - |
+      log_text=$(cat ../deploy_log.adoc)
+      json_body=$(jq -n --arg chatId "$CHAT_ID" --arg text "$log_text" --arg session "$WAHA_SESSION" \
+      '{chatId: $chatId, text: $text, session: $session}')
+      curl -sX POST "$WAHA_URL" -H "Content-Type: application/json" -d "$json_body"
+
+
+# =======================
+# 🔍 GITLEAKS - Secret Scan
+# =======================
+gitleaks_scan:
+  stage: missconfig_scan
+  only:
+    - main
+  when: manual
+  allow_failure: true
+  before_script:
+    - mkdir -p "$HASIL_DIR"
+    - rm -rf "$TEMP_REPO_DIR"
+    - git clone "https://$GITLAB_USER:$GITLAB_TOKEN@git.tangerangselatankota.go.id/$CI_PROJECT_PATH.git" "$TEMP_REPO_DIR"
+  script:
+    - echo "🔐 Memindai secrets dengan Gitleaks..."
+    - gitleaks detect --source "$TEMP_REPO_DIR" --verbose --redact --exit-code 0 | tee "$HASIL_DIR/${CI_PROJECT_NAME}_gitleaks.txt"
+
+# =======================
+# 🔍 Static Analysis
+# =======================
+semgrep_scan:
+  stage: pentest
+  tags:
+    - uat
+  only:
+    - main
+  when: manual
+  allow_failure: true
+  script:
+    - echo "🔍 Memindai kerentanan kode dengan Semgrep..."
+    - bash /bin/semgrep.sh
+
+# =======================
+# 🔍 File System Scan
+# =======================
+dirsearch_scan:
+  stage: missconfig_scan
+  tags:
+    - uat
+  only:
+    - main
+  allow_failure: true
+  when: manual
+  script:
+    - echo "🐳 Memindai kerentanan file & dependencies..."
+    - bash /bin/dirbuster.sh
+
+# =======================
+# 🔍 ZAP DAST Scan
+# =======================
+zap_dast:
+  stage: pentest
+  tags:
+    - uat
+  only:
+    - main
+  when: manual
+  allow_failure: true
+  script:
+    - echo "🔍 Pentesting dari server staging..."
+    - bash /bin/zapscan.sh
+
+# =======================
+# 🔍 QA -UAT Machine learning Analysis
+# =======================
+Auto-QA-test:
+  stage: test
+  tags:
+    - uat
+  only:
+    - main
+  when: manual
+  allow_failure: true
+  script:
+    - echo "🔍 Crawling dari server staging..."
+    - bash /bin/uat.sh
+
+# =======================
+# 🚀 FINAL DEPLOY TO SERVER
+# =======================
+deploy_to_server:
+  stage: deploy
+  only:
+    - main
+  when: manual
+  allow_failure: true
+  script:
+    - echo "🚀 Deploying to production server..."
+    - rm -rf "$TEMP_REPO_DIR"
+    - 'command -v sshpass >/dev/null || (apt-get update -qq && apt-get install -y sshpass)'
+    - >
+      sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p "$SSH_PORT" "$SSH_USER@$SSH_HOST"
+      "GITLAB_TOKEN='$GITLAB_TOKEN' GITLAB_USER='$GITLAB_USER' GIT_REPO='$GIT_REPO' bash /bin/pull.sh --release"
+    - echo "✅ Deployment to production selesai!"
+
+# =======================
+# 📢 NOTIFY VIA WAHA
+# =======================
+notify_waha:
+  stage: deploy
+  only:
+    - main
+  allow_failure: true
+  script:
+    - echo "📢 Mengirim hasil scan via WAHA....."
+    - |
+      json_body=$(jq -n --arg chatId "$CHAT_ID" --arg text "$TEXT_SEND" --arg session "$WAHA_SESSION" \
+        '{chatId: $chatId, text: $text, session: $session}')
+      curl -X POST "$WAHA_URL" -H "Content-Type: application/json" -d "$json_body"
+    - chown -R www-data:www-data "$HASIL_DIR"
