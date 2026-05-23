@@ -253,7 +253,7 @@
                             </div>
 
                             {{-- Jawaban Verifikator (readonly) --}}
-                            <div class="mb-4 bg-gray-50 rounded-lg p-4 border border-gray-200">
+                            <div class="mb-4 bg-red-50 rounded-lg p-4 border border-red-200">
                                 <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Jawaban Verifikator</p>
                                 @if($pertanyaan->tipe_jawaban === 'ya_tidak')
                                     <p class="text-sm font-semibold text-gray-800">
