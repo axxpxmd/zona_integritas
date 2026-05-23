@@ -282,6 +282,7 @@
                             <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
                             <option value="operator" {{ old('role', $user->role) == 'operator' ? 'selected' : '' }}>Operator</option>
                             <option value="verifikator" {{ old('role', $user->role) == 'verifikator' ? 'selected' : '' }}>Verifikator</option>
+                            <option value="verifikator_menhan" {{ old('role', $user->role) == 'verifikator_menhan' ? 'selected' : '' }}>Verifikator Menhan</option>
                         </select>
                         @error('role')
                         <p class="mt-1.5 text-sm text-red-500">{{ $message }}</p>
@@ -400,7 +401,8 @@ function updateRoleDescription() {
     const descriptions = {
         'admin': 'Admin memiliki akses penuh ke seluruh fitur sistem',
         'operator': 'Operator dapat mengelola data dan mengisi kuesioner',
-        'verifikator': 'Verifikator dapat memverifikasi dan menyetujui data'
+        'verifikator': 'Verifikator dapat memverifikasi dan menyetujui data',
+        'verifikator_menhan': 'Verifikator Menhan memverifikasi hasil verifikator'
     };
     roleText.textContent = descriptions[role] || 'Pilih role untuk melihat deskripsi';
 

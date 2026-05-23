@@ -12,15 +12,19 @@ use App\Models\Pertanyaan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class VerifikasiController extends Controller
+class VerifikasiMenhanController extends Controller
 {
-    public function index(Request $request)
+    private function authorizeMenhan(): void
     {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
+        if (!in_array(Auth::user()->role, ['admin', 'verifikator_menhan'])) {
             abort(403, 'Akses ditolak.');
         }
+    }
 
-        // Get available periods
+    public function index(Request $request)
+    {
+        $this->authorizeMenhan();
+
         $periodes = Periode::whereIn('status', ['aktif', 'selesai'])
             ->where('is_template', false)
             ->orderBy('tahun', 'desc')
@@ -32,26 +36,26 @@ class VerifikasiController extends Controller
         $submittedOpds = collect();
 
         if ($activePeriode) {
-            // Get distinct OPDs that have submitted their answers (status = 'final') for the selected period
-            $query = Jawaban::where('periode_id', $activePeriode->id)
+            $opdIds = Jawaban::where('periode_id', $activePeriode->id)
                 ->where('status', 'final')
-                ->distinct();
+                ->whereNull('sub_pertanyaan_id')
+                ->distinct()
+                ->pluck('opd_id');
 
-            if (Auth::user()->role === 'verifikator') {
-                $assignedOpdIds = \Illuminate\Support\Facades\DB::table('opd_verifikator')
-                    ->where('user_id', Auth::id())
-                    ->pluck('opd_id');
-                $query->whereIn('opd_id', $assignedOpdIds);
-            }
+            $opds = Opd::whereIn('id', $opdIds)->get();
 
-            $opdIds = $query->pluck('opd_id');
+            foreach ($opds as $opd) {
+                $opd_base = Jawaban::where('periode_id', $activePeriode->id)
+                    ->where('opd_id', $opd->id)
+                    ->whereNull('sub_pertanyaan_id');
 
-            $submittedOpds = Opd::whereIn('id', $opdIds)->get();
+                $opd->total_jawaban = (clone $opd_base)->count();
+                $opd->terverifikasi_verifikator = (clone $opd_base)->where('status_verifikasi', 'disetujui')->count();
 
-            $totalRequired = \App\Models\Pertanyaan::where('status', 1)->count();
+                if ($opd->total_jawaban === 0 || $opd->terverifikasi_verifikator < $opd->total_jawaban) {
+                    continue;
+                }
 
-            // For each OPD, we can also get the date they submitted (max updated_at where status=final)
-            foreach ($submittedOpds as $opd) {
                 $lastSubmit = Jawaban::where('periode_id', $activePeriode->id)
                     ->where('opd_id', $opd->id)
                     ->where('status', 'final')
@@ -59,54 +63,55 @@ class VerifikasiController extends Controller
 
                 $opd->submitted_at = $lastSubmit;
 
-                // Verifikasi stats per OPD
-                $opd_base = Jawaban::where('periode_id', $activePeriode->id)
-                    ->where('opd_id', $opd->id)
-                    ->whereNull('sub_pertanyaan_id');
-
-                $opd->total_jawaban = $opd_base->count();
-                $opd->terverifikasi = (clone $opd_base)->where('status_verifikasi', 'disetujui')->count();
-                $opd->direvisi = (clone $opd_base)->where('status_verifikasi', 'direvisi')->count();
-                $opd->belum_terverifikasi = (clone $opd_base)->where('status_verifikasi', 'belum_diverifikasi')->count();
-                $opd->menunggu_dicek_ulang = (clone $opd_base)->where('menunggu_dicek_ulang', true)->count();
-                $opd->total_pertanyaan = $totalRequired;
+                $opd->terverifikasi = (clone $opd_base)->where('status_verifikasi_menhan', 'disetujui')->count();
+                $opd->belum_terverifikasi = (clone $opd_base)->where('status_verifikasi_menhan', 'belum_diverifikasi')->count();
                 $opd->persen = $opd->total_jawaban > 0
-                    ? min(100, round((($opd->terverifikasi + $opd->direvisi) / $opd->total_jawaban) * 100))
+                    ? min(100, round(($opd->terverifikasi / $opd->total_jawaban) * 100))
                     : 0;
+
+                $submittedOpds->push($opd);
             }
         }
 
-        return view('page.verifikasi.index', compact('periodes', 'activePeriode', 'submittedOpds'));
+        return view('page.verifikasi-menhan.index', compact('periodes', 'activePeriode', 'submittedOpds'));
     }
 
     public function show(Periode $periode, Opd $opd)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
-            abort(403, 'Akses ditolak.');
+        $this->authorizeMenhan();
+
+        $opdBase = Jawaban::where('periode_id', $periode->id)
+            ->where('opd_id', $opd->id)
+            ->whereNull('sub_pertanyaan_id');
+        $totalJawaban = (clone $opdBase)->count();
+        $totalDisetujui = (clone $opdBase)->where('status_verifikasi', 'disetujui')->count();
+
+        if ($totalJawaban === 0 || $totalDisetujui < $totalJawaban) {
+            return redirect()->route('verifikasi-menhan.index')
+                ->with('error', 'OPD belum siap diverifikasi Menhan.');
         }
 
         $komponens = Komponen::with(['kategoris.subKategoris.indikators.pertanyaans.subPertanyaans'])
             ->orderBy('urutan')
             ->get();
 
-        // Get all answers by this OPD to calculate progress
         $jawabans = Jawaban::where('periode_id', $periode->id)
             ->where('opd_id', $opd->id)
+            ->where('status_verifikasi', 'disetujui')
             ->with('files')
             ->get();
 
         $jawabanMap = [];
-        $verifikasiStats = [
-            'total_jawaban' => $jawabans->count(),
-            'belum_diverifikasi' => $jawabans->where('status_verifikasi', 'belum_diverifikasi')->count(),
-            'disetujui' => $jawabans->where('status_verifikasi', 'disetujui')->count(),
-            'direvisi' => $jawabans->where('status_verifikasi', 'direvisi')->count(),
-        ];
-
         foreach ($jawabans as $j) {
             $key = $j->sub_pertanyaan_id ? "{$j->pertanyaan_id}_{$j->sub_pertanyaan_id}" : $j->pertanyaan_id;
             $jawabanMap[$key] = $j;
         }
+
+        $verifikasiStats = [
+            'total_jawaban' => $jawabans->count(),
+            'belum_diverifikasi' => $jawabans->where('status_verifikasi_menhan', 'belum_diverifikasi')->count(),
+            'disetujui' => $jawabans->where('status_verifikasi_menhan', 'disetujui')->count(),
+        ];
 
         $jawabansParent = $jawabans->whereNull('sub_pertanyaan_id')->keyBy('pertanyaan_id');
         $progress = [];
@@ -123,7 +128,7 @@ class VerifikasiController extends Controller
                     $totalNilaiSubKategori = 0;
 
                     foreach ($subKategori->indikators as $indikator) {
-                        $nilaiIndikatorData = $this->hitungNilaiIndikatorVerifikasi($indikator, $jawabanMap);
+                        $nilaiIndikatorData = $this->hitungNilaiIndikatorMenhan($indikator, $jawabanMap);
 
                         $totalPertanyaan += $nilaiIndikatorData['total_pertanyaan'];
                         $totalSemuaPertanyaan += $nilaiIndikatorData['total_pertanyaan'];
@@ -152,24 +157,31 @@ class VerifikasiController extends Controller
 
         $verifikasiStats['total_pertanyaan'] = $totalSemuaPertanyaan;
         $verifikasiStats['terverifikasi'] = $totalPertanyaanTerverifikasi;
-        $verifikasiStats['direvisi'] = $jawabans->whereNull('sub_pertanyaan_id')->where('status_verifikasi', 'direvisi')->count();
-        $verifikasiStats['belum_terverifikasi'] = max(0, $totalSemuaPertanyaan - $totalPertanyaanTerverifikasi - $verifikasiStats['direvisi']);
+        $verifikasiStats['belum_terverifikasi'] = max(0, $totalSemuaPertanyaan - $totalPertanyaanTerverifikasi);
 
         $isAllAnswered = ($totalSemuaPertanyaan > 0 && $totalSemuaPertanyaan === $totalPertanyaanTerjawab);
         $isSent = $jawabans->where('status', 'final')->isNotEmpty();
 
-        return view('page.verifikasi.show', compact('periode', 'opd', 'komponens', 'jawabanMap', 'verifikasiStats', 'progress', 'isAllAnswered', 'isSent'));
+        return view('page.verifikasi-menhan.show', compact('periode', 'opd', 'komponens', 'jawabanMap', 'verifikasiStats', 'progress', 'isAllAnswered', 'isSent'));
     }
 
     public function detail(Request $request, Periode $periode, Opd $opd, SubKategori $subKategori)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
-            abort(403, 'Akses ditolak.');
+        $this->authorizeMenhan();
+
+        $opdBase = Jawaban::where('periode_id', $periode->id)
+            ->where('opd_id', $opd->id)
+            ->whereNull('sub_pertanyaan_id');
+        $totalJawaban = (clone $opdBase)->count();
+        $totalDisetujui = (clone $opdBase)->where('status_verifikasi', 'disetujui')->count();
+
+        if ($totalJawaban === 0 || $totalDisetujui < $totalJawaban) {
+            return redirect()->route('verifikasi-menhan.index')
+                ->with('error', 'OPD belum siap diverifikasi Menhan.');
         }
 
         $subKategori->load(['indikators.pertanyaans.subPertanyaans', 'kategori.komponen']);
 
-        // Pagination indikator
         $indikators = $subKategori->indikators;
         $totalIndikator = $indikators->count();
 
@@ -182,6 +194,7 @@ class VerifikasiController extends Controller
 
         $jawabans = Jawaban::where('periode_id', $periode->id)
             ->where('opd_id', $opd->id)
+            ->where('status_verifikasi', 'disetujui')
             ->get();
 
         $jawabanMap = [];
@@ -190,9 +203,8 @@ class VerifikasiController extends Controller
             $jawabanMap[$key] = $j;
         }
 
-        $nilaiIndikator = $this->hitungNilaiIndikatorVerifikasi($currentIndikator, $jawabanMap);
+        $nilaiIndikator = $this->hitungNilaiIndikatorMenhan($currentIndikator, $jawabanMap);
 
-        // Cek apakah masih dalam masa verifikasi
         $now = \Carbon\Carbon::now()->startOfDay();
         $startVerif = $periode->tanggal_mulai_verifikasi
             ? \Carbon\Carbon::parse($periode->tanggal_mulai_verifikasi)->startOfDay()
@@ -202,16 +214,24 @@ class VerifikasiController extends Controller
             : null;
         $isCanVerify = $startVerif && $endVerif && $now->between($startVerif, $endVerif);
 
-        return view('page.verifikasi.detail', compact('periode', 'opd', 'subKategori', 'currentIndikator', 'currentPage', 'totalIndikator', 'jawabanMap', 'nilaiIndikator', 'isCanVerify', 'startVerif', 'endVerif'));
+        return view('page.verifikasi-menhan.detail', compact('periode', 'opd', 'subKategori', 'currentIndikator', 'currentPage', 'totalIndikator', 'jawabanMap', 'nilaiIndikator', 'isCanVerify', 'startVerif', 'endVerif'));
     }
 
     public function store(Request $request, Periode $periode, Opd $opd, SubKategori $subKategori)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
-            abort(403, 'Akses ditolak.');
+        $this->authorizeMenhan();
+
+        $opdBase = Jawaban::where('periode_id', $periode->id)
+            ->where('opd_id', $opd->id)
+            ->whereNull('sub_pertanyaan_id');
+        $totalJawaban = (clone $opdBase)->count();
+        $totalDisetujui = (clone $opdBase)->where('status_verifikasi', 'disetujui')->count();
+
+        if ($totalJawaban === 0 || $totalDisetujui < $totalJawaban) {
+            return redirect()->route('verifikasi-menhan.index')
+                ->with('error', 'OPD belum siap diverifikasi Menhan.');
         }
 
-        // Blokir penyimpanan jika di luar masa verifikasi
         $now = \Carbon\Carbon::now()->startOfDay();
         $startVerif = $periode->tanggal_mulai_verifikasi
             ? \Carbon\Carbon::parse($periode->tanggal_mulai_verifikasi)->startOfDay()
@@ -225,55 +245,36 @@ class VerifikasiController extends Controller
             return redirect()->back()->with('error', 'Verifikasi tidak dapat dilakukan karena di luar masa waktu verifikasi.');
         }
 
-        $verifikasiData = $request->input('verifikasi');
+        $menhanData = $request->input('menhan');
         $currentPage = $request->input('current_page', 1);
 
-        if ($verifikasiData && is_array($verifikasiData)) {
-            foreach ($verifikasiData as $pertanyaanId => $data) {
-                // Update semua jawaban yang terkait dengan pertanyaan ini
+        if ($menhanData && is_array($menhanData)) {
+            foreach ($menhanData as $pertanyaanId => $data) {
                 $jawabans = Jawaban::where('periode_id', $periode->id)
                     ->where('opd_id', $opd->id)
                     ->where('pertanyaan_id', $pertanyaanId)
-                    ->where('status_verifikasi', '!=', 'direvisi')
+                    ->where('status_verifikasi', 'disetujui')
                     ->get();
 
                 foreach ($jawabans as $jawaban) {
-                    $jawaban->status_verifikasi = $data['status_verifikasi'] ?? 'belum_diverifikasi';
+                    $jawaban->status_verifikasi_menhan = $data['status_verifikasi_menhan'] ?? 'belum_diverifikasi';
 
-                    if (isset($data['catatan_verifikator'])) {
-                        $jawaban->catatan_verifikator = $data['catatan_verifikator'];
+                    if (isset($data['menhan_jawaban_angka']) && array_key_exists($jawaban->sub_pertanyaan_id ?: 0, $data['menhan_jawaban_angka'])) {
+                        $val = $data['menhan_jawaban_angka'][$jawaban->sub_pertanyaan_id ?: 0];
+                        $jawaban->menhan_jawaban_angka = ($val !== null && $val !== '') ? $val : null;
                     }
 
-                    if (isset($data['verifikator_jawaban_angka']) && array_key_exists($jawaban->sub_pertanyaan_id ?: 0, $data['verifikator_jawaban_angka'])) {
-                        $val = $data['verifikator_jawaban_angka'][$jawaban->sub_pertanyaan_id ?: 0];
-                        $jawaban->verifikator_jawaban_angka = ($val !== null && $val !== '') ? $val : null;
+                    if (isset($data['menhan_jawaban_text']) && array_key_exists($jawaban->sub_pertanyaan_id ?: 0, $data['menhan_jawaban_text'])) {
+                        $val = $data['menhan_jawaban_text'][$jawaban->sub_pertanyaan_id ?: 0];
+                        $jawaban->menhan_jawaban_text = ($val !== null && $val !== '') ? $val : null;
                     }
 
-                    if (isset($data['verifikator_jawaban_text']) && array_key_exists($jawaban->sub_pertanyaan_id ?: 0, $data['verifikator_jawaban_text'])) {
-                        $val = $data['verifikator_jawaban_text'][$jawaban->sub_pertanyaan_id ?: 0];
-                        $jawaban->verifikator_jawaban_text = ($val !== null && $val !== '') ? $val : null;
-                    }
-
-                    $verifikatorChanged = $jawaban->isDirty([
-                        'status_verifikasi',
-                        'verifikator_jawaban_text',
-                        'verifikator_jawaban_angka',
-                    ]);
-
-                    if ($verifikatorChanged) {
-                        $jawaban->status_verifikasi_menhan = 'belum_diverifikasi';
-                        $jawaban->menhan_jawaban_text = null;
-                        $jawaban->menhan_jawaban_angka = null;
+                    if ($jawaban->status_verifikasi_menhan !== 'belum_diverifikasi') {
+                        $jawaban->menhan_verified_by = Auth::id();
+                        $jawaban->menhan_verified_at = now();
+                    } else {
                         $jawaban->menhan_verified_by = null;
                         $jawaban->menhan_verified_at = null;
-                    }
-
-                    if ($jawaban->status_verifikasi != 'belum_diverifikasi') {
-                        $jawaban->verified_by = Auth::id();
-                        $jawaban->verified_at = now();
-                    } else {
-                        $jawaban->verified_by = null;
-                        $jawaban->verified_at = null;
                     }
 
                     $jawaban->save();
@@ -281,151 +282,11 @@ class VerifikasiController extends Controller
             }
         }
 
-        return redirect()->route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage])
-            ->with('success', 'Data verifikasi berhasil disimpan.');
+        return redirect()->route('verifikasi-menhan.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage])
+            ->with('success', 'Data verifikasi Menhan berhasil disimpan.');
     }
 
-    public function cancelPertanyaan(Request $request, Periode $periode, Opd $opd, SubKategori $subKategori, Pertanyaan $pertanyaan)
-    {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
-            abort(403, 'Akses ditolak.');
-        }
-
-        $jawabans = Jawaban::where('periode_id', $periode->id)
-            ->where('opd_id', $opd->id)
-            ->where('pertanyaan_id', $pertanyaan->id)
-            ->get();
-
-        foreach ($jawabans as $jawaban) {
-            $jawaban->status_verifikasi = 'belum_diverifikasi';
-            $jawaban->verified_by = null;
-            $jawaban->verified_at = null;
-            $jawaban->menunggu_dicek_ulang = false;
-            $jawaban->status_verifikasi_menhan = 'belum_diverifikasi';
-            $jawaban->menhan_jawaban_text = null;
-            $jawaban->menhan_jawaban_angka = null;
-            $jawaban->menhan_verified_by = null;
-            $jawaban->menhan_verified_at = null;
-            $jawaban->save();
-        }
-
-        $currentPage = $request->input('current_page', 1);
-
-        return redirect()->route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage])
-            ->with('success', 'Verifikasi pertanyaan berhasil dibatalkan.');
-    }
-
-    /**
-     * Kirim permintaan revisi ke operator untuk satu pertanyaan.
-     * Status menjadi 'direvisi', catatan verifikator disimpan, dan menunggu_dicek_ulang direset.
-     */
-    public function kirimRevisi(Request $request, Periode $periode, Opd $opd, SubKategori $subKategori, Pertanyaan $pertanyaan)
-    {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
-            abort(403, 'Akses ditolak.');
-        }
-
-        $request->validate([
-            'catatan_revisi' => 'required|string|max:2000',
-        ], [
-            'catatan_revisi.required' => 'Catatan revisi wajib diisi sebelum mengirim permintaan revisi.',
-        ]);
-
-        $jawabans = Jawaban::where('periode_id', $periode->id)
-            ->where('opd_id', $opd->id)
-            ->where('pertanyaan_id', $pertanyaan->id)
-            ->get();
-
-        foreach ($jawabans as $jawaban) {
-            $jawaban->status_verifikasi = 'direvisi';
-            $jawaban->catatan_revisi = $request->input('catatan_revisi');
-            $jawaban->verified_by = Auth::id();
-            $jawaban->verified_at = now();
-            $jawaban->menunggu_dicek_ulang = false; // operator belum merespons
-            $jawaban->status_verifikasi_menhan = 'belum_diverifikasi';
-            $jawaban->menhan_jawaban_text = null;
-            $jawaban->menhan_jawaban_angka = null;
-            $jawaban->menhan_verified_by = null;
-            $jawaban->menhan_verified_at = null;
-            $jawaban->save();
-        }
-
-        $currentPage = $request->input('current_page', 1);
-
-        return redirect()->route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage])
-            ->with('success', 'Permintaan revisi berhasil dikirim ke operator.');
-    }
-
-    /**
-     * Batalkan permintaan revisi pertanyaan.
-     * Status kembali menjadi 'belum_diverifikasi' dan catatan revisi dihapus.
-     */
-    public function cancelRevisi(Request $request, Periode $periode, Opd $opd, SubKategori $subKategori, Pertanyaan $pertanyaan)
-    {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
-            abort(403, 'Akses ditolak.');
-        }
-
-        $jawabans = Jawaban::where('periode_id', $periode->id)
-            ->where('opd_id', $opd->id)
-            ->where('pertanyaan_id', $pertanyaan->id)
-            ->get();
-
-        foreach ($jawabans as $jawaban) {
-            $jawaban->status_verifikasi = 'belum_diverifikasi';
-            $jawaban->catatan_revisi = null;
-            $jawaban->verified_by = null;
-            $jawaban->verified_at = null;
-            $jawaban->menunggu_dicek_ulang = false;
-            $jawaban->status_verifikasi_menhan = 'belum_diverifikasi';
-            $jawaban->menhan_jawaban_text = null;
-            $jawaban->menhan_jawaban_angka = null;
-            $jawaban->menhan_verified_by = null;
-            $jawaban->menhan_verified_at = null;
-            $jawaban->save();
-        }
-
-        $currentPage = $request->input('current_page', 1);
-
-        return redirect()->route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage])
-            ->with('success', 'Permintaan revisi berhasil dibatalkan.');
-    }
-
-    public function verifyAllDev(Request $request, Periode $periode, Opd $opd)
-    {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
-            abort(403, 'Akses ditolak.');
-        }
-
-        // Ambil semua jawaban OPD terkait di periode ini yang masih "belum_diverifikasi"
-        $jawabans = Jawaban::where('periode_id', $periode->id)
-            ->where('opd_id', $opd->id)
-            ->where('status_verifikasi', 'belum_diverifikasi')
-            ->get();
-
-        foreach ($jawabans as $jawaban) {
-            $jawaban->status_verifikasi = 'disetujui';
-
-            // Set nilai verifikator agar tidak (Null) dengan menduplikat jawaban operator
-            $jawaban->verifikator_jawaban_text = $jawaban->jawaban_text;
-            $jawaban->verifikator_jawaban_angka = $jawaban->jawaban_angka;
-
-            $jawaban->status_verifikasi_menhan = 'belum_diverifikasi';
-            $jawaban->menhan_jawaban_text = null;
-            $jawaban->menhan_jawaban_angka = null;
-            $jawaban->menhan_verified_by = null;
-            $jawaban->menhan_verified_at = null;
-
-            $jawaban->verified_by = Auth::id();
-            $jawaban->verified_at = now();
-            $jawaban->save();
-        }
-
-        return redirect()->route('verifikasi.show', ['periode' => $periode->id, 'opd' => $opd->id])
-            ->with('success', '[DEV] Semua kuesioner pada OPD ini telah berhasil diverifikasi secara otomatis.');
-    }
-
-    private function hitungNilaiIndikatorVerifikasi(Indikator $indikator, array $jawabanMap): array
+    private function hitungNilaiIndikatorMenhan(Indikator $indikator, array $jawabanMap): array
     {
         $pertanyaans = $indikator->pertanyaans;
         $totalPertanyaan = $pertanyaans->count();
@@ -445,13 +306,10 @@ class VerifikasiController extends Controller
                     $key = $pertanyaan->id . '_' . $subPertanyaan->id;
                     $jawabanSubModel = $jawabanMap[$key] ?? null;
                     if ($jawabanSubModel) {
-                        if ($jawabanSubModel->status_verifikasi === 'disetujui') {
+                        if ($jawabanSubModel->status_verifikasi_menhan === 'disetujui') {
                             $isVerified = true;
                         }
-                        $value = $jawabanSubModel->verifikator_jawaban_angka;
-                        if ($value === null || $value === '') {
-                            $value = $jawabanSubModel->jawaban_angka;
-                        }
+                        $value = $jawabanSubModel->menhan_jawaban_angka ?? $jawabanSubModel->verifikator_jawaban_angka ?? $jawabanSubModel->jawaban_angka;
                         if ($value !== null && $value !== '') {
                             $jawabanSub[$subPertanyaan->id] = $value;
                         }
@@ -465,13 +323,13 @@ class VerifikasiController extends Controller
             } else {
                 $jawaban = $jawabanMap[$pertanyaan->id] ?? null;
                 if ($jawaban) {
-                    if ($jawaban->status_verifikasi === 'disetujui') {
+                    if ($jawaban->status_verifikasi_menhan === 'disetujui') {
                         $isVerified = true;
                     }
                     if (in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda'])) {
-                        $value = $jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text;
+                        $value = $jawaban->menhan_jawaban_text ?? $jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text;
                     } else {
-                        $value = $jawaban->verifikator_jawaban_angka ?? $jawaban->jawaban_angka;
+                        $value = $jawaban->menhan_jawaban_angka ?? $jawaban->verifikator_jawaban_angka ?? $jawaban->jawaban_angka;
                     }
 
                     if ($value !== null && $value !== '') {
@@ -602,12 +460,9 @@ class VerifikasiController extends Controller
             return null;
         }
 
-        // Default: sub ke-1 = acuan (penyebut), sub ke-2 = realisasi (pembilang)
-        // Konsisten dengan KuesionerController
         $idAcuan = $subPertanyaans->first()->id;
-        $idRealisasi = $subPertanyaans->get(1)->id; // index 1 = sub ke-2
+        $idRealisasi = $subPertanyaans->get(1)->id;
 
-        // Penyesuaian untuk pertanyaan spesifik
         if (str_contains($pertanyaan->pertanyaan, 'Penurunan pelanggaran disiplin pegawai')) {
             $idRealisasi = $subPertanyaans->get(1)->id;
         } elseif (str_contains($pertanyaan->pertanyaan, 'Persentase penyampaian LHKPN')) {

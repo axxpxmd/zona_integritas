@@ -369,6 +369,11 @@ class KuesionerController extends Controller
                             $subJawaban->revised_by           = $user->id;
                             $subJawaban->revisi_count         = ($subJawaban->revisi_count ?? 0) + 1;
                             $subJawaban->status_verifikasi    = 'belum_diverifikasi';
+                            $subJawaban->status_verifikasi_menhan = 'belum_diverifikasi';
+                            $subJawaban->menhan_jawaban_text = null;
+                            $subJawaban->menhan_jawaban_angka = null;
+                            $subJawaban->menhan_verified_by = null;
+                            $subJawaban->menhan_verified_at = null;
                             $subJawaban->updated_by           = $user->id;
                             $subJawaban->save();
                         }
@@ -382,10 +387,15 @@ class KuesionerController extends Controller
 
             // Tandai sudah direvisi operator → menunggu dicek ulang verifikator
             $existingJawaban->status_verifikasi    = 'belum_diverifikasi';
+            $existingJawaban->status_verifikasi_menhan = 'belum_diverifikasi';
             $existingJawaban->menunggu_dicek_ulang = true;
             $existingJawaban->revised_at           = now();
             $existingJawaban->revised_by           = $user->id;
             $existingJawaban->revisi_count         = ($existingJawaban->revisi_count ?? 0) + 1;
+            $existingJawaban->menhan_jawaban_text  = null;
+            $existingJawaban->menhan_jawaban_angka = null;
+            $existingJawaban->menhan_verified_by   = null;
+            $existingJawaban->menhan_verified_at   = null;
             $existingJawaban->updated_by           = $user->id;
             $existingJawaban->save();
 

@@ -195,12 +195,19 @@
                             </svg>
                             Operator
                         </span>
-                        @else
+                        @elseif($user->role === 'verifikator')
                         <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-100 text-green-700">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                             Verifikator
+                        </span>
+                        @else
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-teal-100 text-teal-700">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                            </svg>
+                            Verifikator Menhan
                         </span>
                         @endif
                     </div>
@@ -212,8 +219,10 @@
                         Admin memiliki akses penuh ke seluruh fitur sistem
                         @elseif($user->role === 'operator')
                         Operator dapat mengelola data dan mengisi kuesioner
-                        @else
+                        @elseif($user->role === 'verifikator')
                         Verifikator dapat memverifikasi dan menyetujui data
+                        @else
+                        Verifikator Menhan memverifikasi hasil verifikator
                         @endif
                     </p>
                 </div>

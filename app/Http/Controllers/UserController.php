@@ -73,7 +73,7 @@ class UserController extends Controller
             'telp' => 'nullable|string|max:20',
             'alamat' => 'nullable|string',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:admin,operator,verifikator',
+            'role' => 'required|in:admin,operator,verifikator,verifikator_menhan',
         ], [
             'username.required' => 'Username wajib diisi.',
             'username.unique' => 'Username sudah terdaftar.',
@@ -88,7 +88,7 @@ class UserController extends Controller
             'role.in' => 'Role tidak valid.',
         ]);
 
-        if ($validated['role'] === 'admin') {
+        if ($validated['role'] !== 'operator') {
             $validated['opd_id'] = null;
         }
 
@@ -141,7 +141,7 @@ class UserController extends Controller
             'telp' => 'nullable|string|max:20',
             'alamat' => 'nullable|string',
             'password' => 'nullable|string|min:8|confirmed',
-            'role' => 'required|in:admin,operator,verifikator',
+            'role' => 'required|in:admin,operator,verifikator,verifikator_menhan',
         ], [
             'username.required' => 'Username wajib diisi.',
             'username.unique' => 'Username sudah terdaftar.',
@@ -161,7 +161,7 @@ class UserController extends Controller
             unset($validated['password']);
         }
 
-        if ($validated['role'] === 'admin') {
+        if ($validated['role'] !== 'operator') {
             $validated['opd_id'] = null;
         }
 

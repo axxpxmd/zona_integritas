@@ -30,6 +30,7 @@ class DashboardController extends Controller
             'admin' => 'Administrator',
             'operator' => 'Operator',
             'verifikator' => 'Verifikator',
+            'verifikator_menhan' => 'Verifikator Menhan',
         ];
 
         $displayName = $user->nama_operator
@@ -108,6 +109,12 @@ class DashboardController extends Controller
             $verifikatorStats = $this->getVerifikatorStats($activePeriode, $user);
         }
 
+        // Hitung stats verifikasi khusus verifikator menhan/admin
+        $menhanStats = [];
+        if ($user->role === 'verifikator_menhan' || $user->role === 'admin') {
+            $menhanStats = $this->getVerifikatorMenhanStats($activePeriode);
+        }
+
         return view('page.dashboard', [
             'displayName' => $displayName,
             'username' => $user->username,
@@ -123,6 +130,8 @@ class DashboardController extends Controller
             'operatorStats' => $operatorStats,
             // Verifikator-specific stats
             'verifikatorStats' => $verifikatorStats,
+            // Verifikator Menhan-specific stats
+            'menhanStats' => $menhanStats,
         ]);
     }
 
@@ -351,6 +360,103 @@ class DashboardController extends Controller
             'totalJawaban' => $totalJawaban,
             'persenVerifikasi' => $persenVerifikasi,
             'opdProgressVerif' => $opdProgressVerif,
+            'isVerifActive' => $isVerifActive,
+            'startVerif' => $startVerif,
+            'endVerif' => $endVerif,
+        ];
+    }
+
+    /**
+     * Hitung statistik verifikasi untuk verifikator menhan.
+     * Hanya menilai jawaban yang sudah disetujui oleh verifikator biasa.
+     */
+    private function getVerifikatorMenhanStats($activePeriode): array
+    {
+        if (!$activePeriode) {
+            return [];
+        }
+
+        $periodeId = $activePeriode->id;
+        $now = Carbon::now()->startOfDay();
+
+        $assignedOpdIds = Opd::pluck('id');
+        $totalOpdAssigned = $assignedOpdIds->count();
+
+        $opdSiapMenhan = 0;
+        $opdBelumSiapMenhan = 0;
+
+        $opdProgressMenhan = collect();
+
+        if ($assignedOpdIds->isNotEmpty()) {
+            $opds = Opd::whereIn('id', $assignedOpdIds)->get();
+            foreach ($opds as $opd) {
+                $opd_base = Jawaban::where('periode_id', $periodeId)
+                    ->where('opd_id', $opd->id)
+                    ->whereNull('sub_pertanyaan_id');
+
+                $jmlTotal = (clone $opd_base)->count();
+                if ($jmlTotal === 0) {
+                    $opdBelumSiapMenhan++;
+                    continue;
+                }
+
+                $jmlDisetujuiVerifikator = (clone $opd_base)->where('status_verifikasi', 'disetujui')->count();
+                $isSiap = $jmlDisetujuiVerifikator === $jmlTotal;
+
+                if ($isSiap) {
+                    $opdSiapMenhan++;
+                } else {
+                    $opdBelumSiapMenhan++;
+                }
+
+                $jmlDisetujuiMenhan = (clone $opd_base)->where('status_verifikasi_menhan', 'disetujui')->count();
+                $jmlBelumMenhan = (clone $opd_base)->where('status_verifikasi_menhan', 'belum_diverifikasi')->count();
+
+                $persen = $jmlTotal > 0
+                    ? min(100, round(($jmlDisetujuiMenhan / $jmlTotal) * 100))
+                    : 0;
+
+                $opdProgressMenhan->push((object) [
+                    'opd' => $opd,
+                    'isSiap' => $isSiap,
+                    'disetujui' => $jmlDisetujuiMenhan,
+                    'belum' => $jmlBelumMenhan,
+                    'total' => $jmlTotal,
+                    'persen' => $persen,
+                ]);
+            }
+
+            $opdProgressMenhan = $opdProgressMenhan->sortByDesc('isSiap')->sortByDesc('persen')->values();
+        }
+
+        $baseQuery = Jawaban::where('periode_id', $periodeId)
+            ->whereNull('sub_pertanyaan_id')
+            ->where('status_verifikasi', 'disetujui');
+
+        $totalDisetujui = (clone $baseQuery)->where('status_verifikasi_menhan', 'disetujui')->count();
+        $totalBelumDiverifikasi = (clone $baseQuery)->where('status_verifikasi_menhan', 'belum_diverifikasi')->count();
+        $totalJawaban = (clone $baseQuery)->count();
+
+        $persenVerifikasi = $totalJawaban > 0
+            ? min(100, round(($totalDisetujui / $totalJawaban) * 100))
+            : 0;
+
+        // Jadwal verifikasi (gunakan jadwal verifikasi umum)
+        $startVerif = $activePeriode->tanggal_mulai_verifikasi
+            ? Carbon::parse($activePeriode->tanggal_mulai_verifikasi)->startOfDay() : null;
+        $endVerif = $activePeriode->tanggal_selesai_verifikasi
+            ? Carbon::parse($activePeriode->tanggal_selesai_verifikasi)->endOfDay() : null;
+        $isVerifActive = ($startVerif && $endVerif) ? $now->between($startVerif, $endVerif) : false;
+
+        return [
+            'totalOpdAssigned' => $totalOpdAssigned,
+            'opdSiapMenhan' => $opdSiapMenhan,
+            'opdBelumSiapMenhan' => $opdBelumSiapMenhan,
+            'totalDisetujui' => $totalDisetujui,
+            'totalBelumDiverifikasi' => $totalBelumDiverifikasi,
+            'totalJawaban' => $totalJawaban,
+            'persenVerifikasi' => $persenVerifikasi,
+            'opdProgressMenhan' => $opdProgressMenhan,
             'isVerifActive' => $isVerifActive,
             'startVerif' => $startVerif,
             'endVerif' => $endVerif,

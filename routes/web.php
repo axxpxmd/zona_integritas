@@ -13,6 +13,7 @@ use App\Http\Controllers\SubKategoriController;
 use App\Http\Controllers\SubPertanyaanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerifikasiController;
+use App\Http\Controllers\VerifikasiMenhanController;
 use Illuminate\Support\Facades\Route;
 
 // Auth Routes
@@ -84,5 +85,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/{periode}/{opd}/kategori/{subKategori}/cancel-pertanyaan/{pertanyaan}', [VerifikasiController::class, 'cancelPertanyaan'])->name('cancel-pertanyaan');
         Route::post('/{periode}/{opd}/kategori/{subKategori}/kirim-revisi/{pertanyaan}', [VerifikasiController::class, 'kirimRevisi'])->name('kirim-revisi');
         Route::post('/{periode}/{opd}/kategori/{subKategori}/cancel-revisi/{pertanyaan}', [VerifikasiController::class, 'cancelRevisi'])->name('cancel-revisi');
+    });
+
+    // Verifikator Menhan
+    Route::prefix('verifikasi-menhan')->name('verifikasi-menhan.')->group(function () {
+        Route::get('/', [VerifikasiMenhanController::class, 'index'])->name('index');
+        Route::get('/{periode}/{opd}', [VerifikasiMenhanController::class, 'show'])->name('show');
+        Route::get('/{periode}/{opd}/kategori/{subKategori}', [VerifikasiMenhanController::class, 'detail'])->name('detail');
+        Route::post('/{periode}/{opd}/kategori/{subKategori}', [VerifikasiMenhanController::class, 'store'])->name('store');
     });
 });
