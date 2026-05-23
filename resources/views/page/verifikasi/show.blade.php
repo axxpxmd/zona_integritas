@@ -211,28 +211,69 @@
             </div>
         @endif
 
-        {{-- Kirim ke Menhan --}}
-        @if($isSentToMenhan)
-            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-                <p class="text-sm text-green-800">Hasil verifikasi sudah terkirim ke Verifikator Menhan.</p>
+        {{-- Kirim ke Menhan Card --}}
+        <div class="bg-white rounded-xl p-6 border {{ $isSentToMenhan ? 'border-green-200 bg-green-50/30' : ($isReadySendMenhan ? 'border-blue-200 bg-blue-50/30' : 'border-gray-200') }}">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-start gap-4">
+                    @if($isSentToMenhan)
+                        <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">Validasi Selesai</h3>
+                            <p class="text-sm text-gray-600 mt-1">Hasil verifikasi Unit Kerja ini sudah berhasil dikirim ke Verifikator Menhan.</p>
+                        </div>
+                    @elseif($isReadySendMenhan)
+                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">Siap Dikirim</h3>
+                            <p class="text-sm text-gray-600 mt-1">Semua pertanyaan sudah diverifikasi. Anda dapat mengirimkan hasilnya ke Verifikator Menhan sekarang.</p>
+                        </div>
+                    @else
+                        <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">Belum Siap Dikirim</h3>
+                            <p class="text-sm text-gray-600 mt-1">Selesaikan verifikasi seluruh pertanyaan untuk dapat mengirimkan hasil ke Verifikator Menhan.</p>
+                        </div>
+                    @endif
+                </div>
+
+                @if($isReadySendMenhan && !$isSentToMenhan)
+                    <div class="flex-shrink-0">
+                        <form action="{{ route('verifikasi.kirim-menhan', [$periode->id, $opd->id]) }}" method="POST"
+                            onsubmit="return confirm('Kirim hasil verifikasi ke Verifikator Menhan? Tindakan ini tidak dapat dibatalkan.');">
+                            @csrf
+                            <button type="submit"
+                                class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors border-none shadow-none">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                </svg>
+                                Kirim ke Menhan
+                            </button>
+                        </form>
+                    </div>
+                @elseif($isSentToMenhan)
+                    <div class="flex-shrink-0">
+                        <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            Terkirim
+                        </span>
+                    </div>
+                @endif
             </div>
-        @elseif($isReadySendMenhan)
-            <form action="{{ route('verifikasi.kirim-menhan', [$periode->id, $opd->id]) }}" method="POST"
-                onsubmit="return confirm('Kirim hasil verifikasi ke Verifikator Menhan?');">
-                @csrf
-                <button type="submit"
-                    class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                    </svg>
-                    Kirim ke Verifikator Menhan
-                </button>
-            </form>
-        @else
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <p class="text-sm text-gray-700">Masih ada jawaban yang belum disetujui atau masih direvisi. Selesaikan verifikasi sebelum mengirim ke Menhan.</p>
-            </div>
-        @endif
+        </div>
         {{-- @if(config('app.debug') || env('APP_ENV') === 'local')
             <form action="{{ route('verifikasi.verify-all-dev', [$periode->id, $opd->id]) }}" method="POST"
                 onsubmit="return confirm('Yakin ingin verifikasi semua pertanyaan untuk OPD ini secara otomatis (DEV ONLY)?');">
