@@ -58,7 +58,7 @@
         @endif
 
         {{-- Stats Dashboard --}}
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-5">
 
             {{-- Card 1: Total Pertanyaan --}}
             <div class="bg-white rounded-xl p-6">
@@ -84,7 +84,7 @@
                 </div>
             </div>
 
-            {{-- Card 2: Terverifikasi --}}
+            {{-- Card 2: Disetujui --}}
             <div class="bg-white rounded-xl p-6">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
@@ -93,7 +93,7 @@
                                 d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                         </svg>
                     </div>
-                    <h3 class="text-gray-900 font-bold text-base">Terverifikasi</h3>
+                    <h3 class="text-gray-900 font-bold text-base">Disetujui</h3>
                 </div>
                 <div class="space-y-2">
                     <div class="flex items-center justify-between p-2.5 bg-green-50 rounded-lg border border-green-100">
@@ -101,12 +101,34 @@
                             <div class="w-2 h-2 rounded-full bg-green-500"></div>
                             <span class="text-sm font-medium text-green-800">Disetujui</span>
                         </div>
-                        <span class="font-bold text-green-700 text-lg">{{ $verifikasiStats['terverifikasi'] ?? 0 }}</span>
+                        <span class="font-bold text-green-700 text-lg">{{ $verifikasiStats['disetujui'] ?? 0 }}</span>
                     </div>
                 </div>
             </div>
 
-            {{-- Card 3: Direvisi --}}
+            {{-- Card 3: Terkirim ke Menhan --}}
+            <div class="bg-white rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-gray-900 font-bold text-base">Terkirim ke Menhan</h3>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between p-2.5 bg-blue-50 rounded-lg border border-blue-100">
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                            <span class="text-sm font-medium text-blue-800">Terkirim</span>
+                        </div>
+                        <span class="font-bold text-blue-700 text-lg">{{ $verifikasiStats['terkirim'] ?? 0 }}</span>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Card 4: Direvisi --}}
             <div class="bg-white rounded-xl p-6">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500">
@@ -128,7 +150,7 @@
                 </div>
             </div>
 
-            {{-- Card 4: Belum Diverifikasi --}}
+            {{-- Card 5: Belum Diverifikasi --}}
             <div class="bg-white rounded-xl p-6">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500">
@@ -186,6 +208,29 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        @endif
+
+        {{-- Kirim ke Menhan --}}
+        @if($isSentToMenhan)
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                <p class="text-sm text-green-800">Hasil verifikasi sudah terkirim ke Verifikator Menhan.</p>
+            </div>
+        @elseif($isReadySendMenhan)
+            <form action="{{ route('verifikasi.kirim-menhan', [$periode->id, $opd->id]) }}" method="POST"
+                onsubmit="return confirm('Kirim hasil verifikasi ke Verifikator Menhan?');">
+                @csrf
+                <button type="submit"
+                    class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
+                    Kirim ke Verifikator Menhan
+                </button>
+            </form>
+        @else
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <p class="text-sm text-gray-700">Masih ada jawaban yang belum disetujui atau masih direvisi. Selesaikan verifikasi sebelum mengirim ke Menhan.</p>
             </div>
         @endif
         {{-- @if(config('app.debug') || env('APP_ENV') === 'local')

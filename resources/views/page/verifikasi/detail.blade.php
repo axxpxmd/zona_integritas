@@ -367,7 +367,7 @@
 
                             {{-- Verifikasi --}}
                             <div class="mt-4 pt-4 border-t border-gray-200">
-                                <fieldset @if(!$isCanVerify) disabled @endif>
+                                <fieldset @if(!$isCanVerify || $statusVerifikasi === 'terkirim') disabled @endif>
                                 <div class="p-4 rounded-xl border transition-all duration-200 {{ $statusVerifikasi === 'belum_diverifikasi' ? 'bg-yellow-50/50 border-yellow-200' : 'bg-gray-50 border-gray-200' }}">
                                     {{-- Header Status & Toggle --}}
                                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
@@ -395,6 +395,13 @@
                                                             <span class="ml-1 text-orange-600">({{ $revisiCount }}x)</span>
                                                         @endif
                                                     </span>
+                                                @elseif($statusVerifikasi === 'terkirim')
+                                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200 shadow-sm">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                                                        </svg>
+                                                        Terkirim ke Menhan
+                                                    </span>
                                                 @else
                                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-green-100 text-green-800 border border-green-200 shadow-sm">
                                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -415,6 +422,8 @@
                                                         </div>
                                                     </div>
                                                     @endif
+                                                @elseif($statusVerifikasi === 'terkirim')
+                                                    Jawaban sudah dikirim ke Verifikator Menhan.
                                                 @elseif($menungguDicekUlang)
                                                     Operator telah merevisi jawaban ini. Mohon periksa kembali perubahan yang dilakukan.
                                                 @elseif($statusVerifikasi === 'belum_diverifikasi')
@@ -463,7 +472,7 @@
                                                     <input type="checkbox"
                                                            name="verifikasi[{{ $pertanyaan->id }}][status_verifikasi]"
                                                            value="disetujui"
-                                                           {{ $statusVerifikasi == 'disetujui' ? 'checked' : '' }}
+                                                           {{ in_array($statusVerifikasi, ['disetujui', 'terkirim']) ? 'checked' : '' }}
                                                            class="sr-only peer">
                                                     <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#0E7C7B]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0E7C7B]"></div>
                                                     <span class="ml-3 text-sm font-bold text-gray-600 peer-checked:text-[#0E7C7B] group-hover:text-gray-900 transition-colors">

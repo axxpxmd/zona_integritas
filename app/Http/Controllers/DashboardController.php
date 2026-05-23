@@ -170,7 +170,7 @@ class DashboardController extends Controller
             ->whereNull('sub_pertanyaan_id');
 
         $totalDisetujui = (clone $jawabansMainQuery)
-            ->where('status_verifikasi', 'disetujui')
+            ->whereIn('status_verifikasi', ['disetujui', 'terkirim'])
             ->count();
         $totalDirevisi = (clone $jawabansMainQuery)
             ->where('status_verifikasi', 'direvisi')
@@ -291,7 +291,7 @@ class DashboardController extends Controller
             ->whereIn('opd_id', $assignedOpdIds)
             ->whereNull('sub_pertanyaan_id');
 
-        $totalDisetujui = (clone $baseQuery)->where('status_verifikasi', 'disetujui')->count();
+        $totalDisetujui = (clone $baseQuery)->whereIn('status_verifikasi', ['disetujui', 'terkirim'])->count();
         $totalDirevisi = (clone $baseQuery)->where('status_verifikasi', 'direvisi')->count();
         $totalBelumDiverifikasi = (clone $baseQuery)->where('status_verifikasi', 'belum_diverifikasi')->count();
         $totalMenungguDicekUlang = (clone $baseQuery)->where('menunggu_dicek_ulang', true)->count();
@@ -316,7 +316,7 @@ class DashboardController extends Controller
                     ->where('opd_id', $opd->id)
                     ->whereNull('sub_pertanyaan_id');
 
-                $jmlDisetujui = (clone $opd_base)->where('status_verifikasi', 'disetujui')->count();
+                $jmlDisetujui = (clone $opd_base)->whereIn('status_verifikasi', ['disetujui', 'terkirim'])->count();
                 $jmlDirevisi = (clone $opd_base)->where('status_verifikasi', 'direvisi')->count();
                 $jmlBelum = (clone $opd_base)->where('status_verifikasi', 'belum_diverifikasi')->count();
                 $jmlTotal = (clone $opd_base)->count();
@@ -400,7 +400,7 @@ class DashboardController extends Controller
                     continue;
                 }
 
-                $jmlDisetujuiVerifikator = (clone $opd_base)->where('status_verifikasi', 'disetujui')->count();
+                $jmlDisetujuiVerifikator = (clone $opd_base)->where('status_verifikasi', 'terkirim')->count();
                 $isSiap = $jmlDisetujuiVerifikator === $jmlTotal;
 
                 if ($isSiap) {
@@ -431,7 +431,7 @@ class DashboardController extends Controller
 
         $baseQuery = Jawaban::where('periode_id', $periodeId)
             ->whereNull('sub_pertanyaan_id')
-            ->where('status_verifikasi', 'disetujui');
+            ->where('status_verifikasi', 'terkirim');
 
         $totalDisetujui = (clone $baseQuery)->where('status_verifikasi_menhan', 'disetujui')->count();
         $totalBelumDiverifikasi = (clone $baseQuery)->where('status_verifikasi_menhan', 'belum_diverifikasi')->count();

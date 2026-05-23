@@ -212,7 +212,7 @@
                                     }
                                 }
                             }
-                            $isDisetujui = $jawabanItem && $jawabanItem->status_verifikasi === 'disetujui';
+                            $isDisetujui = $jawabanItem && in_array($jawabanItem->status_verifikasi, ['disetujui', 'terkirim']);
                         @endphp
                         <div class="bg-[#FFFFF] rounded-lg p-4 border border-gray-200 {{ $nilaiTampil !== null ? 'border-l-4 border-l-green-500' : '' }}">
                             {{-- Pertanyaan --}}

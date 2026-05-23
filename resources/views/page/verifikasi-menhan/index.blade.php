@@ -9,7 +9,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
                 <h2 class="text-xl font-bold text-gray-900">Daftar OPD Siap Verifikasi Menhan</h2>
-                <p class="text-sm text-gray-500 mt-1">Hanya OPD yang sudah disetujui verifikator akan muncul di sini.</p>
+                <p class="text-sm text-gray-500 mt-1">Hanya OPD yang sudah dikirim oleh verifikator akan muncul di sini.</p>
             </div>
         </div>
 
@@ -79,8 +79,8 @@
                                         </td>
                                         <td class="px-5 py-3 text-center">
                                             <div class="flex flex-col items-center justify-center gap-1.5">
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-green-100 text-green-800">
-                                                    Siap Menhan
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-800">
+                                                    Terkirim ke Menhan
                                                 </span>
                                                 <span class="text-[10px] text-gray-500 font-medium">Terisi: {{ $opd->total_jawaban }}/{{ $opd->total_jawaban }}</span>
                                             </div>

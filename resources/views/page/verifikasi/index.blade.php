@@ -66,6 +66,7 @@
                                     <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Kerja / OPD</th>
                                     <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                     <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Disetujui</th>
+                                    <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Terkirim</th>
                                     <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Direvisi</th>
                                     <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Belum</th>
                                     <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
@@ -89,6 +90,7 @@
                                             </div>
                                         </td>
                                         <td class="px-5 py-3 text-center"><span class="font-semibold text-green-700">{{ $opd->terverifikasi }}</span></td>
+                                        <td class="px-5 py-3 text-center"><span class="font-semibold text-blue-700">{{ $opd->terkirim }}</span></td>
                                         <td class="px-5 py-3 text-center"><span class="font-semibold {{ $opd->direvisi > 0 ? 'text-red-600' : 'text-gray-400' }}">{{ $opd->direvisi }}</span></td>
                                         <td class="px-5 py-3 text-center">
                                             <div class="flex flex-col items-center justify-center gap-1">

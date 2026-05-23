@@ -66,12 +66,13 @@ class VerifikasiController extends Controller
 
                 $opd->total_jawaban = $opd_base->count();
                 $opd->terverifikasi = (clone $opd_base)->where('status_verifikasi', 'disetujui')->count();
+                $opd->terkirim = (clone $opd_base)->where('status_verifikasi', 'terkirim')->count();
                 $opd->direvisi = (clone $opd_base)->where('status_verifikasi', 'direvisi')->count();
                 $opd->belum_terverifikasi = (clone $opd_base)->where('status_verifikasi', 'belum_diverifikasi')->count();
                 $opd->menunggu_dicek_ulang = (clone $opd_base)->where('menunggu_dicek_ulang', true)->count();
                 $opd->total_pertanyaan = $totalRequired;
                 $opd->persen = $opd->total_jawaban > 0
-                    ? min(100, round((($opd->terverifikasi + $opd->direvisi) / $opd->total_jawaban) * 100))
+                    ? min(100, round((($opd->terverifikasi + $opd->terkirim + $opd->direvisi) / $opd->total_jawaban) * 100))
                     : 0;
             }
         }
@@ -100,6 +101,7 @@ class VerifikasiController extends Controller
             'total_jawaban' => $jawabans->count(),
             'belum_diverifikasi' => $jawabans->where('status_verifikasi', 'belum_diverifikasi')->count(),
             'disetujui' => $jawabans->where('status_verifikasi', 'disetujui')->count(),
+            'terkirim' => $jawabans->where('status_verifikasi', 'terkirim')->count(),
             'direvisi' => $jawabans->where('status_verifikasi', 'direvisi')->count(),
         ];
 
@@ -152,13 +154,25 @@ class VerifikasiController extends Controller
 
         $verifikasiStats['total_pertanyaan'] = $totalSemuaPertanyaan;
         $verifikasiStats['terverifikasi'] = $totalPertanyaanTerverifikasi;
+        $verifikasiStats['disetujui'] = $jawabans->whereNull('sub_pertanyaan_id')->where('status_verifikasi', 'disetujui')->count();
+        $verifikasiStats['terkirim'] = $jawabans->whereNull('sub_pertanyaan_id')->where('status_verifikasi', 'terkirim')->count();
         $verifikasiStats['direvisi'] = $jawabans->whereNull('sub_pertanyaan_id')->where('status_verifikasi', 'direvisi')->count();
         $verifikasiStats['belum_terverifikasi'] = max(0, $totalSemuaPertanyaan - $totalPertanyaanTerverifikasi - $verifikasiStats['direvisi']);
 
         $isAllAnswered = ($totalSemuaPertanyaan > 0 && $totalSemuaPertanyaan === $totalPertanyaanTerjawab);
         $isSent = $jawabans->where('status', 'final')->isNotEmpty();
 
-        return view('page.verifikasi.show', compact('periode', 'opd', 'komponens', 'jawabanMap', 'verifikasiStats', 'progress', 'isAllAnswered', 'isSent'));
+        $opdBase = Jawaban::where('periode_id', $periode->id)
+            ->where('opd_id', $opd->id)
+            ->whereNull('sub_pertanyaan_id');
+        $totalJawaban = (clone $opdBase)->count();
+        $totalBelum = (clone $opdBase)->where('status_verifikasi', 'belum_diverifikasi')->count();
+        $totalDirevisi = (clone $opdBase)->where('status_verifikasi', 'direvisi')->count();
+        $totalTerkirim = (clone $opdBase)->where('status_verifikasi', 'terkirim')->count();
+        $isReadySendMenhan = $totalJawaban > 0 && $totalBelum === 0 && $totalDirevisi === 0;
+        $isSentToMenhan = $totalJawaban > 0 && $totalTerkirim === $totalJawaban;
+
+        return view('page.verifikasi.show', compact('periode', 'opd', 'komponens', 'jawabanMap', 'verifikasiStats', 'progress', 'isAllAnswered', 'isSent', 'isReadySendMenhan', 'isSentToMenhan'));
     }
 
     public function detail(Request $request, Periode $periode, Opd $opd, SubKategori $subKategori)
@@ -234,7 +248,7 @@ class VerifikasiController extends Controller
                 $jawabans = Jawaban::where('periode_id', $periode->id)
                     ->where('opd_id', $opd->id)
                     ->where('pertanyaan_id', $pertanyaanId)
-                    ->where('status_verifikasi', '!=', 'direvisi')
+                    ->whereNotIn('status_verifikasi', ['direvisi', 'terkirim'])
                     ->get();
 
                 foreach ($jawabans as $jawaban) {
@@ -291,6 +305,16 @@ class VerifikasiController extends Controller
             abort(403, 'Akses ditolak.');
         }
 
+        $hasTerkirim = Jawaban::where('periode_id', $periode->id)
+            ->where('opd_id', $opd->id)
+            ->where('pertanyaan_id', $pertanyaan->id)
+            ->where('status_verifikasi', 'terkirim')
+            ->exists();
+
+        if ($hasTerkirim) {
+            return redirect()->back()->with('error', 'Jawaban sudah terkirim ke Menhan dan tidak bisa diubah.');
+        }
+
         $jawabans = Jawaban::where('periode_id', $periode->id)
             ->where('opd_id', $opd->id)
             ->where('pertanyaan_id', $pertanyaan->id)
@@ -323,6 +347,16 @@ class VerifikasiController extends Controller
     {
         if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
             abort(403, 'Akses ditolak.');
+        }
+
+        $hasTerkirim = Jawaban::where('periode_id', $periode->id)
+            ->where('opd_id', $opd->id)
+            ->where('pertanyaan_id', $pertanyaan->id)
+            ->where('status_verifikasi', 'terkirim')
+            ->exists();
+
+        if ($hasTerkirim) {
+            return redirect()->back()->with('error', 'Jawaban sudah terkirim ke Menhan dan tidak bisa diubah.');
         }
 
         $request->validate([
@@ -364,6 +398,16 @@ class VerifikasiController extends Controller
     {
         if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
             abort(403, 'Akses ditolak.');
+        }
+
+        $hasTerkirim = Jawaban::where('periode_id', $periode->id)
+            ->where('opd_id', $opd->id)
+            ->where('pertanyaan_id', $pertanyaan->id)
+            ->where('status_verifikasi', 'terkirim')
+            ->exists();
+
+        if ($hasTerkirim) {
+            return redirect()->back()->with('error', 'Jawaban sudah terkirim ke Menhan dan tidak bisa diubah.');
         }
 
         $jawabans = Jawaban::where('periode_id', $periode->id)
@@ -425,6 +469,44 @@ class VerifikasiController extends Controller
             ->with('success', '[DEV] Semua kuesioner pada OPD ini telah berhasil diverifikasi secara otomatis.');
     }
 
+    /**
+     * Kirim hasil verifikasi ke Verifikator Menhan.
+     */
+    public function kirimMenhan(Request $request, Periode $periode, Opd $opd)
+    {
+        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $opdBase = Jawaban::where('periode_id', $periode->id)
+            ->where('opd_id', $opd->id)
+            ->whereNull('sub_pertanyaan_id');
+
+        $totalJawaban = (clone $opdBase)->count();
+        $totalDisetujui = (clone $opdBase)->where('status_verifikasi', 'disetujui')->count();
+        $totalTerkirim = (clone $opdBase)->where('status_verifikasi', 'terkirim')->count();
+
+        if ($totalJawaban === 0) {
+            return redirect()->back()->with('error', 'Belum ada jawaban yang dapat dikirim.');
+        }
+
+        if ($totalTerkirim === $totalJawaban) {
+            return redirect()->back()->with('success', 'Hasil verifikasi sudah terkirim ke Menhan.');
+        }
+
+        if (($totalDisetujui + $totalTerkirim) < $totalJawaban) {
+            return redirect()->back()->with('error', 'Masih ada jawaban yang belum disetujui.');
+        }
+
+        Jawaban::where('periode_id', $periode->id)
+            ->where('opd_id', $opd->id)
+            ->where('status_verifikasi', 'disetujui')
+            ->update(['status_verifikasi' => 'terkirim']);
+
+        return redirect()->route('verifikasi.show', ['periode' => $periode->id, 'opd' => $opd->id])
+            ->with('success', 'Hasil verifikasi berhasil dikirim ke Verifikator Menhan.');
+    }
+
     private function hitungNilaiIndikatorVerifikasi(Indikator $indikator, array $jawabanMap): array
     {
         $pertanyaans = $indikator->pertanyaans;
@@ -445,7 +527,7 @@ class VerifikasiController extends Controller
                     $key = $pertanyaan->id . '_' . $subPertanyaan->id;
                     $jawabanSubModel = $jawabanMap[$key] ?? null;
                     if ($jawabanSubModel) {
-                        if ($jawabanSubModel->status_verifikasi === 'disetujui') {
+                        if (in_array($jawabanSubModel->status_verifikasi, ['disetujui', 'terkirim'], true)) {
                             $isVerified = true;
                         }
                         $value = $jawabanSubModel->verifikator_jawaban_angka;
@@ -465,7 +547,7 @@ class VerifikasiController extends Controller
             } else {
                 $jawaban = $jawabanMap[$pertanyaan->id] ?? null;
                 if ($jawaban) {
-                    if ($jawaban->status_verifikasi === 'disetujui') {
+                    if (in_array($jawaban->status_verifikasi, ['disetujui', 'terkirim'], true)) {
                         $isVerified = true;
                     }
                     if (in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda'])) {

@@ -50,7 +50,7 @@ class VerifikasiMenhanController extends Controller
                     ->whereNull('sub_pertanyaan_id');
 
                 $opd->total_jawaban = (clone $opd_base)->count();
-                $opd->terverifikasi_verifikator = (clone $opd_base)->where('status_verifikasi', 'disetujui')->count();
+                $opd->terverifikasi_verifikator = (clone $opd_base)->where('status_verifikasi', 'terkirim')->count();
 
                 if ($opd->total_jawaban === 0 || $opd->terverifikasi_verifikator < $opd->total_jawaban) {
                     continue;
@@ -84,7 +84,7 @@ class VerifikasiMenhanController extends Controller
             ->where('opd_id', $opd->id)
             ->whereNull('sub_pertanyaan_id');
         $totalJawaban = (clone $opdBase)->count();
-        $totalDisetujui = (clone $opdBase)->where('status_verifikasi', 'disetujui')->count();
+        $totalDisetujui = (clone $opdBase)->where('status_verifikasi', 'terkirim')->count();
 
         if ($totalJawaban === 0 || $totalDisetujui < $totalJawaban) {
             return redirect()->route('verifikasi-menhan.index')
@@ -97,7 +97,7 @@ class VerifikasiMenhanController extends Controller
 
         $jawabans = Jawaban::where('periode_id', $periode->id)
             ->where('opd_id', $opd->id)
-            ->where('status_verifikasi', 'disetujui')
+            ->where('status_verifikasi', 'terkirim')
             ->with('files')
             ->get();
 
@@ -173,7 +173,7 @@ class VerifikasiMenhanController extends Controller
             ->where('opd_id', $opd->id)
             ->whereNull('sub_pertanyaan_id');
         $totalJawaban = (clone $opdBase)->count();
-        $totalDisetujui = (clone $opdBase)->where('status_verifikasi', 'disetujui')->count();
+        $totalDisetujui = (clone $opdBase)->where('status_verifikasi', 'terkirim')->count();
 
         if ($totalJawaban === 0 || $totalDisetujui < $totalJawaban) {
             return redirect()->route('verifikasi-menhan.index')
@@ -194,7 +194,7 @@ class VerifikasiMenhanController extends Controller
 
         $jawabans = Jawaban::where('periode_id', $periode->id)
             ->where('opd_id', $opd->id)
-            ->where('status_verifikasi', 'disetujui')
+            ->where('status_verifikasi', 'terkirim')
             ->get();
 
         $jawabanMap = [];
@@ -225,7 +225,7 @@ class VerifikasiMenhanController extends Controller
             ->where('opd_id', $opd->id)
             ->whereNull('sub_pertanyaan_id');
         $totalJawaban = (clone $opdBase)->count();
-        $totalDisetujui = (clone $opdBase)->where('status_verifikasi', 'disetujui')->count();
+        $totalDisetujui = (clone $opdBase)->where('status_verifikasi', 'terkirim')->count();
 
         if ($totalJawaban === 0 || $totalDisetujui < $totalJawaban) {
             return redirect()->route('verifikasi-menhan.index')
@@ -253,7 +253,7 @@ class VerifikasiMenhanController extends Controller
                 $jawabans = Jawaban::where('periode_id', $periode->id)
                     ->where('opd_id', $opd->id)
                     ->where('pertanyaan_id', $pertanyaanId)
-                    ->where('status_verifikasi', 'disetujui')
+                    ->where('status_verifikasi', 'terkirim')
                     ->get();
 
                 foreach ($jawabans as $jawaban) {

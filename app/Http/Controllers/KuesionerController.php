@@ -100,7 +100,7 @@ class KuesionerController extends Controller
                                 $totalPertanyaanTerjawab++;
 
                                 $nilaiEfektif = null;
-                                $isVerified = $jawaban->status_verifikasi === 'disetujui';
+                                $isVerified = in_array($jawaban->status_verifikasi, ['disetujui', 'terkirim'], true);
 
                                 if ($isVerified && $pertanyaan->has_sub_pertanyaan) {
                                     // Ambil sub-jawaban dari collection yang sudah di-preload
@@ -160,7 +160,11 @@ class KuesionerController extends Controller
         $isAllAnswered = ($totalSemuaPertanyaan > 0 && $totalSemuaPertanyaan === $totalPertanyaanTerjawab);
         $statusFinal = Jawaban::where('periode_id', $periode_id)->where('opd_id', $opd->id)->where('status', 'final')->exists();
 
-        $totalDisetujui = Jawaban::where('periode_id', $periode_id)->where('opd_id', $opd->id)->whereNull('sub_pertanyaan_id')->where('status_verifikasi', 'disetujui')->count();
+        $totalDisetujui = Jawaban::where('periode_id', $periode_id)
+            ->where('opd_id', $opd->id)
+            ->whereNull('sub_pertanyaan_id')
+            ->whereIn('status_verifikasi', ['disetujui', 'terkirim'])
+            ->count();
         $totalRevisi = Jawaban::where('periode_id', $periode_id)->where('opd_id', $opd->id)->whereNull('sub_pertanyaan_id')->where('status_verifikasi', 'direvisi')->count();
         $totalBelumDiverifikasi = Jawaban::where('periode_id', $periode_id)->where('opd_id', $opd->id)->where('status_verifikasi', 'belum_diverifikasi')->groupBy('sub_pertanyaan_id')->count();
         $totalBelumTerjawab = max(0, $totalSemuaPertanyaan - $totalPertanyaanTerjawab);
@@ -890,7 +894,7 @@ class KuesionerController extends Controller
             $nilai = null;
 
             if ($jawaban) {
-                $isVerified = $jawaban->status_verifikasi === 'disetujui';
+                $isVerified = in_array($jawaban->status_verifikasi, ['disetujui', 'terkirim'], true);
 
                 if ($isVerified && $pertanyaan->has_sub_pertanyaan) {
                     // Kumpulkan nilai sub dari jawaban verifikator

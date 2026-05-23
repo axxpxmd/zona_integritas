@@ -79,6 +79,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('verifikasi')->name('verifikasi.')->group(function () {
         Route::get('/', [VerifikasiController::class, 'index'])->name('index');
         Route::get('/{periode}/{opd}', [VerifikasiController::class, 'show'])->name('show');
+        Route::post('/{periode}/{opd}/kirim-menhan', [VerifikasiController::class, 'kirimMenhan'])->name('kirim-menhan');
         Route::post('/{periode}/{opd}/verify-all-dev', [VerifikasiController::class, 'verifyAllDev'])->name('verify-all-dev');
         Route::get('/{periode}/{opd}/kategori/{subKategori}', [VerifikasiController::class, 'detail'])->name('detail');
         Route::post('/{periode}/{opd}/kategori/{subKategori}', [VerifikasiController::class, 'store'])->name('store');
