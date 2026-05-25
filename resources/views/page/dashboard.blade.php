@@ -285,23 +285,24 @@
 				@php $m = $menpanStats; @endphp
 
 				{{-- Status Banner --}}
-				<div
-					class="rounded-xl border px-5 py-4 flex items-center justify-between gap-4 {{ $m['isVerifActive'] ? 'bg-indigo-50 border-indigo-200' : 'bg-gray-50 border-gray-200' }}">
+				@php
+					$bc = $m['isVerifActive']
+						? ['bg' => 'bg-blue-50', 'border' => 'border-blue-200', 'text' => 'text-blue-800', 'icon' => 'text-blue-500', 'badge_bg' => 'bg-blue-100', 'badge_text' => 'text-blue-800']
+						: ['bg' => 'bg-gray-50', 'border' => 'border-gray-200', 'text' => 'text-gray-700', 'icon' => 'text-gray-400', 'badge_bg' => 'bg-gray-100', 'badge_text' => 'text-gray-700'];
+				@endphp
+				<div class="rounded-xl border px-5 py-4 flex items-center justify-between gap-4 {{ $bc['bg'] }} {{ $bc['border'] }}">
 					<div class="flex items-center gap-3">
 						<div class="flex-shrink-0">
-							<svg class="w-6 h-6 {{ $m['isVerifActive'] ? 'text-indigo-500' : 'text-gray-400' }}" fill="none"
-								stroke="currentColor" viewBox="0 0 24 24">
+							<svg class="w-6 h-6 {{ $bc['icon'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
 									d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
 							</svg>
 						</div>
 						<div>
-							<p class="text-sm font-bold {{ $m['isVerifActive'] ? 'text-indigo-800' : 'text-gray-700' }}">
-								Dashboard Verifikasi Menpan — Periode: {{ $activePeriode->nama_periode }}
-							</p>
-							<p class="text-xs {{ $m['isVerifActive'] ? 'text-indigo-700' : 'text-gray-500' }} mt-0.5">
+							<p class="text-sm font-bold {{ $bc['text'] }}">Dashboard Verifikasi Menpan</p>
+							<p class="text-xs {{ $bc['text'] }} opacity-80 mt-0.5">Periode: <span class="font-semibold">{{ $activePeriode->nama_periode }}</span> •
 								@if($m['startVerif'] && $m['endVerif'])
-									Jadwal verifikasi: {{ $m['startVerif']->format('d M Y') }} s/d {{ $m['endVerif']->format('d M Y') }}
+									Verifikasi: {{ $m['startVerif']->format('d M Y') }} s/d {{ $m['endVerif']->format('d M Y') }}
 								@else
 									Jadwal verifikasi belum ditentukan
 								@endif
@@ -310,13 +311,11 @@
 					</div>
 					<div class="flex items-center gap-2 flex-shrink-0">
 						@if($m['isVerifActive'])
-							<span
-								class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800 border border-indigo-200">
-								<span class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span> Verifikasi Aktif
+							<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200">
+								<span class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></span> Verifikasi Aktif
 							</span>
 						@else
-							<span
-								class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200">
+							<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200">
 								<span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span> Di Luar Jadwal
 							</span>
 						@endif
@@ -327,56 +326,66 @@
 				{{-- Stats Grid Menpan --}}
 				<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 					{{-- Status OPD (Menpan) --}}
-					<div class="bg-white rounded-xl p-5 flex items-center justify-between">
-						<div>
+					<div class="bg-white rounded-xl p-5">
+						<div class="flex items-center justify-between mb-3">
 							<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Unit Kerja Ditangani</p>
-							<div class="flex gap-4 mt-2">
-								<div>
-									<p class="text-2xl font-bold text-gray-900">{{ $m['opdSiapMenpan'] }}</p>
-									<p class="text-xs text-green-600 font-medium">Siap Verif</p>
-								</div>
-								<div>
-									<p class="text-2xl font-bold text-gray-900">{{ $m['opdBelumSiapMenpan'] }}</p>
-									<p class="text-xs text-orange-500 font-medium">Belum Siap</p>
-								</div>
+							<div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+								</svg>
 							</div>
 						</div>
-						<div
-							class="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center border-4 border-blue-100 text-blue-600 flex-shrink-0">
-							<span class="text-lg font-bold">{{ $m['totalOpdAssigned'] }}</span>
+						<p class="text-3xl font-bold text-gray-900">{{ $m['totalOpdAssigned'] }}</p>
+						<div class="flex items-center gap-3 mt-2 text-xs">
+							<div class="flex items-center gap-1">
+								<div class="w-2 h-2 rounded-full bg-green-500"></div>
+								<span class="text-gray-600"><span class="font-medium text-gray-900">{{ $m['opdSiapMenpan'] }}</span> Siap Verif</span>
+							</div>
+							<div class="flex items-center gap-1">
+								<div class="w-2 h-2 rounded-full bg-orange-400"></div>
+								<span class="text-gray-600"><span class="font-medium text-gray-900">{{ $m['opdBelumSiapMenpan'] }}</span> Belum Siap</span>
+							</div>
 						</div>
 					</div>
 
 					{{-- Progress Verifikasi Keseluruhan Menpan --}}
-					<div class="bg-white rounded-xl p-5 col-span-2">
+					<div class="bg-white rounded-xl p-5 col-span-1 md:col-span-2">
 						<div class="flex items-start justify-between mb-4">
 							<div>
-								<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Progress Menpan (Keseluruhan)
-								</p>
+								<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Progress Menpan (Keseluruhan)</p>
 								<div class="flex items-end gap-2 mt-1">
 									<span class="text-3xl font-bold text-gray-900">{{ $m['persenVerifikasi'] }}%</span>
-									<span class="text-sm text-gray-500 mb-0.5">{{ $m['totalDisetujui'] }} /
-										{{ $m['totalJawaban'] }} disetujui</span>
+									<span class="text-sm text-gray-500 mb-0.5">{{ $m['totalDisetujui'] }} / {{ $m['totalJawaban'] }} disetujui</span>
 								</div>
+							</div>
+							<div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 flex-shrink-0">
+								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+								</svg>
 							</div>
 						</div>
 						<div class="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
-							<div class="h-3 rounded-full bg-indigo-500 transition-all duration-500"
-								style="width: {{ $m['persenVerifikasi'] }}%"></div>
+							<div class="h-3 rounded-full transition-all duration-500 {{ $m['persenVerifikasi'] >= 100 ? 'bg-green-500' : 'bg-indigo-500' }}" style="width: {{ $m['persenVerifikasi'] }}%"></div>
+						</div>
+						<div class="flex items-center justify-between mt-2">
+							<span class="text-xs text-gray-500">Belum disetujui: {{ $m['totalJawaban'] - $m['totalDisetujui'] }}</span>
+							<span class="text-xs font-semibold {{ $m['persenVerifikasi'] >= 100 ? 'text-green-600' : 'text-indigo-600' }}">
+								{{ $m['persenVerifikasi'] >= 100 ? 'Selesai' : 'Sedang Berjalan' }}
+							</span>
 						</div>
 					</div>
 				</div>
 
 				{{-- Table OPD List Menpan --}}
-				<div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-					<div class="px-5 py-4 border-b border-gray-200 bg-gray-50/50">
-						<h3 class="text-base font-bold text-gray-900">Daftar OPD untuk Diverifikasi Menpan</h3>
+				<div class="bg-white rounded-xl overflow-hidden">
+					<div class="px-5 py-4 border-b border-gray-100">
+                        <h3 class="text-medium font-semibold text-gray-900">Daftar Unit Kerja untuk Diverifikasi Menpan</h3>
 					</div>
 					<div class="overflow-x-auto">
 						<table class="w-full text-left text-sm whitespace-nowrap">
 							<thead class="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider border-b border-gray-200">
 								<tr>
-									<th class="px-5 py-3 font-semibold">Nama Unit Kerja</th>
+									<th class="px-5 py-3 font-semibold">Unit Kerja</th>
 									<th class="px-5 py-3 font-semibold text-center w-32">Status Persiapan</th>
 									<th class="px-5 py-3 font-semibold text-center w-32">Terverifikasi</th>
 									<th class="px-5 py-3 font-semibold text-center w-32">Belum Dicek</th>
@@ -424,8 +433,11 @@
 										<td class="px-5 py-3 text-right">
 											@if($p->isSiap)
 												<a href="{{ route('verifikasi-menpan.show', ['periode' => $activePeriode->id, 'opd' => $p->opd->id]) }}"
-													class="inline-flex items-center justify-center px-3 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white border border-indigo-200 hover:border-transparent rounded-lg text-xs font-semibold transition-all">
+													class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white border border-blue-200 hover:border-transparent rounded-lg text-xs font-semibold transition-all">
 													Lakukan Verifikasi
+													<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+													</svg>
 												</a>
 											@else
 												<span class="text-xs text-gray-400 italic">Belum bisa ditindak</span>
