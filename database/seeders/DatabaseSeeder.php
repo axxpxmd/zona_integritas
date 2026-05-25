@@ -38,6 +38,9 @@ class DatabaseSeeder extends Seeder
 
             // User Management
             UserSeeder::class,
+
+            // Data Jawaban Kuesioner
+            JawabanSeeder::class,
         ]);
 
         $this->command->info('✅ Seeding completed successfully!');
