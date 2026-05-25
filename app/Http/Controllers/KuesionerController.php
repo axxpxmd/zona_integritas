@@ -87,127 +87,165 @@ class KuesionerController extends Controller
             ->whereNotNull('sub_pertanyaan_id')
             ->get()
             ->keyBy(fn ($j) => $j->pertanyaan_id . '-' . $j->sub_pertanyaan_id);
-
+        $progressOp = [];
+        $progressVer = [];
+        $progressMen = [];
         foreach ($komponens as $komponen) {
             foreach ($komponen->kategoris as $kategori) {
                 foreach ($kategori->subKategoris as $subKategori) {
-                    $totalNilaiSubKategori = 0;
+                    $totalNilaiOp = 0;
+                    $totalNilaiVer = 0;
+                    $totalNilaiMen = 0;
                     foreach ($subKategori->indikators as $indikator) {
-                        $indPertanyaanTerjawab = 0;
-                        $indTotalNilai = 0;
+                        $indTerjawabOp = 0; $indTotalOp = 0;
+                        $indTerjawabVer = 0; $indTotalVer = 0;
+                        $indTerjawabMen = 0; $indTotalMen = 0;
                         foreach ($indikator->pertanyaans as $pertanyaan) {
                             $jawaban = $jawabans[$pertanyaan->id] ?? null;
                             if ($jawaban) {
-                                $nilaiEfektif = null;
-                                $isMenpanDisetujui = $jawaban->status_verifikasi_menpan === 'disetujui';
-                                $isVerified = in_array($jawaban->status_verifikasi, ['disetujui', 'terkirim'], true);
-
-                                if ($isVerified && $pertanyaan->has_sub_pertanyaan) {
-                                    $subJawabanAngka = [];
+                                $valOp = null; $valVer = null; $valMen = null;
+                                
+                                // OPERATOR
+                                if ($pertanyaan->has_sub_pertanyaan) {
+                                    $subAns = [];
                                     foreach ($pertanyaan->subPertanyaans as $sp) {
                                         $spKey = $pertanyaan->id . '-' . $sp->id;
-                                        $spJawaban = $subJawabansAll[$spKey] ?? null;
-                                        if ($spJawaban) {
-                                            $effVal = $isMenpanDisetujui && $spJawaban->menpan_jawaban_angka !== null
-                                                ? $spJawaban->menpan_jawaban_angka
-                                                : ($spJawaban->verifikator_jawaban_angka ?? $spJawaban->jawaban_angka);
-
-                                            if ($effVal !== null) {
-                                                $subJawabanAngka[$sp->id] = $effVal;
-                                            }
+                                        if (isset($subJawabansAll[$spKey]) && $subJawabansAll[$spKey]->jawaban_angka !== null) {
+                                            $subAns[$sp->id] = $subJawabansAll[$spKey]->jawaban_angka;
                                         }
                                     }
-                                    $nilaiEfektif = count($subJawabanAngka) >= 2
-                                        ? $this->hitungNilaiSubPertanyaan($pertanyaan, $subJawabanAngka)
-                                        : $jawaban->nilai;
-
-                                } elseif ($isVerified) {
-                                    if (in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda'])) {
-                                        $effJawaban = $isMenpanDisetujui && $jawaban->menpan_jawaban_text !== null
-                                            ? $jawaban->menpan_jawaban_text
-                                            : ($jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text);
-                                    } else {
-                                        $effJawaban = $isMenpanDisetujui && $jawaban->menpan_jawaban_angka !== null
-                                            ? $jawaban->menpan_jawaban_angka
-                                            : ($jawaban->verifikator_jawaban_angka ?? $jawaban->jawaban_angka);
-                                    }
-                                    $nilaiEfektif = $effJawaban !== null ? $this->hitungNilai($pertanyaan, $effJawaban) : $jawaban->nilai;
+                                    $valOp = (count($subAns) >= 2) ? $this->hitungNilaiSubPertanyaan($pertanyaan, $subAns) : $jawaban->nilai;
                                 } else {
-                                    $nilaiEfektif = $jawaban->nilai;
+                                    $effOp = in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda']) ? $jawaban->jawaban_text : $jawaban->jawaban_angka;
+                                    $valOp = $effOp !== null ? $this->hitungNilai($pertanyaan, $effOp) : $jawaban->nilai;
                                 }
+                                if ($valOp !== null) { $indTerjawabOp++; $indTotalOp += $valOp; }
 
-                                if ($nilaiEfektif !== null) {
-                                    $indPertanyaanTerjawab++;
-                                    $indTotalNilai += $nilaiEfektif;
+                                // VERIFIKATOR
+                                $isVerified = in_array($jawaban->status_verifikasi, ['disetujui', 'terkirim'], true);
+                                if ($isVerified) {
+                                    if ($pertanyaan->has_sub_pertanyaan) {
+                                        $subAns = [];
+                                        foreach ($pertanyaan->subPertanyaans as $sp) {
+                                            $spKey = $pertanyaan->id . '-' . $sp->id;
+                                            if (isset($subJawabansAll[$spKey])) {
+                                                $sja = $subJawabansAll[$spKey];
+                                                $effSp = $sja->verifikator_jawaban_angka ?? $sja->jawaban_angka;
+                                                if ($effSp !== null) $subAns[$sp->id] = $effSp;
+                                            }
+                                        }
+                                        $valVer = (count($subAns) >= 2) ? $this->hitungNilaiSubPertanyaan($pertanyaan, $subAns) : $jawaban->nilai;
+                                    } else {
+                                        $effVerText = $jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text;
+                                        $effVerAngka = $jawaban->verifikator_jawaban_angka ?? $jawaban->jawaban_angka;
+                                        $effVer = in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda']) ? $effVerText : $effVerAngka;
+                                        $valVer = $effVer !== null ? $this->hitungNilai($pertanyaan, $effVer) : $valOp;
+                                    }
+                                } else {
+                                    $valVer = $valOp;
                                 }
+                                if ($valVer !== null) { $indTerjawabVer++; $indTotalVer += $valVer; }
+
+                                // MENPAN
+                                $isMenpanDisetujui = $jawaban->status_verifikasi_menpan === 'disetujui';
+                                if ($isMenpanDisetujui) {
+                                    if ($pertanyaan->has_sub_pertanyaan) {
+                                        $subAns = [];
+                                        foreach ($pertanyaan->subPertanyaans as $sp) {
+                                            $spKey = $pertanyaan->id . '-' . $sp->id;
+                                            if (isset($subJawabansAll[$spKey])) {
+                                                $sja = $subJawabansAll[$spKey];
+                                                $effSp = $sja->menpan_jawaban_angka !== null ? $sja->menpan_jawaban_angka : ($sja->verifikator_jawaban_angka ?? $sja->jawaban_angka);
+                                                if ($effSp !== null) $subAns[$sp->id] = $effSp;
+                                            }
+                                        }
+                                        $valMen = (count($subAns) >= 2) ? $this->hitungNilaiSubPertanyaan($pertanyaan, $subAns) : $jawaban->nilai;
+                                    } else {
+                                        $effMenText = $jawaban->menpan_jawaban_text !== null ? $jawaban->menpan_jawaban_text : ($jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text);
+                                        $effMenAngka = $jawaban->menpan_jawaban_angka !== null ? $jawaban->menpan_jawaban_angka : ($jawaban->verifikator_jawaban_angka ?? $jawaban->jawaban_angka);
+                                        $effMen = in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda']) ? $effMenText : $effMenAngka;
+                                        $valMen = $effMen !== null ? $this->hitungNilai($pertanyaan, $effMen) : $valVer;
+                                    }
+                                } else {
+                                    $valMen = $valVer;
+                                }
+                                if ($valMen !== null) { $indTerjawabMen++; $indTotalMen += $valMen; }
                             }
                         }
-                        $indRataRata = $indPertanyaanTerjawab > 0 ? $indTotalNilai / $indPertanyaanTerjawab : 0;
-                        $indNilaiAkhir = $indRataRata * $indikator->bobot;
-                        $totalNilaiSubKategori += $indNilaiAkhir;
+                        
+                        $totalNilaiOp += ($indTerjawabOp > 0 ? $indTotalOp / $indTerjawabOp : 0) * $indikator->bobot;
+                        $totalNilaiVer += ($indTerjawabVer > 0 ? $indTotalVer / $indTerjawabVer : 0) * $indikator->bobot;
+                        $totalNilaiMen += ($indTerjawabMen > 0 ? $indTotalMen / $indTerjawabMen : 0) * $indikator->bobot;
                     }
-                    $persenCapaian = $subKategori->bobot > 0 ? ($totalNilaiSubKategori / $subKategori->bobot) * 100 : 0;
-                    $progress[$subKategori->id] = [
-                        'nilai' => $totalNilaiSubKategori,
-                        'capaian' => $persenCapaian
-                    ];
+                    
+                    $progressOp[$subKategori->id] = $totalNilaiOp;
+                    $progressVer[$subKategori->id] = $totalNilaiVer;
+                    $progressMen[$subKategori->id] = $totalNilaiMen;
                 }
             }
         }
 
-        // Siapkan struktur rekapan
-        $rekapPengungkit = [];
-        $rekapHasil = [];
-
-        foreach ($komponens as $komponen) {
-            if ($komponen->nama == 'PENGUNGKIT') {
-                foreach ($komponen->kategoris as $kategori) {
-                    foreach ($kategori->subKategoris as $subKategori) {
-                        $namaArea = trim($subKategori->nama);
-                        if (!isset($rekapPengungkit[$namaArea])) {
-                            $rekapPengungkit[$namaArea] = [
-                                'nama' => $namaArea,
-                                'pemenuhan_bobot' => 0,
-                                'pemenuhan_nilai' => 0,
-                                'reform_bobot' => 0,
-                                'reform_nilai' => 0,
+        // Siapkan Helper untuk membentuk rekapan
+        $buildRekap = function($progressSet) use ($komponens) {
+            $pengungkit = [];
+            $hasil = [];
+            foreach ($komponens as $komponen) {
+                if ($komponen->nama == 'PENGUNGKIT') {
+                    foreach ($komponen->kategoris as $kategori) {
+                        foreach ($kategori->subKategoris as $subKategori) {
+                            $namaArea = trim($subKategori->nama);
+                            if (!isset($pengungkit[$namaArea])) {
+                                $pengungkit[$namaArea] = [
+                                    'nama' => $namaArea,
+                                    'pemenuhan_bobot' => 0,
+                                    'pemenuhan_nilai' => 0,
+                                    'reform_bobot' => 0,
+                                    'reform_nilai' => 0,
+                                ];
+                            }
+                            if (stripos($kategori->nama, 'PEMENUHAN') !== false) {
+                                $pengungkit[$namaArea]['pemenuhan_bobot'] = $subKategori->bobot;
+                                $pengungkit[$namaArea]['pemenuhan_nilai'] = $progressSet[$subKategori->id] ?? 0;
+                            } else if (stripos($kategori->nama, 'REFORM') !== false) {
+                                $pengungkit[$namaArea]['reform_bobot'] = $subKategori->bobot;
+                                $pengungkit[$namaArea]['reform_nilai'] = $progressSet[$subKategori->id] ?? 0;
+                            }
+                        }
+                    }
+                } else if ($komponen->nama == 'HASIL') {
+                    foreach ($komponen->kategoris as $kategori) {
+                        $subs = [];
+                        $nilaiKategori = 0;
+                        foreach ($kategori->subKategoris as $subKategori) {
+                            $subNilai = $progressSet[$subKategori->id] ?? 0;
+                            $nilaiKategori += $subNilai;
+                            $subs[] = [
+                                'kode' => $subKategori->kode,
+                                'nama' => $subKategori->nama,
+                                'bobot' => $subKategori->bobot,
+                                'nilai' => $subNilai
                             ];
                         }
-                        if (stripos($kategori->nama, 'PEMENUHAN') !== false) {
-                            $rekapPengungkit[$namaArea]['pemenuhan_bobot'] = $subKategori->bobot;
-                            $rekapPengungkit[$namaArea]['pemenuhan_nilai'] = $progress[$subKategori->id]['nilai'] ?? 0;
-                        } else if (stripos($kategori->nama, 'REFORM') !== false) {
-                            $rekapPengungkit[$namaArea]['reform_bobot'] = $subKategori->bobot;
-                            $rekapPengungkit[$namaArea]['reform_nilai'] = $progress[$subKategori->id]['nilai'] ?? 0;
-                        }
-                    }
-                }
-            } else if ($komponen->nama == 'HASIL') {
-                foreach ($komponen->kategoris as $kategori) {
-                    $subs = [];
-                    $nilaiKategori = 0;
-                    foreach ($kategori->subKategoris as $subKategori) {
-                        $subNilai = $progress[$subKategori->id]['nilai'] ?? 0;
-                        $nilaiKategori += $subNilai;
-                        $subs[] = [
-                            'kode' => $subKategori->kode,
-                            'nama' => $subKategori->nama,
-                            'bobot' => $subKategori->bobot,
-                            'nilai' => $subNilai
+                        $hasil[] = [
+                            'kode' => $kategori->kode,
+                            'nama' => $kategori->nama,
+                            'bobot' => $kategori->bobot,
+                            'nilai' => $nilaiKategori,
+                            'subs' => $subs
                         ];
                     }
-                    $rekapHasil[] = [
-                        'kode' => $kategori->kode,
-                        'nama' => $kategori->nama,
-                        'bobot' => $kategori->bobot,
-                        'nilai' => $nilaiKategori,
-                        'subs' => $subs
-                    ];
                 }
             }
-        }
+            return ['rekapPengungkit' => $pengungkit, 'rekapHasil' => $hasil];
+        };
 
-        return view('page.kuesioner.rekapan', compact('periode', 'opd', 'rekapPengungkit', 'rekapHasil'));
+        $rekapData = [
+            'operator' => $buildRekap($progressOp),
+            'verifikator' => $buildRekap($progressVer),
+            'menpan' => $buildRekap($progressMen),
+        ];
+
+        return view('page.kuesioner.rekapan', compact('periode', 'opd', 'rekapData'));
     }
 
     /**
@@ -1307,3 +1345,4 @@ class KuesionerController extends Controller
         }
     }
 }
+
