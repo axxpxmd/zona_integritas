@@ -329,7 +329,7 @@
 					{{-- Status OPD (Menpan) --}}
 					<div class="bg-white rounded-xl p-5 flex items-center justify-between">
 						<div>
-							<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Status OPD Ter-Assign</p>
+							<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Unit Kerja Ditangani</p>
 							<div class="flex gap-4 mt-2">
 								<div>
 									<p class="text-2xl font-bold text-gray-900">{{ $m['opdSiapMenpan'] }}</p>
