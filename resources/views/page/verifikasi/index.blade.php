@@ -65,7 +65,7 @@
                                     <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">No</th>
                                     <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Kerja</th>
                                     <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Pengisian Operator</th>
-                                    <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Disetujui</th>
+                                    <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Terverifikasi</th>
                                     <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Terkirim</th>
                                     <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Direvisi</th>
                                     <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Belum</th>
@@ -90,7 +90,17 @@
                                             </div>
                                         </td>
                                         <td class="px-5 py-3 text-center"><span class="font-semibold text-green-700">{{ $opd->terverifikasi }}</span></td>
-                                        <td class="px-5 py-3 text-center"><span class="font-semibold text-blue-700">{{ $opd->terkirim }}</span></td>
+                                        <td class="px-5 py-3 text-center">
+                                            @if($opd->terkirim === $opd->total_jawaban && $opd->total_jawaban > 0)
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-800">
+                                                    Sudah Terkirim
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-800">
+                                                    Belum Terkirim
+                                                </span>
+                                            @endif
+                                        </td>
                                         <td class="px-5 py-3 text-center"><span class="font-semibold {{ $opd->direvisi > 0 ? 'text-red-600' : 'text-gray-400' }}">{{ $opd->direvisi }}</span></td>
                                         <td class="px-5 py-3 text-center">
                                             <div class="flex flex-col items-center justify-center gap-1">

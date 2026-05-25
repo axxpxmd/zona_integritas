@@ -65,14 +65,14 @@ class VerifikasiController extends Controller
                     ->whereNull('sub_pertanyaan_id');
 
                 $opd->total_jawaban = $opd_base->count();
-                $opd->terverifikasi = (clone $opd_base)->where('status_verifikasi', 'disetujui')->count();
+                $opd->terverifikasi = (clone $opd_base)->whereIn('status_verifikasi', ['disetujui', 'terkirim'])->count();
                 $opd->terkirim = (clone $opd_base)->where('status_verifikasi', 'terkirim')->count();
                 $opd->direvisi = (clone $opd_base)->where('status_verifikasi', 'direvisi')->count();
                 $opd->belum_terverifikasi = (clone $opd_base)->where('status_verifikasi', 'belum_diverifikasi')->count();
                 $opd->menunggu_dicek_ulang = (clone $opd_base)->where('menunggu_dicek_ulang', true)->count();
                 $opd->total_pertanyaan = $totalRequired;
                 $opd->persen = $opd->total_jawaban > 0
-                    ? min(100, round((($opd->terverifikasi + $opd->terkirim + $opd->direvisi) / $opd->total_jawaban) * 100))
+                    ? min(100, round((($opd->terverifikasi + $opd->direvisi) / $opd->total_jawaban) * 100))
                     : 0;
             }
         }
