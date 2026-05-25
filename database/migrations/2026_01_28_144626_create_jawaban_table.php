@@ -36,9 +36,6 @@ return new class () extends Migration {
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('set null');
 
             $table->timestamps();
-
-            // Unique constraint: satu pertanyaan hanya bisa dijawab sekali per periode per OPD
-            $table->unique(['periode_id', 'opd_id', 'pertanyaan_id', 'sub_pertanyaan_id'], 'unique_jawaban');
         });
     }
 

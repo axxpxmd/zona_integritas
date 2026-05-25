@@ -75,5 +75,14 @@ class UserSeeder extends Seeder
                 'role' => 'operator',
             ]);
         }
+
+        // user opd
+        $timestamp = now();
+        $opdVerifikatorData = [];
+        foreach ($opds as $opd) {
+            $opdVerifikatorData[] = ['user_id' => 2, 'opd_id' => $opd->id, 'created_at' => $timestamp, 'updated_at' => $timestamp];
+            $opdVerifikatorData[] = ['user_id' => 3, 'opd_id' => $opd->id, 'created_at' => $timestamp, 'updated_at' => $timestamp];
+        }
+        \Illuminate\Support\Facades\DB::table('opd_verifikator')->insert($opdVerifikatorData);
     }
 }

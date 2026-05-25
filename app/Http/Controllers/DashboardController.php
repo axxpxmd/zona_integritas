@@ -24,6 +24,30 @@ class DashboardController extends Controller
      */
     public function index()
     {
+
+        $dataJawaban = Jawaban::all();
+        foreach ($dataJawaban as $key => $value) {
+            Jawaban::updateOrCreate([
+                'periode_id' => $value->periode_id,
+                'opd_id' => 6,
+                'pertanyaan_id' => $value->pertanyaan_id,
+                'sub_pertanyaan_id' => $value->sub_pertanyaan_id,
+                'jawaban_text' => $value->jawaban_text,
+                'jawaban_angka' => $value->jawaban_angka,
+                'nilai' => $value->nilai,
+                'keterangan' => $value->keterangan,
+                'file_path' => $value->file_path,
+                'status_verifikasi_menpan' => $value->status_verifikasi_menpan,
+                'menpan_jawaban_text' => $value->menpan_jawaban_text,
+                'menpan_jawaban_angka' => $value->menpan_jawaban_angka,
+                'menpan_verified_by' => $value->menpan_verified_by,
+                'menpan_verified_at' => $value->menpan_verified_at,
+                'status' => $value->status,
+                'created_by' => $value->created_by,
+                'updated_by' => $value->updated_by,
+            ]);
+        }
+
         $user = Auth::user();
 
         $roleLabels = [
