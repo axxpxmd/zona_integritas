@@ -184,14 +184,24 @@ class KuesionerController extends Controller
                 }
             } else if ($komponen->nama == 'HASIL') {
                 foreach ($komponen->kategoris as $kategori) {
+                    $subs = [];
                     $nilaiKategori = 0;
                     foreach ($kategori->subKategoris as $subKategori) {
-                        $nilaiKategori += $progress[$subKategori->id]['nilai'] ?? 0;
+                        $subNilai = $progress[$subKategori->id]['nilai'] ?? 0;
+                        $nilaiKategori += $subNilai;
+                        $subs[] = [
+                            'kode' => $subKategori->kode,
+                            'nama' => $subKategori->nama,
+                            'bobot' => $subKategori->bobot,
+                            'nilai' => $subNilai
+                        ];
                     }
                     $rekapHasil[] = [
+                        'kode' => $kategori->kode,
                         'nama' => $kategori->nama,
                         'bobot' => $kategori->bobot,
-                        'nilai' => $nilaiKategori
+                        'nilai' => $nilaiKategori,
+                        'subs' => $subs
                     ];
                 }
             }
