@@ -27,12 +27,6 @@
         </div>
         <div class="flex flex-col items-end gap-2">
             <div class="flex items-center gap-3">
-                <a href="{{ route('kuesioner.rekap', $periode->id) }}" class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#F7D558] hover:bg-yellow-500 text-yellow-900 font-semibold rounded-lg transition-colors text-sm shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Rekapan Hasil
-                </a>
                 <div class="text-sm text-gray-600 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg">
                     <span class="font-medium">Waktu Pengisian:</span> {{ $start->format('d M Y') }} - {{ $end->format('d M Y') }}
                 </div>
@@ -130,9 +124,21 @@
                 </div>
             </div>
 
-            <div class="flex items-center justify-between text-sm">
+            <div class="flex items-center justify-between text-sm mb-5">
                 <span class="text-gray-500">Belum Terjawab:</span>
                 <span class="font-semibold text-gray-900">{{ $totalBelumTerjawab }}</span>
+            </div>
+
+            <div class="pt-4 border-t border-gray-100">
+                <a href="{{ route('kuesioner.rekap', $periode->id) }}" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#F7D558] hover:bg-[#e5c44a] text-yellow-900 font-bold rounded-lg transition-colors shadow-sm">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Lihat Rekapan Nilai LKE
+                </a>
+                <p class="text-xs text-gray-500 text-center mt-2 px-1">
+                    Cek rincian nilai tiap Area Perubahan, Pemenuhan, dan capaian Reform
+                </p>
             </div>
         </div>
 
