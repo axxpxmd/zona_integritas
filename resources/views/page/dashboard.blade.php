@@ -215,7 +215,7 @@
 							<div class="flex items-center justify-between">
 								<div class="flex items-center gap-1.5">
 									<div class="w-2 h-2 rounded-full bg-orange-400"></div>
-									<span class="text-xs text-gray-600">Menunggu Cek</span>
+									<span class="text-xs text-gray-600">Menunggu Dicek Ulang</span>
 								</div>
 								<span
 									class="text-sm font-bold {{ $s['totalMenungguDicekUlang'] > 0 ? 'text-orange-600' : 'text-gray-400' }}">{{ $s['totalMenungguDicekUlang'] }}</span>

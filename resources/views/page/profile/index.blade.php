@@ -3,7 +3,7 @@
 @section('page-title', 'Profil Pengguna')
 
 @section('content')
-<div class="max-w-5xl mx-auto space-y-6">
+<div class="max-full mx-auto space-y-6">
     <!-- Success Message -->
     @if(session('success'))
     <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg relative" role="alert">
