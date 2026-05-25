@@ -11,17 +11,17 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::table('jawaban', function (Blueprint $table) {
-            $table->enum('status_verifikasi_menhan', ['belum_diverifikasi', 'disetujui'])
+            $table->enum('status_verifikasi_menpan', ['belum_diverifikasi', 'disetujui'])
                 ->default('belum_diverifikasi')
                 ->after('verified_at');
-            $table->text('menhan_jawaban_text')->nullable()->after('status_verifikasi_menhan');
-            $table->decimal('menhan_jawaban_angka', 15, 2)->nullable()->after('menhan_jawaban_text');
-            $table->foreignId('menhan_verified_by')
+            $table->text('menpan_jawaban_text')->nullable()->after('status_verifikasi_menpan');
+            $table->decimal('menpan_jawaban_angka', 15, 2)->nullable()->after('menpan_jawaban_text');
+            $table->foreignId('menpan_verified_by')
                 ->nullable()
                 ->constrained('users')
                 ->nullOnDelete()
-                ->after('menhan_jawaban_angka');
-            $table->timestamp('menhan_verified_at')->nullable()->after('menhan_verified_by');
+                ->after('menpan_jawaban_angka');
+            $table->timestamp('menpan_verified_at')->nullable()->after('menpan_verified_by');
         });
     }
 
@@ -31,12 +31,12 @@ return new class () extends Migration {
     public function down(): void
     {
         Schema::table('jawaban', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('menhan_verified_by');
+            $table->dropConstrainedForeignId('menpan_verified_by');
             $table->dropColumn([
-                'status_verifikasi_menhan',
-                'menhan_jawaban_text',
-                'menhan_jawaban_angka',
-                'menhan_verified_at',
+                'status_verifikasi_menpan',
+                'menpan_jawaban_text',
+                'menpan_jawaban_angka',
+                'menpan_verified_at',
             ]);
         });
     }

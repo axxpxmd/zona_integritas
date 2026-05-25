@@ -10,7 +10,7 @@ return new class () extends Migration {
     public function up(): void
     {
         DB::statement(
-            "ALTER TABLE users MODIFY role ENUM('admin','operator','verifikator','verifikator_menhan') NOT NULL DEFAULT 'operator'"
+            "ALTER TABLE users MODIFY role ENUM('admin','operator','verifikator','verifikator_menpan') NOT NULL DEFAULT 'operator'"
         );
     }
 
@@ -20,7 +20,7 @@ return new class () extends Migration {
     public function down(): void
     {
         DB::table('users')
-            ->where('role', 'verifikator_menhan')
+            ->where('role', 'verifikator_menpan')
             ->update(['role' => 'verifikator']);
 
         DB::statement(

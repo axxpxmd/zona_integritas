@@ -1,21 +1,21 @@
 @extends('layouts.app')
 
-@section('title', 'Verifikasi Menhan')
-@section('page-title', 'Verifikasi Menhan OPD')
+@section('title', 'Verifikasi Menpan')
+@section('page-title', 'Verifikasi Menpan OPD')
 
 @section('content')
     <div class="space-y-6">
         {{-- Header --}}
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <h2 class="text-xl font-bold text-gray-900">Daftar OPD Siap Verifikasi Menhan</h2>
+                <h2 class="text-xl font-bold text-gray-900">Daftar OPD Siap Verifikasi Menpan</h2>
                 <p class="text-sm text-gray-500 mt-1">Hanya OPD yang sudah dikirim oleh verifikator akan muncul di sini.</p>
             </div>
         </div>
 
         {{-- Filter --}}
         <div class="bg-white rounded-xl p-4">
-            <form action="{{ route('verifikasi-menhan.index') }}" method="GET" class="flex flex-col sm:flex-row gap-4 items-end">
+            <form action="{{ route('verifikasi-menpan.index') }}" method="GET" class="flex flex-col sm:flex-row gap-4 items-end">
                 <div class="w-full sm:w-64">
                     <label for="periode_id" class="block text-sm font-medium text-gray-700 mb-1">Pilih Periode</label>
                     <select name="periode_id" id="periode_id"
@@ -52,7 +52,7 @@
                         </svg>
                     </div>
                     <h3 class="text-sm font-medium text-gray-900">Belum Ada Data</h3>
-                    <p class="text-sm text-gray-500 mt-1">Belum ada OPD yang siap diverifikasi oleh Menhan.</p>
+                    <p class="text-sm text-gray-500 mt-1">Belum ada OPD yang siap diverifikasi oleh Menpan.</p>
                 </div>
             @else
                 <div class="bg-white rounded-xl overflow-hidden">
@@ -63,7 +63,7 @@
                                     <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">No</th>
                                     <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Kerja / OPD</th>
                                     <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Disetujui Menhan</th>
+                                    <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Disetujui Menpan</th>
                                     <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Belum</th>
                                     <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
                                     <th scope="col" class="px-5 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
@@ -80,7 +80,7 @@
                                         <td class="px-5 py-3 text-center">
                                             <div class="flex flex-col items-center justify-center gap-1.5">
                                                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-800">
-                                                    Terkirim ke Menhan
+                                                    Terkirim ke Menpan
                                                 </span>
                                                 <span class="text-[10px] text-gray-500 font-medium">Terisi: {{ $opd->total_jawaban }}/{{ $opd->total_jawaban }}</span>
                                             </div>
@@ -96,7 +96,7 @@
                                             </div>
                                         </td>
                                         <td class="px-5 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                            <a href="{{ route('verifikasi-menhan.show', [$activePeriode->id, $opd->id]) }}"
+                                            <a href="{{ route('verifikasi-menpan.show', [$activePeriode->id, $opd->id]) }}"
                                                 class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors text-xs">
                                                 <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor"
                                                     viewBox="0 0 24 24">
@@ -105,7 +105,7 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                 </svg>
-                                                Verifikasi Menhan
+                                                Verifikasi Menpan
                                             </a>
                                         </td>
                                     </tr>

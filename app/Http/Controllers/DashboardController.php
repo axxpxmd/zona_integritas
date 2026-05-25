@@ -30,7 +30,7 @@ class DashboardController extends Controller
             'admin' => 'Administrator',
             'operator' => 'Operator',
             'verifikator' => 'Verifikator',
-            'verifikator_menhan' => 'Verifikator Menhan',
+            'verifikator_menpan' => 'Verifikator Menpan',
         ];
 
         $displayName = $user->nama_operator
@@ -109,10 +109,10 @@ class DashboardController extends Controller
             $verifikatorStats = $this->getVerifikatorStats($activePeriode, $user);
         }
 
-        // Hitung stats verifikasi khusus verifikator menhan/admin
-        $menhanStats = [];
-        if ($user->role === 'verifikator_menhan') {
-            $menhanStats = $this->getVerifikatorMenhanStats($activePeriode, $user);
+        // Hitung stats verifikasi khusus verifikator menpan/admin
+        $menpanStats = [];
+        if ($user->role === 'verifikator_menpan') {
+            $menpanStats = $this->getVerifikatorMenpanStats($activePeriode, $user);
         }
 
         return view('page.dashboard', [
@@ -130,8 +130,8 @@ class DashboardController extends Controller
             'operatorStats' => $operatorStats,
             // Verifikator-specific stats
             'verifikatorStats' => $verifikatorStats,
-            // Verifikator Menhan-specific stats
-            'menhanStats' => $menhanStats,
+            // Verifikator Menpan-specific stats
+            'menpanStats' => $menpanStats,
         ]);
     }
 
@@ -367,10 +367,10 @@ class DashboardController extends Controller
     }
 
     /**
-     * Hitung statistik verifikasi untuk verifikator menhan.
+     * Hitung statistik verifikasi untuk verifikator menpan.
      * Hanya menilai jawaban yang sudah disetujui oleh verifikator biasa.
      */
-    private function getVerifikatorMenhanStats($activePeriode, $user): array
+    private function getVerifikatorMenpanStats($activePeriode, $user): array
     {
         if (!$activePeriode) {
             return [];
@@ -389,10 +389,10 @@ class DashboardController extends Controller
 
         $totalOpdAssigned = $assignedOpdIds->count();
 
-        $opdSiapMenhan = 0;
-        $opdBelumSiapMenhan = 0;
+        $opdSiapMenpan = 0;
+        $opdBelumSiapMenpan = 0;
 
-        $opdProgressMenhan = collect();
+        $opdProgressMenpan = collect();
 
         if ($assignedOpdIds->isNotEmpty()) {
             $opds = Opd::whereIn('id', $assignedOpdIds)->get();
@@ -403,7 +403,7 @@ class DashboardController extends Controller
 
                 $jmlTotal = (clone $opd_base)->count();
                 if ($jmlTotal === 0) {
-                    $opdBelumSiapMenhan++;
+                    $opdBelumSiapMenpan++;
                     continue;
                 }
 
@@ -411,37 +411,37 @@ class DashboardController extends Controller
                 $isSiap = $jmlDisetujuiVerifikator === $jmlTotal;
 
                 if ($isSiap) {
-                    $opdSiapMenhan++;
+                    $opdSiapMenpan++;
                 } else {
-                    $opdBelumSiapMenhan++;
+                    $opdBelumSiapMenpan++;
                 }
 
-                $jmlDisetujuiMenhan = (clone $opd_base)->where('status_verifikasi_menhan', 'disetujui')->count();
-                $jmlBelumMenhan = (clone $opd_base)->where('status_verifikasi_menhan', 'belum_diverifikasi')->count();
+                $jmlDisetujuiMenpan = (clone $opd_base)->where('status_verifikasi_menpan', 'disetujui')->count();
+                $jmlBelumMenpan = (clone $opd_base)->where('status_verifikasi_menpan', 'belum_diverifikasi')->count();
 
                 $persen = $jmlTotal > 0
-                    ? min(100, round(($jmlDisetujuiMenhan / $jmlTotal) * 100))
+                    ? min(100, round(($jmlDisetujuiMenpan / $jmlTotal) * 100))
                     : 0;
 
-                $opdProgressMenhan->push((object) [
+                $opdProgressMenpan->push((object) [
                     'opd' => $opd,
                     'isSiap' => $isSiap,
-                    'disetujui' => $jmlDisetujuiMenhan,
-                    'belum' => $jmlBelumMenhan,
+                    'disetujui' => $jmlDisetujuiMenpan,
+                    'belum' => $jmlBelumMenpan,
                     'total' => $jmlTotal,
                     'persen' => $persen,
                 ]);
             }
 
-            $opdProgressMenhan = $opdProgressMenhan->sortByDesc('isSiap')->sortByDesc('persen')->values();
+            $opdProgressMenpan = $opdProgressMenpan->sortByDesc('isSiap')->sortByDesc('persen')->values();
         }
 
         $baseQuery = Jawaban::where('periode_id', $periodeId)
             ->whereNull('sub_pertanyaan_id')
             ->where('status_verifikasi', 'terkirim');
 
-        $totalDisetujui = (clone $baseQuery)->where('status_verifikasi_menhan', 'disetujui')->count();
-        $totalBelumDiverifikasi = (clone $baseQuery)->where('status_verifikasi_menhan', 'belum_diverifikasi')->count();
+        $totalDisetujui = (clone $baseQuery)->where('status_verifikasi_menpan', 'disetujui')->count();
+        $totalBelumDiverifikasi = (clone $baseQuery)->where('status_verifikasi_menpan', 'belum_diverifikasi')->count();
         $totalJawaban = (clone $baseQuery)->count();
 
         $persenVerifikasi = $totalJawaban > 0
@@ -457,13 +457,13 @@ class DashboardController extends Controller
 
         return [
             'totalOpdAssigned' => $totalOpdAssigned,
-            'opdSiapMenhan' => $opdSiapMenhan,
-            'opdBelumSiapMenhan' => $opdBelumSiapMenhan,
+            'opdSiapMenpan' => $opdSiapMenpan,
+            'opdBelumSiapMenpan' => $opdBelumSiapMenpan,
             'totalDisetujui' => $totalDisetujui,
             'totalBelumDiverifikasi' => $totalBelumDiverifikasi,
             'totalJawaban' => $totalJawaban,
             'persenVerifikasi' => $persenVerifikasi,
-            'opdProgressMenhan' => $opdProgressMenhan,
+            'opdProgressMenpan' => $opdProgressMenpan,
             'isVerifActive' => $isVerifActive,
             'startVerif' => $startVerif,
             'endVerif' => $endVerif,

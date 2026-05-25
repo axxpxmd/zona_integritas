@@ -116,7 +116,7 @@
                      @php
                         $selectedVerifikatorOpds = old('verifikator_opds', $user->verifikatorOpds->pluck('id')->toArray());
                      @endphp
-                     <div id="verifikator_opds_container" style="{{ in_array(old('role', $user->role), ['verifikator', 'verifikator_menhan']) ? 'display: block;' : 'display: none;' }}">
+                     <div id="verifikator_opds_container" style="{{ in_array(old('role', $user->role), ['verifikator', 'verifikator_menpan']) ? 'display: block;' : 'display: none;' }}">
                          <label class="block text-sm font-medium text-gray-700 mb-1.5">
                             Pilih Unit Kerja untuk Diverifikasi
                          </label>
@@ -282,7 +282,7 @@
                             <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
                             <option value="operator" {{ old('role', $user->role) == 'operator' ? 'selected' : '' }}>Operator</option>
                             <option value="verifikator" {{ old('role', $user->role) == 'verifikator' ? 'selected' : '' }}>Verifikator</option>
-                            <option value="verifikator_menhan" {{ old('role', $user->role) == 'verifikator_menhan' ? 'selected' : '' }}>Verifikator Menhan</option>
+                            <option value="verifikator_menpan" {{ old('role', $user->role) == 'verifikator_menpan' ? 'selected' : '' }}>Verifikator Menpan</option>
                         </select>
                         @error('role')
                         <p class="mt-1.5 text-sm text-red-500">{{ $message }}</p>
@@ -402,7 +402,7 @@ function updateRoleDescription() {
         'admin': 'Admin memiliki akses penuh ke seluruh fitur sistem',
         'operator': 'Operator dapat mengelola data dan mengisi kuesioner',
         'verifikator': 'Verifikator dapat memverifikasi dan menyetujui data',
-        'verifikator_menhan': 'Verifikator Menhan memverifikasi hasil verifikator'
+        'verifikator_menpan': 'Verifikator Menpan memverifikasi hasil verifikator'
     };
     roleText.textContent = descriptions[role] || 'Pilih role untuk melihat deskripsi';
 
@@ -417,7 +417,7 @@ function updateRoleDescription() {
         }
     }
     if (verifikatorOpdsContainer) {
-        const isVerifikator = role === 'verifikator' || role === 'verifikator_menhan';
+        const isVerifikator = role === 'verifikator' || role === 'verifikator_menpan';
         verifikatorOpdsContainer.style.display = isVerifikator ? 'block' : 'none';
         if (!isVerifikator) {
             const checkboxes = verifikatorOpdsContainer.querySelectorAll('input[type="checkbox"]');

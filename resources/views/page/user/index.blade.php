@@ -92,8 +92,8 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-2xl font-bold text-gray-900">{{ \App\Models\User::where('role', 'verifikator_menhan')->count() }}</p>
-                    <p class="text-sm text-gray-500">Verifikator Menhan</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ \App\Models\User::where('role', 'verifikator_menpan')->count() }}</p>
+                    <p class="text-sm text-gray-500">Verifikator Menpan</p>
                 </div>
             </div>
         </div>
@@ -128,7 +128,7 @@
                     <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                     <option value="operator" {{ request('role') == 'operator' ? 'selected' : '' }}>Operator</option>
                     <option value="verifikator" {{ request('role') == 'verifikator' ? 'selected' : '' }}>Verifikator</option>
-                    <option value="verifikator_menhan" {{ request('role') == 'verifikator_menhan' ? 'selected' : '' }}>Verifikator Menhan</option>
+                    <option value="verifikator_menpan" {{ request('role') == 'verifikator_menpan' ? 'selected' : '' }}>Verifikator Menpan</option>
                 </select>
             </div>
             <div class="lg:w-56">
@@ -226,7 +226,7 @@
                             @else
                             <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-teal-100 text-teal-700">
                                 <span class="w-1.5 h-1.5 bg-teal-500 rounded-full"></span>
-                                Verifikator Menhan
+                                Verifikator Menpan
                             </span>
                             @endif
                         </td>

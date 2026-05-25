@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Verifikasi Menhan Detail')
-@section('page-title', 'Pemeriksaan Jawaban Menhan')
+@section('title', 'Verifikasi Menpan Detail')
+@section('page-title', 'Pemeriksaan Jawaban Menpan')
 
 @section('content')
 <div class="space-y-6">
@@ -46,7 +46,7 @@
     {{-- Header --}}
     <div class="flex items-center justify-between">
         <div class="flex items-center gap-4">
-            <a href="{{ route('verifikasi-menhan.show', [$periode->id, $opd->id]) }}"
+            <a href="{{ route('verifikasi-menpan.show', [$periode->id, $opd->id]) }}"
                class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
@@ -126,7 +126,7 @@
                 {{-- Page Indicator --}}
                 <div class="flex items-center gap-1.5 overflow-x-auto">
                     @for($i = 1; $i <= $totalIndikator; $i++)
-                    <a href="{{ route('verifikasi-menhan.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $i]) }}"
+                    <a href="{{ route('verifikasi-menpan.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $i]) }}"
                        class="w-7 h-7 flex items-center justify-center rounded-lg text-sm font-medium transition-colors flex-shrink-0 {{ $i === $currentPage ? 'bg-primary text-white shadow-sm' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50' }}">
                         {{ $i }}
                     </a>
@@ -136,7 +136,7 @@
         </div>
 
         {{-- Indikator Content --}}
-        <form action="{{ route('verifikasi-menhan.store', [$periode->id, $opd->id, $subKategori->id]) }}" method="POST" id="verifikasiMenhanForm">
+        <form action="{{ route('verifikasi-menpan.store', [$periode->id, $opd->id, $subKategori->id]) }}" method="POST" id="verifikasiMenpanForm">
             @csrf
             <input type="hidden" name="current_page" value="{{ $currentPage }}">
 
@@ -165,7 +165,7 @@
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-4">
                                 <div class="text-center">
-                                    <p class="text-xs text-gray-500 mb-1">Status Verifikasi Menhan</p>
+                                    <p class="text-xs text-gray-500 mb-1">Status Verifikasi Menpan</p>
                                     <p class="text-lg font-bold text-gray-900">{{ $nilaiIndikator['pertanyaan_terverifikasi'] }}/{{ $nilaiIndikator['total_pertanyaan'] }}</p>
                                 </div>
                                 <div class="h-10 w-px bg-gray-300"></div>
@@ -201,28 +201,28 @@
                             $jawabanParent = $jawabanMap[$pertanyaan->id] ?? null;
                             $pertanyaanNilai = $nilaiIndikator['nilai_per_pertanyaan'][$pertanyaan->id] ?? null;
                             $nilaiTampil = $pertanyaanNilai && $pertanyaanNilai['nilai'] !== null ? $pertanyaanNilai['nilai'] : null;
-                            $statusVerifikasiMenhan = $jawabanParent ? $jawabanParent->status_verifikasi_menhan : 'belum_diverifikasi';
+                            $statusVerifikasiMenpan = $jawabanParent ? $jawabanParent->status_verifikasi_menpan : 'belum_diverifikasi';
 
                             $jawabansForForm = [];
-                            $menhanSubValues = [];
+                            $menpanSubValues = [];
                             if ($pertanyaan->has_sub_pertanyaan) {
                                 foreach ($pertanyaan->subPertanyaans as $sp) {
                                     $spKey = "{$pertanyaan->id}_{$sp->id}";
                                     if (isset($jawabanMap[$spKey])) {
                                         $jawabansForForm[$pertanyaan->id . '-' . $sp->id] = $jawabanMap[$spKey];
                                         $jawabanSub = $jawabanMap[$spKey];
-                                        $menhanSubValues[$sp->id] = $jawabanSub->menhan_jawaban_angka
+                                        $menpanSubValues[$sp->id] = $jawabanSub->menpan_jawaban_angka
                                             ?? $jawabanSub->verifikator_jawaban_angka
                                             ?? $jawabanSub->jawaban_angka;
                                     }
                                 }
                             }
 
-                            $menhanTextValue = $jawabanParent
-                                ? ($jawabanParent->menhan_jawaban_text ?? $jawabanParent->verifikator_jawaban_text ?? $jawabanParent->jawaban_text)
+                            $menpanTextValue = $jawabanParent
+                                ? ($jawabanParent->menpan_jawaban_text ?? $jawabanParent->verifikator_jawaban_text ?? $jawabanParent->jawaban_text)
                                 : null;
-                            $menhanAngkaValue = $jawabanParent
-                                ? ($jawabanParent->menhan_jawaban_angka ?? $jawabanParent->verifikator_jawaban_angka ?? $jawabanParent->jawaban_angka)
+                            $menpanAngkaValue = $jawabanParent
+                                ? ($jawabanParent->menpan_jawaban_angka ?? $jawabanParent->verifikator_jawaban_angka ?? $jawabanParent->jawaban_angka)
                                 : null;
 
                             $verifikatorTextValue = $jawabanParent
@@ -233,7 +233,7 @@
                                 : null;
                         @endphp
                         <div class="bg-white rounded-lg p-4 border border-gray-200">
-                            <fieldset @if(!$isCanVerify || $statusVerifikasiMenhan !== 'belum_diverifikasi') disabled @endif>
+                            <fieldset @if(!$isCanVerify || $statusVerifikasiMenpan !== 'belum_diverifikasi') disabled @endif>
                             <div class="flex items-start gap-3 mb-3">
                                 <span class="inline-flex items-center justify-center min-w-[24px] h-6 bg-gray-100 text-gray-700 rounded text-xs font-semibold px-2">
                                     {{ $pertanyaan->urutan ?? ($pertanyaanIndex + 1) }}
@@ -290,23 +290,23 @@
                                 @endif
                             </div>
 
-                            {{-- Jawaban Menhan (ubah langsung di pilihan jawaban) --}}
+                            {{-- Jawaban Menpan (ubah langsung di pilihan jawaban) --}}
                             <div class="space-y-3">
                                 @if($pertanyaan->tipe_jawaban === 'ya_tidak')
                                     @include('page.kuesioner.partials.input-ya-tidak', [
                                         'pertanyaan' => $pertanyaan,
                                         'jawaban' => $jawabanParent,
                                         'periode' => $periode,
-                                        'inputName' => 'menhan[' . $pertanyaan->id . '][menhan_jawaban_text][0]',
-                                        'selectedValue' => $menhanTextValue,
+                                        'inputName' => 'menpan[' . $pertanyaan->id . '][menpan_jawaban_text][0]',
+                                        'selectedValue' => $menpanTextValue,
                                     ])
                                 @elseif($pertanyaan->tipe_jawaban === 'pilihan_ganda')
                                     @include('page.kuesioner.partials.input-pilihan-ganda', [
                                         'pertanyaan' => $pertanyaan,
                                         'jawaban' => $jawabanParent,
                                         'periode' => $periode,
-                                        'inputName' => 'menhan[' . $pertanyaan->id . '][menhan_jawaban_text][0]',
-                                        'selectedValue' => $menhanTextValue,
+                                        'inputName' => 'menpan[' . $pertanyaan->id . '][menpan_jawaban_text][0]',
+                                        'selectedValue' => $menpanTextValue,
                                     ])
                                 @elseif($pertanyaan->tipe_jawaban === 'angka')
                                     @if($pertanyaan->has_sub_pertanyaan)
@@ -314,16 +314,16 @@
                                             'pertanyaan' => $pertanyaan,
                                             'jawabans' => $jawabansForForm,
                                             'periode' => $periode,
-                                            'inputNamePrefix' => 'menhan[' . $pertanyaan->id . '][menhan_jawaban_angka]',
-                                            'inputValues' => $menhanSubValues,
+                                            'inputNamePrefix' => 'menpan[' . $pertanyaan->id . '][menpan_jawaban_angka]',
+                                            'inputValues' => $menpanSubValues,
                                         ])
                                     @else
                                         @include('page.kuesioner.partials.input-angka', [
                                             'pertanyaan' => $pertanyaan,
                                             'jawaban' => $jawabanParent,
                                             'periode' => $periode,
-                                            'inputName' => 'menhan[' . $pertanyaan->id . '][menhan_jawaban_angka][0]',
-                                            'inputValue' => $menhanAngkaValue,
+                                            'inputName' => 'menpan[' . $pertanyaan->id . '][menpan_jawaban_angka][0]',
+                                            'inputValue' => $menpanAngkaValue,
                                         ])
                                     @endif
                                 @endif
@@ -388,16 +388,16 @@
 
                             </fieldset>
 
-                            {{-- Verifikasi Menhan --}}
+                            {{-- Verifikasi Menpan --}}
                             <div class="mt-4 pt-4 border-t border-gray-200">
                                 <fieldset @if(!$isCanVerify) disabled @endif>
-                                <div class="p-4 rounded-xl border transition-all duration-200 {{ $statusVerifikasiMenhan === 'belum_diverifikasi' ? 'bg-yellow-50/50 border-yellow-200' : 'bg-gray-50 border-gray-200' }}">
+                                <div class="p-4 rounded-xl border transition-all duration-200 {{ $statusVerifikasiMenpan === 'belum_diverifikasi' ? 'bg-yellow-50/50 border-yellow-200' : 'bg-gray-50 border-gray-200' }}">
                                     {{-- Header Status --}}
                                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                         <div>
                                             <div class="flex items-center gap-3 mb-1.5">
-                                                <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Status Verifikasi Menhan</h4>
-                                                @if($statusVerifikasiMenhan === 'belum_diverifikasi')
+                                                <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Status Verifikasi Menpan</h4>
+                                                @if($statusVerifikasiMenpan === 'belum_diverifikasi')
                                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-yellow-100 text-yellow-800 border border-yellow-200 shadow-sm animate-pulse">
                                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
@@ -409,27 +409,27 @@
                                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                                         </svg>
-                                                        Telah Diverifikasi Menhan
+                                                        Telah Diverifikasi Menpan
                                                     </span>
                                                 @endif
                                             </div>
                                             <p class="text-xs text-gray-500">
-                                                @if($statusVerifikasiMenhan === 'belum_diverifikasi')
+                                                @if($statusVerifikasiMenpan === 'belum_diverifikasi')
                                                     Mohon periksa jawaban dan dokumen pendukung sebelum menyetujui.
                                                 @else
-                                                    Jawaban telah diperiksa dan disetujui Menhan.
+                                                    Jawaban telah diperiksa dan disetujui Menpan.
                                                 @endif
                                             </p>
                                         </div>
 
                                         <div class="flex items-center gap-3 shrink-0">
                                             <div class="flex items-center bg-white px-4 py-2.5 rounded-lg border border-gray-200 shadow-sm">
-                                                <input type="hidden" name="menhan[{{ $pertanyaan->id }}][status_verifikasi_menhan]" value="belum_diverifikasi">
+                                                <input type="hidden" name="menpan[{{ $pertanyaan->id }}][status_verifikasi_menpan]" value="belum_diverifikasi">
                                                 <label class="relative inline-flex items-center cursor-pointer group">
                                                     <input type="checkbox"
-                                                           name="menhan[{{ $pertanyaan->id }}][status_verifikasi_menhan]"
+                                                           name="menpan[{{ $pertanyaan->id }}][status_verifikasi_menpan]"
                                                            value="disetujui"
-                                                           {{ $statusVerifikasiMenhan == 'disetujui' ? 'checked' : '' }}
+                                                           {{ $statusVerifikasiMenpan == 'disetujui' ? 'checked' : '' }}
                                                            class="sr-only peer">
                                                     <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                                                     <span class="ml-3 text-sm font-bold text-gray-600 peer-checked:text-primary group-hover:text-gray-900 transition-colors">
@@ -454,7 +454,7 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        Simpan Verifikasi Menhan Halaman Ini
+                        Simpan Verifikasi Menpan Halaman Ini
                     </button>
                 </div>
                 @else
@@ -476,7 +476,7 @@
             <div class="flex items-center justify-between">
                 {{-- Previous Button --}}
                 @if($currentPage > 1)
-                <a href="{{ route('verifikasi-menhan.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage - 1]) }}"
+                <a href="{{ route('verifikasi-menpan.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage - 1]) }}"
                    class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
@@ -495,7 +495,7 @@
                 {{-- Page Indicator --}}
                 <div class="flex items-center gap-2">
                     @for($i = 1; $i <= $totalIndikator; $i++)
-                    <a href="{{ route('verifikasi-menhan.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $i]) }}"
+                    <a href="{{ route('verifikasi-menpan.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $i]) }}"
                        class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors {{ $i === $currentPage ? 'bg-primary text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50' }}">
                         {{ $i }}
                     </a>
@@ -504,7 +504,7 @@
 
                 {{-- Next Button --}}
                 @if($currentPage < $totalIndikator)
-                <a href="{{ route('verifikasi-menhan.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage + 1]) }}"
+                <a href="{{ route('verifikasi-menpan.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage + 1]) }}"
                    class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">
                     <span class="text-sm font-medium">Indikator Selanjutnya</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -512,7 +512,7 @@
                     </svg>
                 </a>
                 @else
-                <a href="{{ route('verifikasi-menhan.show', [$periode->id, $opd->id]) }}"
+                <a href="{{ route('verifikasi-menpan.show', [$periode->id, $opd->id]) }}"
                    class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
                     <span class="text-sm font-medium">Selesai</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -545,7 +545,7 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('verifikasiMenhanForm');
+    const form = document.getElementById('verifikasiMenpanForm');
 
     const filePreviewModal = document.getElementById('filePreviewModal');
     const filePreviewFrame = document.getElementById('filePreviewFrame');

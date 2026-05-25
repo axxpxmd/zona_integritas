@@ -169,10 +169,10 @@ class VerifikasiController extends Controller
         $totalBelum = (clone $opdBase)->where('status_verifikasi', 'belum_diverifikasi')->count();
         $totalDirevisi = (clone $opdBase)->where('status_verifikasi', 'direvisi')->count();
         $totalTerkirim = (clone $opdBase)->where('status_verifikasi', 'terkirim')->count();
-        $isReadySendMenhan = $totalJawaban > 0 && $totalBelum === 0 && $totalDirevisi === 0;
-        $isSentToMenhan = $totalJawaban > 0 && $totalTerkirim === $totalJawaban;
+        $isReadySendMenpan = $totalJawaban > 0 && $totalBelum === 0 && $totalDirevisi === 0;
+        $isSentToMenpan = $totalJawaban > 0 && $totalTerkirim === $totalJawaban;
 
-        return view('page.verifikasi.show', compact('periode', 'opd', 'komponens', 'jawabanMap', 'verifikasiStats', 'progress', 'isAllAnswered', 'isSent', 'isReadySendMenhan', 'isSentToMenhan'));
+        return view('page.verifikasi.show', compact('periode', 'opd', 'komponens', 'jawabanMap', 'verifikasiStats', 'progress', 'isAllAnswered', 'isSent', 'isReadySendMenpan', 'isSentToMenpan'));
     }
 
     public function detail(Request $request, Periode $periode, Opd $opd, SubKategori $subKategori)
@@ -275,11 +275,11 @@ class VerifikasiController extends Controller
                     ]);
 
                     if ($verifikatorChanged) {
-                        $jawaban->status_verifikasi_menhan = 'belum_diverifikasi';
-                        $jawaban->menhan_jawaban_text = null;
-                        $jawaban->menhan_jawaban_angka = null;
-                        $jawaban->menhan_verified_by = null;
-                        $jawaban->menhan_verified_at = null;
+                        $jawaban->status_verifikasi_menpan = 'belum_diverifikasi';
+                        $jawaban->menpan_jawaban_text = null;
+                        $jawaban->menpan_jawaban_angka = null;
+                        $jawaban->menpan_verified_by = null;
+                        $jawaban->menpan_verified_at = null;
                     }
 
                     if ($jawaban->status_verifikasi != 'belum_diverifikasi') {
@@ -312,7 +312,7 @@ class VerifikasiController extends Controller
             ->exists();
 
         if ($hasTerkirim) {
-            return redirect()->back()->with('error', 'Jawaban sudah terkirim ke Menhan dan tidak bisa diubah.');
+            return redirect()->back()->with('error', 'Jawaban sudah terkirim ke Menpan dan tidak bisa diubah.');
         }
 
         $jawabans = Jawaban::where('periode_id', $periode->id)
@@ -325,11 +325,11 @@ class VerifikasiController extends Controller
             $jawaban->verified_by = null;
             $jawaban->verified_at = null;
             $jawaban->menunggu_dicek_ulang = false;
-            $jawaban->status_verifikasi_menhan = 'belum_diverifikasi';
-            $jawaban->menhan_jawaban_text = null;
-            $jawaban->menhan_jawaban_angka = null;
-            $jawaban->menhan_verified_by = null;
-            $jawaban->menhan_verified_at = null;
+            $jawaban->status_verifikasi_menpan = 'belum_diverifikasi';
+            $jawaban->menpan_jawaban_text = null;
+            $jawaban->menpan_jawaban_angka = null;
+            $jawaban->menpan_verified_by = null;
+            $jawaban->menpan_verified_at = null;
             $jawaban->save();
         }
 
@@ -356,7 +356,7 @@ class VerifikasiController extends Controller
             ->exists();
 
         if ($hasTerkirim) {
-            return redirect()->back()->with('error', 'Jawaban sudah terkirim ke Menhan dan tidak bisa diubah.');
+            return redirect()->back()->with('error', 'Jawaban sudah terkirim ke Menpan dan tidak bisa diubah.');
         }
 
         $request->validate([
@@ -376,11 +376,11 @@ class VerifikasiController extends Controller
             $jawaban->verified_by = Auth::id();
             $jawaban->verified_at = now();
             $jawaban->menunggu_dicek_ulang = false; // operator belum merespons
-            $jawaban->status_verifikasi_menhan = 'belum_diverifikasi';
-            $jawaban->menhan_jawaban_text = null;
-            $jawaban->menhan_jawaban_angka = null;
-            $jawaban->menhan_verified_by = null;
-            $jawaban->menhan_verified_at = null;
+            $jawaban->status_verifikasi_menpan = 'belum_diverifikasi';
+            $jawaban->menpan_jawaban_text = null;
+            $jawaban->menpan_jawaban_angka = null;
+            $jawaban->menpan_verified_by = null;
+            $jawaban->menpan_verified_at = null;
             $jawaban->save();
         }
 
@@ -407,7 +407,7 @@ class VerifikasiController extends Controller
             ->exists();
 
         if ($hasTerkirim) {
-            return redirect()->back()->with('error', 'Jawaban sudah terkirim ke Menhan dan tidak bisa diubah.');
+            return redirect()->back()->with('error', 'Jawaban sudah terkirim ke Menpan dan tidak bisa diubah.');
         }
 
         $jawabans = Jawaban::where('periode_id', $periode->id)
@@ -421,11 +421,11 @@ class VerifikasiController extends Controller
             $jawaban->verified_by = null;
             $jawaban->verified_at = null;
             $jawaban->menunggu_dicek_ulang = false;
-            $jawaban->status_verifikasi_menhan = 'belum_diverifikasi';
-            $jawaban->menhan_jawaban_text = null;
-            $jawaban->menhan_jawaban_angka = null;
-            $jawaban->menhan_verified_by = null;
-            $jawaban->menhan_verified_at = null;
+            $jawaban->status_verifikasi_menpan = 'belum_diverifikasi';
+            $jawaban->menpan_jawaban_text = null;
+            $jawaban->menpan_jawaban_angka = null;
+            $jawaban->menpan_verified_by = null;
+            $jawaban->menpan_verified_at = null;
             $jawaban->save();
         }
 
@@ -454,11 +454,11 @@ class VerifikasiController extends Controller
             $jawaban->verifikator_jawaban_text = $jawaban->jawaban_text;
             $jawaban->verifikator_jawaban_angka = $jawaban->jawaban_angka;
 
-            $jawaban->status_verifikasi_menhan = 'belum_diverifikasi';
-            $jawaban->menhan_jawaban_text = null;
-            $jawaban->menhan_jawaban_angka = null;
-            $jawaban->menhan_verified_by = null;
-            $jawaban->menhan_verified_at = null;
+            $jawaban->status_verifikasi_menpan = 'belum_diverifikasi';
+            $jawaban->menpan_jawaban_text = null;
+            $jawaban->menpan_jawaban_angka = null;
+            $jawaban->menpan_verified_by = null;
+            $jawaban->menpan_verified_at = null;
 
             $jawaban->verified_by = Auth::id();
             $jawaban->verified_at = now();
@@ -470,9 +470,9 @@ class VerifikasiController extends Controller
     }
 
     /**
-     * Kirim hasil verifikasi ke Verifikator Menhan.
+     * Kirim hasil verifikasi ke Verifikator Menpan.
      */
-    public function kirimMenhan(Request $request, Periode $periode, Opd $opd)
+    public function kirimMenpan(Request $request, Periode $periode, Opd $opd)
     {
         if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
             abort(403, 'Akses ditolak.');
@@ -491,7 +491,7 @@ class VerifikasiController extends Controller
         }
 
         if ($totalTerkirim === $totalJawaban) {
-            return redirect()->back()->with('success', 'Hasil verifikasi sudah terkirim ke Menhan.');
+            return redirect()->back()->with('success', 'Hasil verifikasi sudah terkirim ke Menpan.');
         }
 
         if (($totalDisetujui + $totalTerkirim) < $totalJawaban) {
@@ -504,7 +504,7 @@ class VerifikasiController extends Controller
             ->update(['status_verifikasi' => 'terkirim']);
 
         return redirect()->route('verifikasi.show', ['periode' => $periode->id, 'opd' => $opd->id])
-            ->with('success', 'Hasil verifikasi berhasil dikirim ke Verifikator Menhan.');
+            ->with('success', 'Hasil verifikasi berhasil dikirim ke Verifikator Menpan.');
     }
 
     private function hitungNilaiIndikatorVerifikasi(Indikator $indikator, array $jawabanMap): array

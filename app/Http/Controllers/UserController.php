@@ -73,7 +73,7 @@ class UserController extends Controller
             'telp' => 'nullable|string|max:20',
             'alamat' => 'nullable|string',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:admin,operator,verifikator,verifikator_menhan',
+            'role' => 'required|in:admin,operator,verifikator,verifikator_menpan',
         ], [
             'username.required' => 'Username wajib diisi.',
             'username.unique' => 'Username sudah terdaftar.',
@@ -97,7 +97,7 @@ class UserController extends Controller
 
         $user = User::create(collect($validated)->except(['verifikator_opds'])->toArray());
 
-        if (in_array($user->role, ['verifikator', 'verifikator_menhan']) && !empty($validated['verifikator_opds'])) {
+        if (in_array($user->role, ['verifikator', 'verifikator_menpan']) && !empty($validated['verifikator_opds'])) {
             $user->verifikatorOpds()->sync($validated['verifikator_opds']);
         }
 
@@ -141,7 +141,7 @@ class UserController extends Controller
             'telp' => 'nullable|string|max:20',
             'alamat' => 'nullable|string',
             'password' => 'nullable|string|min:8|confirmed',
-            'role' => 'required|in:admin,operator,verifikator,verifikator_menhan',
+            'role' => 'required|in:admin,operator,verifikator,verifikator_menpan',
         ], [
             'username.required' => 'Username wajib diisi.',
             'username.unique' => 'Username sudah terdaftar.',
@@ -167,7 +167,7 @@ class UserController extends Controller
 
         $user->update(collect($validated)->except(['verifikator_opds'])->toArray());
 
-        if (in_array($user->role, ['verifikator', 'verifikator_menhan'])) {
+        if (in_array($user->role, ['verifikator', 'verifikator_menpan'])) {
             if (!empty($validated['verifikator_opds'])) {
                 $user->verifikatorOpds()->sync($validated['verifikator_opds']);
             } else {

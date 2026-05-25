@@ -106,7 +106,7 @@
                 </div>
             </div>
 
-            {{-- Card 3: Terkirim ke Menhan --}}
+            {{-- Card 3: Terkirim ke Menpan --}}
             <div class="bg-white rounded-xl p-6">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
@@ -115,7 +115,7 @@
                                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
-                    <h3 class="text-gray-900 font-bold text-base">Terkirim ke Menhan</h3>
+                    <h3 class="text-gray-900 font-bold text-base">Terkirim ke Menpan</h3>
                 </div>
                 <div class="space-y-2">
                     <div class="flex items-center justify-between p-2.5 bg-blue-50 rounded-lg border border-blue-100">
@@ -211,11 +211,11 @@
             </div>
         @endif
 
-        {{-- Kirim ke Menhan Card --}}
-        <div class="bg-white rounded-xl p-6 border {{ $isSentToMenhan ? 'border-green-200 bg-green-50/30' : ($isReadySendMenhan ? 'border-blue-200 bg-blue-50/30' : 'border-gray-200') }}">
+        {{-- Kirim ke Menpan Card --}}
+        <div class="bg-white rounded-xl p-6 border {{ $isSentToMenpan ? 'border-green-200 bg-green-50/30' : ($isReadySendMenpan ? 'border-blue-200 bg-blue-50/30' : 'border-gray-200') }}">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div class="flex items-start gap-4">
-                    @if($isSentToMenhan)
+                    @if($isSentToMenpan)
                         <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
                             <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -223,9 +223,9 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-bold text-gray-900">Validasi Selesai</h3>
-                            <p class="text-sm text-gray-600 mt-1">Hasil verifikasi Unit Kerja ini sudah berhasil dikirim ke Verifikator Menhan.</p>
+                            <p class="text-sm text-gray-600 mt-1">Hasil verifikasi Unit Kerja ini sudah berhasil dikirim ke Verifikator Menpan.</p>
                         </div>
-                    @elseif($isReadySendMenhan)
+                    @elseif($isReadySendMenpan)
                         <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
                             <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -233,7 +233,7 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-bold text-gray-900">Siap Dikirim</h3>
-                            <p class="text-sm text-gray-600 mt-1">Semua pertanyaan sudah diverifikasi. Anda dapat mengirimkan hasilnya ke Verifikator Menhan sekarang.</p>
+                            <p class="text-sm text-gray-600 mt-1">Semua pertanyaan sudah diverifikasi. Anda dapat mengirimkan hasilnya ke Verifikator Menpan sekarang.</p>
                         </div>
                     @else
                         <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
@@ -243,26 +243,26 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-bold text-gray-900">Belum Siap Dikirim</h3>
-                            <p class="text-sm text-gray-600 mt-1">Selesaikan verifikasi seluruh pertanyaan untuk dapat mengirimkan hasil ke Verifikator Menhan.</p>
+                            <p class="text-sm text-gray-600 mt-1">Selesaikan verifikasi seluruh pertanyaan untuk dapat mengirimkan hasil ke Verifikator Menpan.</p>
                         </div>
                     @endif
                 </div>
 
-                @if($isReadySendMenhan && !$isSentToMenhan)
+                @if($isReadySendMenpan && !$isSentToMenpan)
                     <div class="flex-shrink-0">
-                        <form action="{{ route('verifikasi.kirim-menhan', [$periode->id, $opd->id]) }}" method="POST"
-                            onsubmit="return confirm('Kirim hasil verifikasi ke Verifikator Menhan? Tindakan ini tidak dapat dibatalkan.');">
+                        <form action="{{ route('verifikasi.kirim-menpan', [$periode->id, $opd->id]) }}" method="POST"
+                            onsubmit="return confirm('Kirim hasil verifikasi ke Verifikator Menpan? Tindakan ini tidak dapat dibatalkan.');">
                             @csrf
                             <button type="submit"
                                 class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors border-none shadow-none">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                                 </svg>
-                                Kirim ke Menhan
+                                Kirim ke Menpan
                             </button>
                         </form>
                     </div>
-                @elseif($isSentToMenhan)
+                @elseif($isSentToMenpan)
                     <div class="flex-shrink-0">
                         <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-700">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

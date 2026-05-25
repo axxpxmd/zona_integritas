@@ -280,9 +280,9 @@
 			@endif
 			{{-- ========== END OPERATOR STATS ========== --}}
 
-			{{-- ========== VERIFIKATOR MENHAN STATS ========== --}}
-			@if(in_array(auth()->user()->role, ['verifikator_menhan']) && !empty($menhanStats))
-				@php $m = $menhanStats; @endphp
+			{{-- ========== VERIFIKATOR MENPAN STATS ========== --}}
+			@if(in_array(auth()->user()->role, ['verifikator_menpan']) && !empty($menpanStats))
+				@php $m = $menpanStats; @endphp
 
 				{{-- Status Banner --}}
 				<div
@@ -297,7 +297,7 @@
 						</div>
 						<div>
 							<p class="text-sm font-bold {{ $m['isVerifActive'] ? 'text-indigo-800' : 'text-gray-700' }}">
-								Dashboard Verifikasi Menhan — Periode: {{ $activePeriode->nama_periode }}
+								Dashboard Verifikasi Menpan — Periode: {{ $activePeriode->nama_periode }}
 							</p>
 							<p class="text-xs {{ $m['isVerifActive'] ? 'text-indigo-700' : 'text-gray-500' }} mt-0.5">
 								@if($m['startVerif'] && $m['endVerif'])
@@ -324,19 +324,19 @@
 				</div>
 
 				{{-- Data akan ditampilkan sama dengan tabel verifikator namun mengambil dari variabel $m --}}
-				{{-- Stats Grid Menhan --}}
+				{{-- Stats Grid Menpan --}}
 				<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-					{{-- Status OPD (Menhan) --}}
+					{{-- Status OPD (Menpan) --}}
 					<div class="bg-white rounded-xl p-5 flex items-center justify-between">
 						<div>
 							<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Status OPD Ter-Assign</p>
 							<div class="flex gap-4 mt-2">
 								<div>
-									<p class="text-2xl font-bold text-gray-900">{{ $m['opdSiapMenhan'] }}</p>
+									<p class="text-2xl font-bold text-gray-900">{{ $m['opdSiapMenpan'] }}</p>
 									<p class="text-xs text-green-600 font-medium">Siap Verif</p>
 								</div>
 								<div>
-									<p class="text-2xl font-bold text-gray-900">{{ $m['opdBelumSiapMenhan'] }}</p>
+									<p class="text-2xl font-bold text-gray-900">{{ $m['opdBelumSiapMenpan'] }}</p>
 									<p class="text-xs text-orange-500 font-medium">Belum Siap</p>
 								</div>
 							</div>
@@ -347,11 +347,11 @@
 						</div>
 					</div>
 
-					{{-- Progress Verifikasi Keseluruhan Menhan --}}
+					{{-- Progress Verifikasi Keseluruhan Menpan --}}
 					<div class="bg-white rounded-xl p-5 col-span-2">
 						<div class="flex items-start justify-between mb-4">
 							<div>
-								<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Progress Menhan (Keseluruhan)
+								<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Progress Menpan (Keseluruhan)
 								</p>
 								<div class="flex items-end gap-2 mt-1">
 									<span class="text-3xl font-bold text-gray-900">{{ $m['persenVerifikasi'] }}%</span>
@@ -367,10 +367,10 @@
 					</div>
 				</div>
 
-				{{-- Table OPD List Menhan --}}
+				{{-- Table OPD List Menpan --}}
 				<div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
 					<div class="px-5 py-4 border-b border-gray-200 bg-gray-50/50">
-						<h3 class="text-base font-bold text-gray-900">Daftar OPD untuk Diverifikasi Menhan</h3>
+						<h3 class="text-base font-bold text-gray-900">Daftar OPD untuk Diverifikasi Menpan</h3>
 					</div>
 					<div class="overflow-x-auto">
 						<table class="w-full text-left text-sm whitespace-nowrap">
@@ -385,7 +385,7 @@
 								</tr>
 							</thead>
 							<tbody class="divide-y divide-gray-100">
-								@forelse($m['opdProgressMenhan'] as $p)
+								@forelse($m['opdProgressMenpan'] as $p)
 									<tr class="hover:bg-gray-50 transition-colors group">
 										<td class="px-5 py-3">
 											<div class="font-medium text-gray-900">{{ $p->opd->n_opd }}</div>
@@ -423,7 +423,7 @@
 										</td>
 										<td class="px-5 py-3 text-right">
 											@if($p->isSiap)
-												<a href="{{ route('verifikasi-menhan.show', ['periode' => $activePeriode->id, 'opd' => $p->opd->id]) }}"
+												<a href="{{ route('verifikasi-menpan.show', ['periode' => $activePeriode->id, 'opd' => $p->opd->id]) }}"
 													class="inline-flex items-center justify-center px-3 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white border border-indigo-200 hover:border-transparent rounded-lg text-xs font-semibold transition-all">
 													Lakukan Verifikasi
 												</a>
@@ -444,7 +444,7 @@
 					</div>
 				</div>
 			@endif
-			{{-- ========== END VERIFIKATOR MENHAN STATS ========== --}}
+			{{-- ========== END VERIFIKATOR MENPAN STATS ========== --}}
 
 			{{-- ========== VERIFIKATOR STATS ========== --}}
 			@if(auth()->user()->role === 'verifikator' && !empty($verifikatorStats))
@@ -674,9 +674,9 @@
 					</div>
 				@endif
 
-			{{-- ========== VERIFIKATOR MENHAN STATS ========== --}}
-			@if(in_array(auth()->user()->role, ['verifikator_menhan', 'admin']) && !empty($menhanStats))
-				@php $m = $menhanStats; @endphp
+			{{-- ========== VERIFIKATOR MENPAN STATS ========== --}}
+			@if(in_array(auth()->user()->role, ['verifikator_menpan', 'admin']) && !empty($menpanStats))
+				@php $m = $menpanStats; @endphp
 
 				<div
 					class="rounded-xl border px-5 py-4 flex items-center justify-between gap-4 {{ $m['isVerifActive'] ? 'bg-teal-50 border-teal-200' : 'bg-gray-50 border-gray-200' }}">
@@ -690,7 +690,7 @@
 						</div>
 						<div>
 							<p class="text-sm font-bold {{ $m['isVerifActive'] ? 'text-teal-800' : 'text-gray-700' }}">
-								Dashboard Verifikasi Menhan — Periode: {{ $activePeriode->nama_periode }}
+								Dashboard Verifikasi Menpan — Periode: {{ $activePeriode->nama_periode }}
 							</p>
 							<p class="text-xs {{ $m['isVerifActive'] ? 'text-teal-700' : 'text-gray-500' }} mt-0.5">
 								@if($m['startVerif'] && $m['endVerif'])
@@ -713,9 +713,9 @@
 								<span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span> Di Luar Jadwal
 							</span>
 						@endif
-						<a href="{{ route('verifikasi-menhan.index') }}"
+						<a href="{{ route('verifikasi-menpan.index') }}"
 							class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-teal-600 text-white rounded-lg text-xs font-semibold hover:bg-teal-700 transition-colors">
-							Buka Verifikasi Menhan
+							Buka Verifikasi Menpan
 							<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 							</svg>
@@ -726,7 +726,7 @@
 				<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
 					<div class="bg-white rounded-xl p-5">
 						<div class="flex items-center justify-between mb-3">
-							<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">OPD Siap Menhan</p>
+							<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">OPD Siap Menpan</p>
 							<div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
 								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -734,17 +734,17 @@
 								</svg>
 							</div>
 						</div>
-						<p class="text-3xl font-bold text-gray-900">{{ $m['opdSiapMenhan'] }}</p>
+						<p class="text-3xl font-bold text-gray-900">{{ $m['opdSiapMenpan'] }}</p>
 						<div class="flex items-center gap-3 mt-2 text-xs">
-							<span class="text-green-600 font-semibold">{{ $m['opdSiapMenhan'] }} siap</span>
+							<span class="text-green-600 font-semibold">{{ $m['opdSiapMenpan'] }} siap</span>
 							<span class="text-gray-400">·</span>
-							<span class="text-gray-500">{{ $m['opdBelumSiapMenhan'] }} belum</span>
+							<span class="text-gray-500">{{ $m['opdBelumSiapMenpan'] }} belum</span>
 						</div>
 					</div>
 
 					<div class="bg-white rounded-xl p-5 col-span-1 md:col-span-1">
 						<div class="flex items-center justify-between mb-3">
-							<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Progress Menhan</p>
+							<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Progress Menpan</p>
 							<div class="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center text-teal-600">
 								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -763,7 +763,7 @@
 					</div>
 
 					<div class="bg-white rounded-xl p-5">
-						<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Status Menhan</p>
+						<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Status Menpan</p>
 						<div class="space-y-2">
 							<div class="flex items-center justify-between">
 								<div class="flex items-center gap-1.5">
@@ -792,15 +792,15 @@
 								</svg>
 							</div>
 						</div>
-						<p class="text-3xl font-bold text-gray-300">{{ $m['opdBelumSiapMenhan'] }}</p>
+						<p class="text-3xl font-bold text-gray-300">{{ $m['opdBelumSiapMenpan'] }}</p>
 						<p class="text-xs text-gray-400 mt-1">menunggu verifikator</p>
 					</div>
 				</div>
 
-				@if($m['opdProgressMenhan']->isNotEmpty())
+				@if($m['opdProgressMenpan']->isNotEmpty())
 					<div class="bg-white rounded-xl overflow-hidden">
 						<div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-							<h3 class="text-sm font-semibold text-gray-900">Progress Verifikasi Menhan per OPD</h3>
+							<h3 class="text-sm font-semibold text-gray-900">Progress Verifikasi Menpan per OPD</h3>
 							<span class="text-xs text-gray-400">{{ $activePeriode->nama_periode }}</span>
 						</div>
 						<div class="overflow-x-auto">
@@ -816,7 +816,7 @@
 									</tr>
 								</thead>
 								<tbody class="divide-y divide-gray-100">
-									@foreach($m['opdProgressMenhan'] as $row)
+									@foreach($m['opdProgressMenpan'] as $row)
 										<tr class="hover:bg-gray-50/50 transition-colors">
 											<td class="px-5 py-3">
 												<p class="font-medium text-gray-900 text-sm">{{ $row->opd->n_opd }}</p>
@@ -849,9 +849,9 @@
 											</td>
 											<td class="px-5 py-3">
 												@if($row->isSiap)
-													<a href="{{ route('verifikasi-menhan.show', ['periode' => $activePeriode->id, 'opd' => $row->opd->id]) }}"
+													<a href="{{ route('verifikasi-menpan.show', ['periode' => $activePeriode->id, 'opd' => $row->opd->id]) }}"
 														class="inline-flex items-center gap-1 text-xs text-teal-600 hover:text-teal-800 font-medium">
-														Verifikasi Menhan
+														Verifikasi Menpan
 														<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 															<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
 																d="M9 5l7 7-7 7" />

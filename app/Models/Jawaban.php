@@ -18,11 +18,11 @@ class Jawaban extends Model
         'nilai',
         'keterangan',
         'file_path',
-        'status_verifikasi_menhan',
-        'menhan_jawaban_text',
-        'menhan_jawaban_angka',
-        'menhan_verified_by',
-        'menhan_verified_at',
+        'status_verifikasi_menpan',
+        'menpan_jawaban_text',
+        'menpan_jawaban_angka',
+        'menpan_verified_by',
+        'menpan_verified_at',
         'status',
         'created_by',
         'updated_by',
@@ -31,7 +31,7 @@ class Jawaban extends Model
     protected $casts = [
         'jawaban_angka' => 'float',
         'nilai' => 'float',
-        'menhan_jawaban_angka' => 'float',
+        'menpan_jawaban_angka' => 'float',
     ];
 
     /**

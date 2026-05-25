@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Verifikasi Menhan Jawaban OPD')
-@section('page-title', 'Detail Verifikasi Menhan: ' . $opd->n_opd)
+@section('title', 'Verifikasi Menpan Jawaban OPD')
+@section('page-title', 'Detail Verifikasi Menpan: ' . $opd->n_opd)
 
 @section('content')
     @php
@@ -14,7 +14,7 @@
         {{-- Header --}}
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <a href="{{ route('verifikasi-menhan.index') }}"
+                <a href="{{ route('verifikasi-menpan.index') }}"
                     class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -83,7 +83,7 @@
                 </div>
             </div>
 
-            {{-- Card 2: Terverifikasi Menhan --}}
+            {{-- Card 2: Terverifikasi Menpan --}}
             <div class="bg-white rounded-xl p-6">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
@@ -92,7 +92,7 @@
                                 d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                         </svg>
                     </div>
-                    <h3 class="text-gray-900 font-bold text-base">Terverifikasi Menhan</h3>
+                    <h3 class="text-gray-900 font-bold text-base">Terverifikasi Menpan</h3>
                 </div>
                 <div class="space-y-2">
                     <div class="flex items-center justify-between p-2.5 bg-green-50 rounded-lg border border-green-100">
@@ -155,7 +155,7 @@
                                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <div class="text-sm text-blue-800">
-                            <p class="font-medium">Pilih Sub Kategori untuk Verifikasi Menhan</p>
+                            <p class="font-medium">Pilih Sub Kategori untuk Verifikasi Menpan</p>
                             <p class="mt-1">Pilih salah satu sub kategori di bawah untuk mulai melakukan verifikasi.</p>
                         </div>
                     </div>
@@ -265,7 +265,7 @@
                                     @php
                                         $prog = $progress[$subKategori->id] ?? ['total' => 0, 'terverifikasi' => 0, 'persen' => 0, 'nilai' => 0, 'capaian' => 0];
                                     @endphp
-                                    <a href="{{ route('verifikasi-menhan.detail', [$periode->id, $opd->id, $subKategori->id]) }}"
+                                    <a href="{{ route('verifikasi-menpan.detail', [$periode->id, $opd->id, $subKategori->id]) }}"
                                         class="flex flex-col h-full bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-[#0E7C7B] hover:shadow-lg transition-all group">
                                         {{-- Sub Kategori Header --}}
                                         <div class="flex items-start gap-3 mb-3">
