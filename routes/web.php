@@ -14,6 +14,7 @@ use App\Http\Controllers\SubPertanyaanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerifikasiController;
 use App\Http\Controllers\VerifikasiMenhanController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Auth Routes
@@ -57,6 +58,10 @@ Route::middleware('auth')->group(function () {
         // Sub Pertanyaan Management
         Route::resource('sub-pertanyaan', SubPertanyaanController::class)->names('sub-pertanyaan');
     });
+
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 
     // Kuesioner
     Route::prefix('kuesioner')->name('kuesioner.')->group(function () {

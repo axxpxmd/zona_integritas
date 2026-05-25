@@ -25,6 +25,12 @@
                 <p class="text-sm font-medium text-gray-700">{{ Auth::user()->nama_instansi }}</p>
                 <p class="text-xs text-gray-500">{{ Auth::user()->username }}</p>
             </div>
+            <!-- Profile -->
+            <a href="{{ route('profile.index') }}" class="p-2 text-gray-500 hover:text-primary hover:bg-primary-light rounded-lg transition-colors" title="Profil">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+            </a>
             <!-- Logout -->
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
