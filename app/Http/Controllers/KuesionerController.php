@@ -21,6 +21,23 @@ class KuesionerController extends Controller
             ->orderBy('tahun', 'desc')
             ->get();
 
+        $user = Auth::user();
+        $opd = $user->opd;
+
+        $totalPertanyaan = Pertanyaan::where('status', 1)->count();
+
+        foreach ($periodes as $periode) {
+            if ($opd) {
+                $terjawab = Jawaban::where('periode_id', $periode->id)
+                    ->where('opd_id', $opd->id)
+                    ->whereNull('sub_pertanyaan_id')
+                    ->count();
+                $periode->progress = $totalPertanyaan > 0 ? min(100, round(($terjawab / $totalPertanyaan) * 100)) : 0;
+            } else {
+                $periode->progress = 0;
+            }
+        }
+
         return view('page.kuesioner.index', compact('periodes'));
     }
 

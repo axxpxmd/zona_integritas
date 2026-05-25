@@ -8,7 +8,7 @@
     {{-- Header --}}
     <div class="flex items-center justify-between">
         <div>
-            <h2 class="text-xl font-bold text-gray-900">Daftar Periode Lembar Kerja Evaluasi</h2>
+            <h2 class="text-xl font-bold text-gray-900">Lembar Kerja Evaluasi</h2>
             <p class="text-sm text-gray-500 mt-0.5">Pilih periode untuk mulai mengisi Lembar Kerja Evaluasi</p>
         </div>
     </div>
@@ -29,9 +29,6 @@
                 <thead>
                     <tr class="bg-gray-50">
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                            Nama Periode
-                        </th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                             Tahun
                         </th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
@@ -39,6 +36,9 @@
                         </th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                             Durasi
+                        </th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                            Progress Pengisian
                         </th>
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                             Status
@@ -52,14 +52,6 @@
                     @forelse($periodes as $periode)
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-6 py-4">
-                            <div>
-                                <p class="text-sm font-semibold text-gray-900">{{ $periode->nama_periode }}</p>
-                                @if($periode->deskripsi)
-                                <p class="text-xs text-gray-500 mt-0.5 line-clamp-1">{{ $periode->deskripsi }}</p>
-                                @endif
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
                             <span class="text-sm text-gray-900">{{ $periode->tahun }}</span>
                         </td>
                         <td class="px-6 py-4">
@@ -67,6 +59,14 @@
                         </td>
                         <td class="px-6 py-4">
                             <span class="text-sm text-gray-900">{{ $periode->tanggal_mulai->diffInDays($periode->tanggal_selesai) + 1 }} Hari</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <div class="w-full bg-gray-200 rounded-full h-2 min-w-[80px] max-w-[120px]">
+                                    <div class="bg-primary h-2 rounded-full" style="width: {{ $periode->progress ?? 0 }}%"></div>
+                                </div>
+                                <span class="text-xs font-medium text-gray-700">{{ $periode->progress ?? 0 }}%</span>
+                            </div>
                         </td>
                         <td class="px-6 py-4">
                             @php
@@ -119,7 +119,6 @@
                 <p class="font-medium mb-1">Informasi Penting:</p>
                 <ul class="space-y-1 list-disc list-inside">
                     <li>Pilih periode yang tersedia untuk mulai mengisi Lembar Kerja Evaluasi</li>
-                    <li>Jawaban akan tersimpan otomatis saat Anda mengisi</li>
                     <li>Anda dapat melanjutkan pengisian kapan saja</li>
                     <li>Pastikan mengisi semua pertanyaan sebelum periode berakhir</li>
                 </ul>
