@@ -231,6 +231,36 @@
                             $verifikatorAngkaValue = $jawabanParent
                                 ? ($jawabanParent->verifikator_jawaban_angka ?? $jawabanParent->jawaban_angka)
                                 : null;
+
+                            $isMenpanBerbeda = false;
+                            if ($statusVerifikasiMenpan !== 'belum_diverifikasi') {
+                                if ($pertanyaan->has_sub_pertanyaan) {
+                                    foreach ($pertanyaan->subPertanyaans as $sp) {
+                                        $spKey = "{$pertanyaan->id}_{$sp->id}";
+                                        if (isset($jawabanMap[$spKey])) {
+                                            $jawabanSub = $jawabanMap[$spKey];
+                                            $menpanVal = $jawabanSub->menpan_jawaban_angka ?? null;
+                                            $verifikatorVal = $jawabanSub->verifikator_jawaban_angka ?? $jawabanSub->jawaban_angka ?? null;
+                                            if ($menpanVal !== null && $menpanVal != $verifikatorVal) {
+                                                $isMenpanBerbeda = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                } else if (in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda'])) {
+                                    $menpanVal = $jawabanParent->menpan_jawaban_text ?? null;
+                                    $verifikatorVal = $jawabanParent->verifikator_jawaban_text ?? $jawabanParent->jawaban_text ?? null;
+                                    if ($menpanVal !== null && $menpanVal !== $verifikatorVal) {
+                                        $isMenpanBerbeda = true;
+                                    }
+                                } else if ($pertanyaan->tipe_jawaban === 'angka') {
+                                    $menpanVal = $jawabanParent->menpan_jawaban_angka ?? null;
+                                    $verifikatorVal = $jawabanParent->verifikator_jawaban_angka ?? $jawabanParent->jawaban_angka ?? null;
+                                    if ($menpanVal !== null && $menpanVal != $verifikatorVal) {
+                                        $isMenpanBerbeda = true;
+                                    }
+                                }
+                            }
                         @endphp
                         <div class="bg-white rounded-lg p-4 border border-gray-200">
                             <fieldset @if(!$isCanVerify || $statusVerifikasiMenpan !== 'belum_diverifikasi') disabled @endif>
@@ -253,6 +283,7 @@
                             </div>
 
                             {{-- Jawaban Verifikator (readonly) --}}
+                            @if($isMenpanBerbeda)
                             <div class="mb-4 bg-red-50 rounded-lg p-4 border border-red-200">
                                 <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Jawaban Verifikator</p>
                                 @if($pertanyaan->tipe_jawaban === 'ya_tidak')
@@ -289,6 +320,7 @@
                                     <p class="text-sm font-semibold text-gray-800">{{ $verifikatorAngkaValue ?? '-' }}</p>
                                 @endif
                             </div>
+                            @endif
 
                             {{-- Jawaban Menpan (ubah langsung di pilihan jawaban) --}}
                             <div class="space-y-3">
