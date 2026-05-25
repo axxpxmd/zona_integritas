@@ -602,7 +602,7 @@
 										<th class="px-5 py-3 font-medium text-gray-700 text-center">Direvisi</th>
 										<th class="px-5 py-3 font-medium text-gray-700 text-center">Belum</th>
 										<th class="px-5 py-3 font-medium text-gray-700 text-center">Menunggu</th>
-										<th class="px-5 py-3 font-medium text-gray-700">Progress</th>
+										<th class="px-5 py-3 font-medium text-gray-700">Progress Verifikasi</th>
 										<th class="px-5 py-3 font-medium text-gray-700"></th>
 									</tr>
 								</thead>
@@ -613,21 +613,26 @@
 												<p class="font-medium text-gray-900 text-sm">{{ $row->opd->n_opd }}</p>
 											</td>
 											<td class="px-5 py-3 text-center">
-												<div class="flex flex-col items-center justify-center gap-1.5">
+												<div class="inline-flex flex-col items-center justify-center bg-gray-50 border border-gray-200 rounded-lg p-2 min-w-[7rem]">
 													@if($row->isFinal)
 														<span
-															class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-700">
-															<span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> Sudah Kirim
+															class="inline-flex items-center justify-center gap-1 px-2.5 py-1 mb-1.5 rounded-md text-[10px] font-bold bg-blue-100 text-blue-700 w-full uppercase tracking-wider">
+															<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+															Terkirim
 														</span>
 													@else
 														<span
-															class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-500">
-															Belum Kirim
+															class="inline-flex items-center justify-center gap-1 px-2.5 py-1 mb-1.5 rounded-md text-[10px] font-bold bg-gray-200 text-gray-600 w-full uppercase tracking-wider">
+															<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+															Proses
 														</span>
 													@endif
-													<span class="text-[10px] text-gray-500 font-medium">
-														Terisi: {{ $row->totalDiisi }}/{{ $row->totalRequired }}
-													</span>
+													<div class="flex items-center gap-1">
+														<span class="text-sm font-bold {{ $row->totalDiisi == $row->totalRequired && $row->totalRequired > 0 ? 'text-green-600' : 'text-gray-800' }}">
+															{{ $row->totalDiisi }}
+														</span>
+														<span class="text-xs text-gray-500 font-medium">/ {{ $row->totalRequired }}</span>
+													</div>
 												</div>
 											</td>
 											<td class="px-5 py-3 text-center"><span
