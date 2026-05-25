@@ -20,16 +20,16 @@
 </div>
 
 <!-- Nav Tabs -->
-<div class="mb-6 flex space-x-4 border-b border-gray-200">
-    <button type="button" onclick="switchTab('operator')" id="tab-operator" class="pb-3 border-b-2 border-[#0164CA] text-[#0164CA] font-semibold transition-colors flex items-center gap-2">
+<div class="mb-6 bg-gray-100 p-1.5 rounded-xl flex flex-wrap sm:inline-flex gap-1.5 border border-gray-200 shadow-sm">
+    <button type="button" onclick="switchTab('operator')" id="tab-operator" class="px-5 py-2.5 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 bg-white text-[#0164CA] shadow-sm border border-gray-200">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
         Jawaban Operator
     </button>
-    <button type="button" onclick="switchTab('verifikator')" id="tab-verifikator" class="pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium transition-colors flex items-center gap-2">
+    <button type="button" onclick="switchTab('verifikator')" id="tab-verifikator" class="px-5 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 text-gray-500 hover:text-gray-700 hover:bg-gray-200 hover:shadow-sm border border-transparent">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
         Jawaban Verifikator
     </button>
-    <button type="button" onclick="switchTab('menpan')" id="tab-menpan" class="pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium transition-colors flex items-center gap-2">
+    <button type="button" onclick="switchTab('menpan')" id="tab-menpan" class="px-5 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 text-gray-500 hover:text-gray-700 hover:bg-gray-200 hover:shadow-sm border border-transparent">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
         Jawaban Menpan
     </button>
@@ -42,9 +42,6 @@
 @endphp
 <div id="content-{{ $role }}" class="{{ $role == 'operator' ? 'block' : 'hidden' }}">
     <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-        <div class="p-4 bg-gray-50 border-b border-gray-200">
-            <h3 class="font-semibold text-gray-800 capitalize">Tampilan Nilai: {{ str_replace('_', ' ', $role) }}</h3>
-        </div>
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left border-collapse">
                 <thead class="bg-[#0164CA] text-white">
@@ -221,18 +218,18 @@
         roles.forEach(r => {
             document.getElementById('content-' + r).classList.add('hidden');
             document.getElementById('content-' + r).classList.remove('block');
-            
+
             let tab = document.getElementById('tab-' + r);
-            tab.classList.remove('border-[#0164CA]', 'text-[#0164CA]', 'font-semibold');
-            tab.classList.add('border-transparent', 'text-gray-500', 'font-medium');
+            tab.classList.remove('bg-white', 'text-[#0164CA]', 'shadow-sm', 'font-semibold', 'border-gray-200');
+            tab.classList.add('text-gray-500', 'font-medium', 'hover:bg-gray-200', 'hover:shadow-sm', 'border-transparent');
         });
-        
+
         document.getElementById('content-' + role).classList.remove('hidden');
         document.getElementById('content-' + role).classList.add('block');
-        
+
         let activeTab = document.getElementById('tab-' + role);
-        activeTab.classList.remove('border-transparent', 'text-gray-500', 'font-medium');
-        activeTab.classList.add('border-[#0164CA]', 'text-[#0164CA]', 'font-semibold');
+        activeTab.classList.remove('text-gray-500', 'font-medium', 'hover:bg-gray-200', 'hover:shadow-sm', 'border-transparent');
+        activeTab.classList.add('bg-white', 'text-[#0164CA]', 'shadow-sm', 'font-semibold', 'border-gray-200');
     }
 </script>
 @endsection
