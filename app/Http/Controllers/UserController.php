@@ -97,7 +97,7 @@ class UserController extends Controller
 
         $user = User::create(collect($validated)->except(['verifikator_opds'])->toArray());
 
-        if ($user->role === 'verifikator' && !empty($validated['verifikator_opds'])) {
+        if (in_array($user->role, ['verifikator', 'verifikator_menhan']) && !empty($validated['verifikator_opds'])) {
             $user->verifikatorOpds()->sync($validated['verifikator_opds']);
         }
 
@@ -167,7 +167,7 @@ class UserController extends Controller
 
         $user->update(collect($validated)->except(['verifikator_opds'])->toArray());
 
-        if ($user->role === 'verifikator') {
+        if (in_array($user->role, ['verifikator', 'verifikator_menhan'])) {
             if (!empty($validated['verifikator_opds'])) {
                 $user->verifikatorOpds()->sync($validated['verifikator_opds']);
             } else {

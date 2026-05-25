@@ -112,7 +112,7 @@
                     </div>
 
                     {{-- Multi OPD (Verifikator) --}}
-                    <div id="verifikator_opds_container" style="{{ old('role') === 'verifikator' ? 'display: block;' : 'display: none;' }}">
+                    <div id="verifikator_opds_container" style="{{ in_array(old('role'), ['verifikator', 'verifikator_menhan']) ? 'display: block;' : 'display: none;' }}">
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">
                             Pilih Unit Kerja untuk Diverifikasi
                         </label>
@@ -390,8 +390,9 @@ function updateRoleDescription() {
         }
     }
     if (verifikatorOpdsContainer) {
-        verifikatorOpdsContainer.style.display = role === 'verifikator' ? 'block' : 'none';
-        if (role !== 'verifikator') {
+        const isVerifikator = role === 'verifikator' || role === 'verifikator_menhan';
+        verifikatorOpdsContainer.style.display = isVerifikator ? 'block' : 'none';
+        if (!isVerifikator) {
             const checkboxes = verifikatorOpdsContainer.querySelectorAll('input[type="checkbox"]');
             checkboxes.forEach(cb => cb.checked = false);
         }
