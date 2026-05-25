@@ -97,6 +97,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('verifikasi-menpan')->name('verifikasi-menpan.')->group(function () {
         Route::get('/', [VerifikasiMenpanController::class, 'index'])->name('index');
         Route::get('/{periode}/{opd}', [VerifikasiMenpanController::class, 'show'])->name('show');
+        Route::post('/{periode}/{opd}/verify-all-dev', [VerifikasiMenpanController::class, 'verifyAllDev'])->name('verify-all-dev');
         Route::get('/{periode}/{opd}/kategori/{subKategori}', [VerifikasiMenpanController::class, 'detail'])->name('detail');
         Route::post('/{periode}/{opd}/kategori/{subKategori}', [VerifikasiMenpanController::class, 'store'])->name('store');
     });

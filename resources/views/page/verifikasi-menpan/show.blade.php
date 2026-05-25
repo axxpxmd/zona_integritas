@@ -163,6 +163,20 @@
             </div>
         @endif
 
+        @if(config('app.debug') || env('APP_ENV') === 'local')
+            <form action="{{ route('verifikasi-menpan.verify-all-dev', [$periode->id, $opd->id]) }}" method="POST"
+                onsubmit="return confirm('Yakin ingin verifikasi semua pertanyaan Menpan untuk OPD ini secara otomatis (DEV ONLY)?');">
+                @csrf
+                <button type="submit"
+                    class="shrink-0 inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-sm gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    [DEV] Verifikasi Semua
+                </button>
+            </form>
+        @endif
+
         {{-- Komponen Loop --}}
         @foreach($komponens as $komponen)
             @php

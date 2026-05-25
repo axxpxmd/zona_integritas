@@ -165,6 +165,30 @@ class VerifikasiMenpanController extends Controller
         return view('page.verifikasi-menpan.show', compact('periode', 'opd', 'komponens', 'jawabanMap', 'verifikasiStats', 'progress', 'isAllAnswered', 'isSent'));
     }
 
+    public function verifyAllDev(Periode $periode, Opd $opd)
+    {
+        if (!config('app.debug') && env('APP_ENV') !== 'local') {
+            abort(403);
+        }
+
+        $this->authorizeMenpan();
+
+        $jawabans = Jawaban::where('periode_id', $periode->id)
+            ->where('opd_id', $opd->id)
+            ->where('status_verifikasi', 'terkirim')
+            ->get();
+
+        foreach ($jawabans as $jawaban) {
+            if ($jawaban->status_verifikasi_menpan !== 'disetujui') {
+                $jawaban->status_verifikasi_menpan = 'disetujui';
+                $jawaban->menpan_verified_at = now();
+                $jawaban->save();
+            }
+        }
+
+        return redirect()->back()->with('success', '[DEV] Semua pertanyaan berhasil diverifikasi Menpan (Secara otomatis disetujui).');
+    }
+
     public function detail(Request $request, Periode $periode, Opd $opd, SubKategori $subKategori)
     {
         $this->authorizeMenpan();
