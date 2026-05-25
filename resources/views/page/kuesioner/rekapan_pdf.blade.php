@@ -128,7 +128,7 @@
         ];
     @endphp
 
-    @foreach(['operator', 'verifikator', 'menpan'] as $role)
+    @foreach(array_keys($rekapData) as $role)
         @php
             $rekapPengungkit = $rekapData[$role]['rekapPengungkit'];
             $rekapHasil = $rekapData[$role]['rekapHasil'];

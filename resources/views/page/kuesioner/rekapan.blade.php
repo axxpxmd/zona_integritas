@@ -20,7 +20,7 @@
         </p>
     </div>
     <div class="flex gap-2 self-start sm:self-auto">
-        <a href="{{ route('kuesioner.rekap.pdf', $periode->id) }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded-xl text-sm font-semibold hover:bg-red-700 shadow-sm hover:shadow transition-all duration-200" target="_blank">
+        <a id="btn-export-pdf" href="{{ route('kuesioner.rekap.pdf', $periode->id) }}?role=operator" class="inline-flex items-center gap-2 px-4 py-2.5 bg-red-600 text-white rounded-xl text-sm font-semibold hover:bg-red-700 shadow-sm hover:shadow transition-all duration-200" target="_blank">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
@@ -405,6 +405,12 @@
         let activeTab = document.getElementById('tab-' + role);
         activeTab.classList.remove('border-transparent', 'text-gray-500', 'font-medium', 'hover:text-gray-800', 'hover:border-gray-300');
         activeTab.classList.add('border-primary', 'text-primary', 'font-semibold');
+
+        // Update Export PDF URL to include the selected role
+        let exportBtn = document.getElementById('btn-export-pdf');
+        if (exportBtn) {
+            exportBtn.href = "{{ route('kuesioner.rekap.pdf', $periode->id) }}?role=" + role;
+        }
     }
 </script>
 @endsection

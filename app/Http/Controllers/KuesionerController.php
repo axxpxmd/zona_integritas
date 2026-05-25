@@ -104,7 +104,7 @@ class KuesionerController extends Controller
                             $jawaban = $jawabans[$pertanyaan->id] ?? null;
                             if ($jawaban) {
                                 $valOp = null; $valVer = null; $valMen = null;
-                                
+
                                 // OPERATOR
                                 if ($pertanyaan->has_sub_pertanyaan) {
                                     $subAns = [];
@@ -172,12 +172,12 @@ class KuesionerController extends Controller
                                 if ($valMen !== null) { $indTerjawabMen++; $indTotalMen += $valMen; }
                             }
                         }
-                        
+
                         $totalNilaiOp += ($indTerjawabOp > 0 ? $indTotalOp / $indTerjawabOp : 0) * $indikator->bobot;
                         $totalNilaiVer += ($indTerjawabVer > 0 ? $indTotalVer / $indTerjawabVer : 0) * $indikator->bobot;
                         $totalNilaiMen += ($indTerjawabMen > 0 ? $indTotalMen / $indTerjawabMen : 0) * $indikator->bobot;
                     }
-                    
+
                     $progressOp[$subKategori->id] = $totalNilaiOp;
                     $progressVer[$subKategori->id] = $totalNilaiVer;
                     $progressMen[$subKategori->id] = $totalNilaiMen;
@@ -267,9 +267,9 @@ class KuesionerController extends Controller
 
         $jawabans = Jawaban::where('periode_id', $periode_id)->where('opd_id', $opd->id)->whereNull('sub_pertanyaan_id')->get()->keyBy('pertanyaan_id');
         $subJawabansAll = Jawaban::where('periode_id', $periode_id)->where('opd_id', $opd->id)->whereNotNull('sub_pertanyaan_id')->get()->keyBy(fn ($j) => $j->pertanyaan_id . '-' . $j->sub_pertanyaan_id);
-        
+
         $progressOp = []; $progressVer = []; $progressMen = [];
-        
+
         foreach ($komponens as $komponen) {
             foreach ($komponen->kategoris as $kategori) {
                 foreach ($kategori->subKategoris as $subKategori) {
@@ -282,7 +282,7 @@ class KuesionerController extends Controller
                             $jawaban = $jawabans[$pertanyaan->id] ?? null;
                             if ($jawaban) {
                                 $valOp = null; $valVer = null; $valMen = null;
-                                
+
                                 // OPERATOR
                                 if ($pertanyaan->has_sub_pertanyaan) {
                                     $subAns = [];
@@ -350,12 +350,12 @@ class KuesionerController extends Controller
                                 if ($valMen !== null) { $indTerjawabMen++; $indTotalMen += $valMen; }
                             }
                         }
-                        
+
                         $totalNilaiOp += ($indTerjawabOp > 0 ? $indTotalOp / $indTerjawabOp : 0) * $indikator->bobot;
                         $totalNilaiVer += ($indTerjawabVer > 0 ? $indTotalVer / $indTerjawabVer : 0) * $indikator->bobot;
                         $totalNilaiMen += ($indTerjawabMen > 0 ? $indTotalMen / $indTerjawabMen : 0) * $indikator->bobot;
                     }
-                    
+
                     $progressOp[$subKategori->id] = $totalNilaiOp;
                     $progressVer[$subKategori->id] = $totalNilaiVer;
                     $progressMen[$subKategori->id] = $totalNilaiMen;
@@ -403,9 +403,24 @@ class KuesionerController extends Controller
             'menpan' => $buildRekap($progressMen),
         ];
 
+        $role = request()->get('role', 'operator');
+        if (!in_array($role, ['operator', 'verifikator', 'menpan'])) {
+            $role = 'operator';
+        }
+
+        $rekapDataView = [
+            $role => $rekapData[$role]
+        ];
+
         // Karena DomPDF tidak menggunakan tailwind secara sempurna, kita akan menggunakan styling manual
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('page.kuesioner.rekapan_pdf', compact('periode', 'opd', 'rekapData'))->setPaper('a4', 'portrait');
-        return $pdf->download("Rekapan_LKE_". str_replace(' ','_',$opd->n_opd) . "_" . $periode->nama_periode . ".pdf");
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('page.kuesioner.rekapan_pdf', [
+            'periode' => $periode,
+            'opd' => $opd,
+            'rekapData' => $rekapDataView
+        ])->setPaper('a4', 'portrait');
+
+        $roleTitle = ucfirst($role);
+        return $pdf->download("Rekapan_LKE_{$roleTitle}_". str_replace(' ','_',$opd->n_opd) . "_" . $periode->nama_periode . ".pdf");
     }
 
     /**
