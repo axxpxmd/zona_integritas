@@ -25,6 +25,12 @@ php artisan migrate:fresh --seed  # Reset database with seeders
 - **Verifikator:** `verifikator_jawaban_text`, `verifikator_jawaban_angka` (input verifikator, tetap simpan jawaban asli operator)
 - **Verifikator Menpan:** `menpan_jawaban_text`, `menpan_jawaban_angka` (input verifikator menpan, tetap simpan jawaban asli operator dan verifikator biasa)
 
+## Status sudah mengisi / sudah selesai mengisi jawaban pada tiap role
+- **Operator:** status == "final"
+- **Verifikator:** status_verifikasi == terkirim
+- **Verifikator Menpan:** status_verifikasi_menpan == disetujui
+note: kolom tersebut ada di tabel jawaban. pastikan pada setiap pertanyaan sudah berubah valuenya seperti diatas, jika ada 1 yg belum berarti belum selesai mengisinya.
+
 ## Business Logic & Workflow (STRICT)
 - **Struktur Kuesioner (Hierarkis):** `tm_komponen` -> `tm_kategori` -> `tm_sub_kategori` -> `tm_indikator` -> `tm_pertanyaan` -> `tm_sub_pertanyaan` (opsional).
 - **Periode (`tm_periode`):** Memiliki rentang waktu pengerjaan. Operator dan Verifikator hanya bisa bekerja jika tanggal saat ini masuk dalam rentang waktu sesi/periode tersebut.

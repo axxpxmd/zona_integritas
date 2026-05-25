@@ -245,7 +245,24 @@ class KuesionerController extends Controller
             'menpan' => $buildRekap($progressMen),
         ];
 
-        return view('page.kuesioner.rekapan', compact('periode', 'opd', 'rekapData'));
+        $totalPertanyaanAktif = 0;
+        foreach ($komponens as $komponen) {
+            foreach ($komponen->kategoris as $kategori) {
+                foreach ($kategori->subKategoris as $subKategori) {
+                    foreach ($subKategori->indikators as $indikator) {
+                        $totalPertanyaanAktif += $indikator->pertanyaans->count();
+                    }
+                }
+            }
+        }
+
+        $isFinished = [
+            'operator' => $totalPertanyaanAktif > 0 && $jawabans->where('status', 'final')->count() >= $totalPertanyaanAktif,
+            'verifikator' => $totalPertanyaanAktif > 0 && $jawabans->where('status_verifikasi', 'terkirim')->count() >= $totalPertanyaanAktif,
+            'menpan' => $totalPertanyaanAktif > 0 && $jawabans->where('status_verifikasi_menpan', 'disetujui')->count() >= $totalPertanyaanAktif,
+        ];
+
+        return view('page.kuesioner.rekapan', compact('periode', 'opd', 'rekapData', 'isFinished'));
     }
 
     public function exportPdf($periode_id)
@@ -406,6 +423,27 @@ class KuesionerController extends Controller
         $role = request()->get('role', 'operator');
         if (!in_array($role, ['operator', 'verifikator', 'menpan'])) {
             $role = 'operator';
+        }
+
+        $totalPertanyaanAktif = 0;
+        foreach ($komponens as $komponen) {
+            foreach ($komponen->kategoris as $kategori) {
+                foreach ($kategori->subKategoris as $subKategori) {
+                    foreach ($subKategori->indikators as $indikator) {
+                        $totalPertanyaanAktif += $indikator->pertanyaans->count();
+                    }
+                }
+            }
+        }
+
+        $isFinished = [
+            'operator' => $totalPertanyaanAktif > 0 && $jawabans->where('status', 'final')->count() >= $totalPertanyaanAktif,
+            'verifikator' => $totalPertanyaanAktif > 0 && $jawabans->where('status_verifikasi', 'terkirim')->count() >= $totalPertanyaanAktif,
+            'menpan' => $totalPertanyaanAktif > 0 && $jawabans->where('status_verifikasi_menpan', 'disetujui')->count() >= $totalPertanyaanAktif,
+        ];
+
+        if (!$isFinished[$role]) {
+            return redirect()->back()->with('error', "Evaluasi LKE untuk {$role} belum selesai. Tidak dapat mengekspor PDF.");
         }
 
         $rekapDataView = [
