@@ -181,6 +181,12 @@ class VerifikasiMenpanController extends Controller
         foreach ($jawabans as $jawaban) {
             if ($jawaban->status_verifikasi_menpan !== 'disetujui') {
                 $jawaban->status_verifikasi_menpan = 'disetujui';
+
+                // Set nilai menpan agar tidak (Null) dengan menduplikat jawaban verifikator/operator
+                $jawaban->menpan_jawaban_text = $jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text;
+                $jawaban->menpan_jawaban_angka = $jawaban->verifikator_jawaban_angka ?? $jawaban->jawaban_angka;
+
+                $jawaban->menpan_verified_by = Auth::id();
                 $jawaban->menpan_verified_at = now();
                 $jawaban->save();
             }
