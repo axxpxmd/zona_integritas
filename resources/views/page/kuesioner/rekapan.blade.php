@@ -73,33 +73,33 @@
     <!-- Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <!-- Grand Total Card -->
-        <div class="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white rounded-2xl p-6 shadow-md border border-slate-700/30 hover:shadow-lg transition-all duration-300">
+        <div class="relative overflow-hidden bg-[#0164CA] text-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-300">
             <!-- Decorative Light Glow -->
-            <div class="absolute -right-10 -top-10 w-36 h-36 bg-primary/20 rounded-full blur-3xl"></div>
-            <div class="absolute -left-10 -bottom-10 w-36 h-36 bg-secondary/15 rounded-full blur-2xl"></div>
-            
+            <div class="absolute -right-10 -top-10 w-36 h-36 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute -left-10 -bottom-10 w-36 h-36 bg-white/10 rounded-full blur-2xl"></div>
+
             <div class="relative flex items-center justify-between">
                 <div>
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Nilai Evaluasi ZI</span>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-blue-100">Total Nilai Evaluasi ZI</span>
                     <div class="flex items-baseline gap-1.5 mt-1.5">
-                        <span class="text-4xl font-black text-secondary tracking-tight">{{ number_format($grandTotalNilai, 2) }}</span>
-                        <span class="text-sm text-slate-400 font-medium">/ {{ number_format($grandTotalBobot, 2) }}</span>
+                        <span class="text-4xl font-black text-[#F7D558] tracking-tight">{{ number_format($grandTotalNilai, 2) }}</span>
+                        <span class="text-sm text-blue-100 font-medium">/ {{ number_format($grandTotalBobot, 2) }}</span>
                     </div>
                 </div>
-                <div class="p-3 bg-slate-800/80 border border-slate-700/60 rounded-xl text-secondary shadow-inner">
+                <div class="p-3 bg-[#0150A8] rounded-xl text-[#F7D558] shadow-inner">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                     </svg>
                 </div>
             </div>
-            
+
             <div class="mt-5 relative">
-                <div class="flex items-center justify-between text-xs text-slate-400 mb-1.5">
+                <div class="flex items-center justify-between text-xs text-blue-100 mb-1.5">
                     <span>Persentase Capaian</span>
-                    <span class="font-bold text-secondary">{{ number_format($grandTotalPersen, 2) }}%</span>
+                    <span class="font-bold text-[#F7D558]">{{ number_format($grandTotalPersen, 2) }}%</span>
                 </div>
-                <div class="w-full bg-slate-700/50 rounded-full h-2">
-                    <div class="bg-gradient-to-r from-secondary via-amber-400 to-secondary h-2 rounded-full transition-all duration-500" style="width: {{ $grandTotalPersen }}%"></div>
+                <div class="w-full bg-[#0150A8] rounded-full h-2">
+                    <div class="bg-[#F7D558] h-2 rounded-full transition-all duration-500" style="width: {{ $grandTotalPersen }}%"></div>
                 </div>
             </div>
         </div>
@@ -120,7 +120,7 @@
                     </svg>
                 </div>
             </div>
-            
+
             <div class="mt-6">
                 <div class="flex items-center justify-between text-xs text-gray-500 mb-1.5">
                     <span>Persentase Capaian</span>
@@ -148,7 +148,7 @@
                     </svg>
                 </div>
             </div>
-            
+
             <div class="mt-6">
                 <div class="flex items-center justify-between text-xs text-gray-500 mb-1.5">
                     <span>Persentase Capaian</span>
@@ -165,14 +165,14 @@
     <div class="bg-white rounded-2xl border border-gray-200/70 overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left border-collapse">
-                <thead class="bg-gradient-to-r from-primary-dark to-primary text-white">
+                <thead class="bg-[#0164CA] text-white">
                     <tr>
-                        <th class="px-6 py-4 border-r border-white/10 font-bold tracking-wider text-medium uppercase">Area Perubahan</th>
-                        <th class="px-6 py-4 border-r border-white/10 font-bold tracking-wider text-medium uppercase text-center w-24">Bobot</th>
-                        <th class="px-6 py-4 border-r border-white/10 font-bold tracking-wider text-medium uppercase text-center w-32">Pemenuhan</th>
-                        <th class="px-6 py-4 border-r border-white/10 font-bold tracking-wider text-medium uppercase text-center w-32">Reform</th>
-                        <th class="px-6 py-4 border-r border-white/10 font-bold tracking-wider text-medium uppercase text-center w-32">Nilai</th>
-                        <th class="px-6 py-4 font-bold tracking-wider text-xs uppercase text-center w-24">%</th>
+                        <th class="px-6 py-5 border-r border-white/10 font-bold tracking-wider text-medium uppercase">Area Perubahan</th>
+                        <th class="px-6 py-5 border-r border-white/10 font-bold tracking-wider text-medium uppercase text-center w-24">Bobot</th>
+                        <th class="px-6 py-5 border-r border-white/10 font-bold tracking-wider text-medium uppercase text-center w-32">Pemenuhan</th>
+                        <th class="px-6 py-5 border-r border-white/10 font-bold tracking-wider text-medium uppercase text-center w-32">Reform</th>
+                        <th class="px-6 py-5 border-r border-white/10 font-bold tracking-wider text-medium uppercase text-center w-32">Nilai</th>
+                        <th class="px-6 py-5 font-bold tracking-wider text-xs uppercase text-center w-24">%</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -361,13 +361,13 @@
                     </tr>
 
                     {{-- TOTAL KESELURUHAN --}}
-                    <tr class="bg-slate-900 text-white font-bold border-t-2 border-slate-800">
-                        <td class="px-6 py-5 border-r border-slate-800 text-right uppercase tracking-wider text-xs">Nilai Evaluasi Zona Integritas (A+B)</td>
-                        <td class="px-6 py-5 border-r border-slate-800 text-center text-lg font-extrabold text-secondary">{{ number_format($grandTotalBobot, 2) }}</td>
-                        <td colspan="2" class="px-6 py-5 border-r border-slate-800 bg-slate-950/40"></td>
-                        <td class="px-6 py-5 border-r border-slate-800 text-center text-lg font-extrabold text-secondary">{{ number_format($grandTotalNilai, 2) }}</td>
-                        <td class="px-6 py-5 text-center">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-secondary text-base font-black shadow-inner">
+                    <tr class="bg-[#0164CA] text-white font-bold border-t-2 border-[#0150A8]">
+                        <td class="px-6 py-4 border-r border-[#0150A8] text-right uppercase tracking-wider text-xs">Nilai Evaluasi Zona Integritas (A+B)</td>
+                        <td class="px-6 py-4 border-r border-[#0150A8] text-center text-lg font-extrabold text-secondary">{{ number_format($grandTotalBobot, 2) }}</td>
+                        <td colspan="2" class="px-6 py-4 border-r border-[#0164CA] bg-[#0164CA]"></td>
+                        <td class="px-6 py-4 border-r border-[#0150A8] text-center text-lg font-extrabold text-secondary">{{ number_format($grandTotalNilai, 2) }}</td>
+                        <td class="px-6 py-4 text-center">
+                            <span class=" text-secondary text-base font-black">
                                 {{ number_format($grandTotalPersen, 2) }}%
                             </span>
                         </td>
