@@ -378,7 +378,7 @@
 								<tr>
 									<th class="px-5 py-3 font-semibold">Nama Unit Kerja</th>
 									<th class="px-5 py-3 font-semibold text-center w-32">Status Persiapan</th>
-									<th class="px-5 py-3 font-semibold text-center w-32">Disetujui</th>
+									<th class="px-5 py-3 font-semibold text-center w-32">Terverifikasi</th>
 									<th class="px-5 py-3 font-semibold text-center w-32">Belum Dicek</th>
 									<th class="px-5 py-3 font-semibold w-40">Progress</th>
 									<th class="px-5 py-3 font-semibold text-right w-24">Aksi</th>
@@ -598,7 +598,7 @@
 									<tr>
 										<th class="px-5 py-3 font-medium text-gray-700">Unit Kerja</th>
 										<th class="px-5 py-3 font-medium text-gray-700 text-center">Pengisian Operator</th>
-										<th class="px-5 py-3 font-medium text-gray-700 text-center">Disetujui</th>
+										<th class="px-5 py-3 font-medium text-gray-700 text-center">Terverifikasi</th>
 										<th class="px-5 py-3 font-medium text-gray-700 text-center">Direvisi</th>
 										<th class="px-5 py-3 font-medium text-gray-700 text-center">Belum</th>
 										<th class="px-5 py-3 font-medium text-gray-700 text-center">Menunggu</th>

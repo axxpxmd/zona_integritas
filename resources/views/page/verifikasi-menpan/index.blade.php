@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
 @section('title', 'Verifikasi Menpan')
-@section('page-title', 'Verifikasi Menpan OPD')
+@section('page-title', 'Verifikasi Menpan')
 
 @section('content')
     <div class="space-y-6">
         {{-- Header --}}
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <h2 class="text-xl font-bold text-gray-900">Daftar OPD Siap Verifikasi Menpan</h2>
-                <p class="text-sm text-gray-500 mt-1">Hanya OPD yang sudah dikirim oleh verifikator akan muncul di sini.</p>
+                <h2 class="text-xl font-bold text-gray-900">Daftar Unit Kerja Siap Verifikasi Menpan</h2>
+                <p class="text-sm text-gray-500 mt-1">Hanya Unit Kerja yang sudah dikirim oleh verifikator akan muncul di sini.</p>
             </div>
         </div>
 
@@ -52,7 +52,7 @@
                         </svg>
                     </div>
                     <h3 class="text-sm font-medium text-gray-900">Belum Ada Data</h3>
-                    <p class="text-sm text-gray-500 mt-1">Belum ada OPD yang siap diverifikasi oleh Menpan.</p>
+                    <p class="text-sm text-gray-500 mt-1">Belum ada Unit Kerja yang siap diverifikasi oleh Menpan.</p>
                 </div>
             @else
                 <div class="bg-white rounded-xl overflow-hidden">
@@ -61,9 +61,9 @@
                             <thead class="bg-gray-50 border-b border-gray-100">
                                 <tr>
                                     <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">No</th>
-                                    <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Kerja / OPD</th>
+                                    <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Kerja</th>
                                     <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Disetujui Menpan</th>
+                                    <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Terverifikasi</th>
                                     <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Belum</th>
                                     <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
                                     <th scope="col" class="px-5 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
