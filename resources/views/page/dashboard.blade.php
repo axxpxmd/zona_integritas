@@ -280,8 +280,174 @@
 			@endif
 			{{-- ========== END OPERATOR STATS ========== --}}
 
+			{{-- ========== VERIFIKATOR MENHAN STATS ========== --}}
+			@if(in_array(auth()->user()->role, ['verifikator_menhan']) && !empty($menhanStats))
+				@php $m = $menhanStats; @endphp
+
+				{{-- Status Banner --}}
+				<div
+					class="rounded-xl border px-5 py-4 flex items-center justify-between gap-4 {{ $m['isVerifActive'] ? 'bg-indigo-50 border-indigo-200' : 'bg-gray-50 border-gray-200' }}">
+					<div class="flex items-center gap-3">
+						<div class="flex-shrink-0">
+							<svg class="w-6 h-6 {{ $m['isVerifActive'] ? 'text-indigo-500' : 'text-gray-400' }}" fill="none"
+								stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+									d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+							</svg>
+						</div>
+						<div>
+							<p class="text-sm font-bold {{ $m['isVerifActive'] ? 'text-indigo-800' : 'text-gray-700' }}">
+								Dashboard Verifikasi Menhan — Periode: {{ $activePeriode->nama_periode }}
+							</p>
+							<p class="text-xs {{ $m['isVerifActive'] ? 'text-indigo-700' : 'text-gray-500' }} mt-0.5">
+								@if($m['startVerif'] && $m['endVerif'])
+									Jadwal verifikasi: {{ $m['startVerif']->format('d M Y') }} s/d {{ $m['endVerif']->format('d M Y') }}
+								@else
+									Jadwal verifikasi belum ditentukan
+								@endif
+							</p>
+						</div>
+					</div>
+					<div class="flex items-center gap-2 flex-shrink-0">
+						@if($m['isVerifActive'])
+							<span
+								class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800 border border-indigo-200">
+								<span class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span> Verifikasi Aktif
+							</span>
+						@else
+							<span
+								class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200">
+								<span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span> Di Luar Jadwal
+							</span>
+						@endif
+					</div>
+				</div>
+
+				{{-- Data akan ditampilkan sama dengan tabel verifikator namun mengambil dari variabel $m --}}
+				{{-- Stats Grid Menhan --}}
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+					{{-- Status OPD (Menhan) --}}
+					<div class="bg-white rounded-xl p-5 flex items-center justify-between">
+						<div>
+							<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Status OPD Ter-Assign</p>
+							<div class="flex gap-4 mt-2">
+								<div>
+									<p class="text-2xl font-bold text-gray-900">{{ $m['opdSiapMenhan'] }}</p>
+									<p class="text-xs text-green-600 font-medium">Siap Verif</p>
+								</div>
+								<div>
+									<p class="text-2xl font-bold text-gray-900">{{ $m['opdBelumSiapMenhan'] }}</p>
+									<p class="text-xs text-orange-500 font-medium">Belum Siap</p>
+								</div>
+							</div>
+						</div>
+						<div
+							class="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center border-4 border-blue-100 text-blue-600 flex-shrink-0">
+							<span class="text-lg font-bold">{{ $m['totalOpdAssigned'] }}</span>
+						</div>
+					</div>
+
+					{{-- Progress Verifikasi Keseluruhan Menhan --}}
+					<div class="bg-white rounded-xl p-5 col-span-2">
+						<div class="flex items-start justify-between mb-4">
+							<div>
+								<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Progress Menhan (Keseluruhan)
+								</p>
+								<div class="flex items-end gap-2 mt-1">
+									<span class="text-3xl font-bold text-gray-900">{{ $m['persenVerifikasi'] }}%</span>
+									<span class="text-sm text-gray-500 mb-0.5">{{ $m['totalDisetujui'] }} /
+										{{ $m['totalJawaban'] }} disetujui</span>
+								</div>
+							</div>
+						</div>
+						<div class="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+							<div class="h-3 rounded-full bg-indigo-500 transition-all duration-500"
+								style="width: {{ $m['persenVerifikasi'] }}%"></div>
+						</div>
+					</div>
+				</div>
+
+				{{-- Table OPD List Menhan --}}
+				<div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+					<div class="px-5 py-4 border-b border-gray-200 bg-gray-50/50">
+						<h3 class="text-base font-bold text-gray-900">Daftar OPD untuk Diverifikasi Menhan</h3>
+					</div>
+					<div class="overflow-x-auto">
+						<table class="w-full text-left text-sm whitespace-nowrap">
+							<thead class="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider border-b border-gray-200">
+								<tr>
+									<th class="px-5 py-3 font-semibold">Nama Unit Kerja</th>
+									<th class="px-5 py-3 font-semibold text-center w-32">Status Persiapan</th>
+									<th class="px-5 py-3 font-semibold text-center w-32">Disetujui</th>
+									<th class="px-5 py-3 font-semibold text-center w-32">Belum Dicek</th>
+									<th class="px-5 py-3 font-semibold w-40">Progress</th>
+									<th class="px-5 py-3 font-semibold text-right w-24">Aksi</th>
+								</tr>
+							</thead>
+							<tbody class="divide-y divide-gray-100">
+								@forelse($m['opdProgressMenhan'] as $p)
+									<tr class="hover:bg-gray-50 transition-colors group">
+										<td class="px-5 py-3">
+											<div class="font-medium text-gray-900">{{ $p->opd->n_opd }}</div>
+											@if($p->total == 0)
+												<div class="text-xs text-gray-500 mt-0.5">Belum ada jawaban sama sekali</div>
+											@endif
+										</td>
+										<td class="px-5 py-3 text-center">
+											@if($p->isSiap)
+												<span
+													class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-green-50 text-green-700 border border-green-200">
+													Siap
+												</span>
+											@else
+												<span
+													class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-orange-50 text-orange-700 border border-orange-200">
+													Belum Siap
+												</span>
+											@endif
+										</td>
+										<td class="px-5 py-3 text-center font-bold text-green-600">
+											{{ $p->disetujui }}
+										</td>
+										<td class="px-5 py-3 text-center font-bold text-gray-500">
+											{{ $p->belum }}
+										</td>
+										<td class="px-5 py-3">
+											<div class="flex items-center gap-2">
+												<div class="w-full bg-gray-100 rounded-full h-1.5 flex-grow">
+													<div class="h-1.5 rounded-full bg-indigo-500" style="width: {{ $p->persen }}%">
+													</div>
+												</div>
+												<span class="text-xs font-semibold text-gray-700 w-8 text-right">{{ $p->persen }}%</span>
+											</div>
+										</td>
+										<td class="px-5 py-3 text-right">
+											@if($p->isSiap)
+												<a href="{{ route('verifikasi-menhan.show', ['periode' => $activePeriode->id, 'opd' => $p->opd->id]) }}"
+													class="inline-flex items-center justify-center px-3 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white border border-indigo-200 hover:border-transparent rounded-lg text-xs font-semibold transition-all">
+													Lakukan Verifikasi
+												</a>
+											@else
+												<span class="text-xs text-gray-400 italic">Belum bisa ditindak</span>
+											@endif
+										</td>
+									</tr>
+								@empty
+									<tr>
+										<td colspan="6" class="px-5 py-8 text-center text-gray-500">
+											Belum ada OPD yang di-assign ke Anda.
+										</td>
+									</tr>
+								@endforelse
+							</tbody>
+						</table>
+					</div>
+				</div>
+			@endif
+			{{-- ========== END VERIFIKATOR MENHAN STATS ========== --}}
+
 			{{-- ========== VERIFIKATOR STATS ========== --}}
-			@if(in_array(auth()->user()->role, ['verifikator', 'admin']) && !empty($verifikatorStats))
+			@if(auth()->user()->role === 'verifikator' && !empty($verifikatorStats))
 				@php $v = $verifikatorStats; @endphp
 
 				{{-- Status Banner --}}

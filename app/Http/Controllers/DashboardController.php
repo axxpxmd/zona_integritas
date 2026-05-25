@@ -105,14 +105,14 @@ class DashboardController extends Controller
 
         // Hitung stats verifikasi khusus verifikator/admin
         $verifikatorStats = [];
-        if ($user->role === 'verifikator' || $user->role === 'admin') {
+        if ($user->role === 'verifikator') {
             $verifikatorStats = $this->getVerifikatorStats($activePeriode, $user);
         }
 
         // Hitung stats verifikasi khusus verifikator menhan/admin
         $menhanStats = [];
-        if ($user->role === 'verifikator_menhan' || $user->role === 'admin') {
-            $menhanStats = $this->getVerifikatorMenhanStats($activePeriode);
+        if ($user->role === 'verifikator_menhan') {
+            $menhanStats = $this->getVerifikatorMenhanStats($activePeriode, $user);
         }
 
         return view('page.dashboard', [
@@ -370,7 +370,7 @@ class DashboardController extends Controller
      * Hitung statistik verifikasi untuk verifikator menhan.
      * Hanya menilai jawaban yang sudah disetujui oleh verifikator biasa.
      */
-    private function getVerifikatorMenhanStats($activePeriode): array
+    private function getVerifikatorMenhanStats($activePeriode, $user): array
     {
         if (!$activePeriode) {
             return [];
@@ -379,7 +379,14 @@ class DashboardController extends Controller
         $periodeId = $activePeriode->id;
         $now = Carbon::now()->startOfDay();
 
-        $assignedOpdIds = Opd::pluck('id');
+        if ($user->role === 'admin') {
+            $assignedOpdIds = Opd::pluck('id');
+        } else {
+            $assignedOpdIds = \Illuminate\Support\Facades\DB::table('opd_verifikator')
+                ->where('user_id', $user->id)
+                ->pluck('opd_id');
+        }
+
         $totalOpdAssigned = $assignedOpdIds->count();
 
         $opdSiapMenhan = 0;
