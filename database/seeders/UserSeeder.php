@@ -16,8 +16,14 @@ class UserSeeder extends Seeder
     {
         User::create([
             'username' => 'admin',
-            'nama_instansi' => 'Administrator',
+            'nama_instansi' => '-',
+            'nama_kepala' => '-',
+            'jabatan_kepala' => '-',
+            'nama_operator' => '-',
+            'jabatan_operator' => '-',
             'email' => 'admin@tangselkota.go.id',
+            'telp' => '0',
+            'alamat' => '-',
             'password' => Hash::make('password123'),
             'role' => 'admin',
         ]);
@@ -25,21 +31,29 @@ class UserSeeder extends Seeder
         User::create([
             'username' => 'verifikator',
             'nama_instansi' => 'Inspektorat',
+            'nama_kepala' => '-',
+            'jabatan_kepala' => '-',
+            'nama_operator' => '-',
+            'jabatan_operator' => '-',
             'email' => 'verifikator@gmail.com',
+            'telp' => '0',
+            'alamat' => '-',
             'password' => Hash::make('password123'),
             'role' => 'verifikator',
-            'no_hp' => '0',
-            'alamat' => '-',
         ]);
 
         User::create([
             'username' => 'verifikator_menpan',
             'nama_instansi' => 'Menteri Pendayagunaan Aparatur Negara',
+            'nama_kepala' => '-',
+            'jabatan_kepala' => '-',
+            'nama_operator' => '-',
+            'jabatan_operator' => '-',
             'email' => 'verifikator_menpan@gmail.com',
+            'telp' => '0',
+            'alamat' => '-',
             'password' => Hash::make('password123'),
             'role' => 'verifikator_menpan',
-            'no_hp' => '0',
-            'alamat' => '',
         ]);
 
         $opds = Opd::all();
@@ -50,7 +64,13 @@ class UserSeeder extends Seeder
                 'opd_id' => $opd->id,
                 'username' => 'operator_' . $slug,
                 'nama_instansi' => $opd->n_opd,
+                'nama_kepala' => 'Kepala ' . $opd->n_opd,
+                'jabatan_kepala' => 'Kepala Dinas',
+                'nama_operator' => 'Operator ' . $opd->n_opd,
+                'jabatan_operator' => 'Staf IT',
                 'email' => 'operator_' . $slug . '@tangselkota.go.id',
+                'telp' => '0',
+                'alamat' => $opd->alamat ?? '-',
                 'password' => Hash::make('password123'),
                 'role' => 'operator',
             ]);
