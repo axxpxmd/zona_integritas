@@ -25,9 +25,17 @@
                 <p class="text-sm text-gray-500 mt-0.5">{{ $opd->n_opd }}</p>
             </div>
         </div>
-        <div class="flex flex-col items-end gap-1">
-            <div class="text-sm text-gray-600">
-                <span class="font-medium">Waktu Pengisian:</span> {{ $start->format('d M Y') }} - {{ $end->format('d M Y') }}
+        <div class="flex flex-col items-end gap-2">
+            <div class="flex items-center gap-3">
+                <a href="{{ route('kuesioner.rekap', $periode->id) }}" class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#F7D558] hover:bg-yellow-500 text-yellow-900 font-semibold rounded-lg transition-colors text-sm shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Rekapan Hasil
+                </a>
+                <div class="text-sm text-gray-600 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg">
+                    <span class="font-medium">Waktu Pengisian:</span> {{ $start->format('d M Y') }} - {{ $end->format('d M Y') }}
+                </div>
             </div>
             @if($now->lt($start))
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Belum Dimulai</span>

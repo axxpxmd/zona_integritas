@@ -42,6 +42,165 @@ class KuesionerController extends Controller
     }
 
     /**
+     * Halaman Rekapan Hasil Kuesioner (Operator)
+     */
+    public function rekap($periode_id)
+    {
+        $periode = Periode::findOrFail($periode_id);
+
+        // Ambil OPD user yang login
+        $user = Auth::user();
+        $opd = $user->opd;
+
+        if (!$opd) {
+            return redirect()->route('kuesioner.index')
+                ->with('error', 'User Anda belum terhubung dengan OPD');
+        }
+
+        $komponens = Komponen::where('status', 1)
+            ->with([
+                'kategoris' => function ($q) {
+                    $q->where('status', 1)->orderBy('urutan');
+                },
+                'kategoris.subKategoris' => function ($q) {
+                    $q->where('status', 1)->orderBy('urutan');
+                },
+                'kategoris.subKategoris.indikators' => function ($q) {
+                    $q->where('status', 1);
+                },
+                'kategoris.subKategoris.indikators.pertanyaans' => function ($q) {
+                    $q->where('status', 1);
+                }
+            ])
+            ->orderBy('urutan')
+            ->get();
+
+        $progress = [];
+        $jawabans = Jawaban::where('periode_id', $periode_id)
+            ->where('opd_id', $opd->id)
+            ->whereNull('sub_pertanyaan_id')
+            ->get()
+            ->keyBy('pertanyaan_id');
+
+        $subJawabansAll = Jawaban::where('periode_id', $periode_id)
+            ->where('opd_id', $opd->id)
+            ->whereNotNull('sub_pertanyaan_id')
+            ->get()
+            ->keyBy(fn ($j) => $j->pertanyaan_id . '-' . $j->sub_pertanyaan_id);
+
+        foreach ($komponens as $komponen) {
+            foreach ($komponen->kategoris as $kategori) {
+                foreach ($kategori->subKategoris as $subKategori) {
+                    $totalNilaiSubKategori = 0;
+                    foreach ($subKategori->indikators as $indikator) {
+                        $indPertanyaanTerjawab = 0;
+                        $indTotalNilai = 0;
+                        foreach ($indikator->pertanyaans as $pertanyaan) {
+                            $jawaban = $jawabans[$pertanyaan->id] ?? null;
+                            if ($jawaban) {
+                                $nilaiEfektif = null;
+                                $isMenpanDisetujui = $jawaban->status_verifikasi_menpan === 'disetujui';
+                                $isVerified = in_array($jawaban->status_verifikasi, ['disetujui', 'terkirim'], true);
+
+                                if ($isVerified && $pertanyaan->has_sub_pertanyaan) {
+                                    $subJawabanAngka = [];
+                                    foreach ($pertanyaan->subPertanyaans as $sp) {
+                                        $spKey = $pertanyaan->id . '-' . $sp->id;
+                                        $spJawaban = $subJawabansAll[$spKey] ?? null;
+                                        if ($spJawaban) {
+                                            $effVal = $isMenpanDisetujui && $spJawaban->menpan_jawaban_angka !== null
+                                                ? $spJawaban->menpan_jawaban_angka
+                                                : ($spJawaban->verifikator_jawaban_angka ?? $spJawaban->jawaban_angka);
+
+                                            if ($effVal !== null) {
+                                                $subJawabanAngka[$sp->id] = $effVal;
+                                            }
+                                        }
+                                    }
+                                    $nilaiEfektif = count($subJawabanAngka) >= 2
+                                        ? $this->hitungNilaiSubPertanyaan($pertanyaan, $subJawabanAngka)
+                                        : $jawaban->nilai;
+
+                                } elseif ($isVerified) {
+                                    if (in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda'])) {
+                                        $effJawaban = $isMenpanDisetujui && $jawaban->menpan_jawaban_text !== null
+                                            ? $jawaban->menpan_jawaban_text
+                                            : ($jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text);
+                                    } else {
+                                        $effJawaban = $isMenpanDisetujui && $jawaban->menpan_jawaban_angka !== null
+                                            ? $jawaban->menpan_jawaban_angka
+                                            : ($jawaban->verifikator_jawaban_angka ?? $jawaban->jawaban_angka);
+                                    }
+                                    $nilaiEfektif = $effJawaban !== null ? $this->hitungNilai($pertanyaan, $effJawaban) : $jawaban->nilai;
+                                } else {
+                                    $nilaiEfektif = $jawaban->nilai;
+                                }
+
+                                if ($nilaiEfektif !== null) {
+                                    $indPertanyaanTerjawab++;
+                                    $indTotalNilai += $nilaiEfektif;
+                                }
+                            }
+                        }
+                        $indRataRata = $indPertanyaanTerjawab > 0 ? $indTotalNilai / $indPertanyaanTerjawab : 0;
+                        $indNilaiAkhir = $indRataRata * $indikator->bobot;
+                        $totalNilaiSubKategori += $indNilaiAkhir;
+                    }
+                    $persenCapaian = $subKategori->bobot > 0 ? ($totalNilaiSubKategori / $subKategori->bobot) * 100 : 0;
+                    $progress[$subKategori->id] = [
+                        'nilai' => $totalNilaiSubKategori,
+                        'capaian' => $persenCapaian
+                    ];
+                }
+            }
+        }
+
+        // Siapkan struktur rekapan
+        $rekapPengungkit = [];
+        $rekapHasil = [];
+
+        foreach ($komponens as $komponen) {
+            if ($komponen->nama == 'PENGUNGKIT') {
+                foreach ($komponen->kategoris as $kategori) {
+                    foreach ($kategori->subKategoris as $subKategori) {
+                        $namaArea = trim($subKategori->nama);
+                        if (!isset($rekapPengungkit[$namaArea])) {
+                            $rekapPengungkit[$namaArea] = [
+                                'nama' => $namaArea,
+                                'pemenuhan_bobot' => 0,
+                                'pemenuhan_nilai' => 0,
+                                'reform_bobot' => 0,
+                                'reform_nilai' => 0,
+                            ];
+                        }
+                        if (stripos($kategori->nama, 'PEMENUHAN') !== false) {
+                            $rekapPengungkit[$namaArea]['pemenuhan_bobot'] = $subKategori->bobot;
+                            $rekapPengungkit[$namaArea]['pemenuhan_nilai'] = $progress[$subKategori->id]['nilai'] ?? 0;
+                        } else if (stripos($kategori->nama, 'REFORM') !== false) {
+                            $rekapPengungkit[$namaArea]['reform_bobot'] = $subKategori->bobot;
+                            $rekapPengungkit[$namaArea]['reform_nilai'] = $progress[$subKategori->id]['nilai'] ?? 0;
+                        }
+                    }
+                }
+            } else if ($komponen->nama == 'HASIL') {
+                foreach ($komponen->kategoris as $kategori) {
+                    $nilaiKategori = 0;
+                    foreach ($kategori->subKategoris as $subKategori) {
+                        $nilaiKategori += $progress[$subKategori->id]['nilai'] ?? 0;
+                    }
+                    $rekapHasil[] = [
+                        'nama' => $kategori->nama,
+                        'bobot' => $kategori->bobot,
+                        'nilai' => $nilaiKategori
+                    ];
+                }
+            }
+        }
+
+        return view('page.kuesioner.rekapan', compact('periode', 'opd', 'rekapPengungkit', 'rekapHasil'));
+    }
+
+    /**
      * Halaman pilih sub kategori berdasarkan periode
      */
     public function show($periode_id)
