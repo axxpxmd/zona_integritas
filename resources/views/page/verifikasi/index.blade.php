@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'Verifikasi Kuesioner')
-@section('page-title', 'Verifikasi Kuesioner OPD')
+@section('title', 'Verifikasi LKE')
+@section('page-title', 'Verifikasi LKE')
 
 @section('content')
     <div class="space-y-6">
         {{-- Header --}}
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <h2 class="text-xl font-bold text-gray-900">Daftar OPD yang Sudah Mengisi</h2>
-                <p class="text-sm text-gray-500 mt-1">Hanya OPD yang telah menekan tombol "Kirim ke Verifikator" (final)
+                <h2 class="text-xl font-bold text-gray-900">Daftar Unit Kerja yang Sudah Mengisi</h2>
+                <p class="text-sm text-gray-500 mt-1">Hanya Unit Kerja yang telah menekan tombol "Kirim ke Verifikator" (final)
                     yang muncul di sini.</p>
             </div>
         </div>
@@ -37,7 +37,7 @@
                 @if($activePeriode)
                     <div
                         class="w-full sm:w-auto text-sm text-gray-600 bg-gray-50 px-4 py-2 rounded-lg border border-gray-200 mb-0">
-                        <span class="font-medium text-gray-900">Total Terkirim:</span> {{ $submittedOpds->count() }} OPD
+                        <span class="font-medium text-gray-900">Total Terkirim:</span> {{ $submittedOpds->count() }} Unit Kerja
                     </div>
                 @endif
             </form>
@@ -54,7 +54,7 @@
                         </svg>
                     </div>
                     <h3 class="text-sm font-medium text-gray-900">Belum Ada Data</h3>
-                    <p class="text-sm text-gray-500 mt-1">Belum ada OPD yang mengirimkan kuesioner untuk periode ini.</p>
+                    <p class="text-sm text-gray-500 mt-1">Belum ada Unit Kerja yang mengirimkan LKE untuk periode ini.</p>
                 </div>
             @else
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -63,8 +63,8 @@
                             <thead class="bg-gray-50 border-b border-gray-100">
                                 <tr>
                                     <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">No</th>
-                                    <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Kerja / OPD</th>
-                                    <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Kerja</th>
+                                    <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Pengisian Operator</th>
                                     <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Disetujui</th>
                                     <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Terkirim</th>
                                     <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Direvisi</th>
@@ -110,8 +110,8 @@
                                         </td>
                                         <td class="px-5 py-3 whitespace-nowrap text-right text-sm font-medium">
                                             <a href="{{ route('verifikasi.show', [$activePeriode->id, $opd->id]) }}"
-                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors text-xs">
-                                                <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor"
+                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg text-blue-700 hover:bg-blue-100 transition-colors text-xs">
+                                                <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor"
                                                     viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />

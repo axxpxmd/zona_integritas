@@ -501,7 +501,7 @@
 					{{-- OPD Ditangani --}}
 					<div class="bg-white rounded-xl p-5">
 						<div class="flex items-center justify-between mb-3">
-							<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">OPD Ditangani</p>
+							<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Unit Kerja Ditangani</p>
 							<div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
 								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -589,15 +589,15 @@
 				@if($v['opdProgressVerif']->isNotEmpty())
 					<div class="bg-white rounded-xl overflow-hidden">
 						<div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-							<h3 class="text-sm font-semibold text-gray-900">Progress Verifikasi per OPD</h3>
+							<h3 class="text-sm font-semibold text-gray-900">Progress Verifikasi per Unit Kerja</h3>
 							<span class="text-xs text-gray-400">{{ $activePeriode->nama_periode }}</span>
 						</div>
 						<div class="overflow-x-auto">
 							<table class="w-full text-sm text-left text-gray-600">
 								<thead class="bg-gray-50 border-b border-gray-100">
 									<tr>
-										<th class="px-5 py-3 font-medium text-gray-700">Nama OPD</th>
-										<th class="px-5 py-3 font-medium text-gray-700 text-center">Status Pengisian</th>
+										<th class="px-5 py-3 font-medium text-gray-700">Unit Kerja</th>
+										<th class="px-5 py-3 font-medium text-gray-700 text-center">Pengisian Operator</th>
 										<th class="px-5 py-3 font-medium text-gray-700 text-center">Disetujui</th>
 										<th class="px-5 py-3 font-medium text-gray-700 text-center">Direvisi</th>
 										<th class="px-5 py-3 font-medium text-gray-700 text-center">Belum</th>

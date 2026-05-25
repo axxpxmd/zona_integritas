@@ -58,7 +58,7 @@
         @endif
 
         {{-- Stats Dashboard --}}
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
 
             {{-- Card 1: Total Pertanyaan --}}
             <div class="bg-white rounded-xl p-6">
@@ -102,28 +102,6 @@
                             <span class="text-sm font-medium text-green-800">Disetujui</span>
                         </div>
                         <span class="font-bold text-green-700 text-lg">{{ $verifikasiStats['disetujui'] ?? 0 }}</span>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Card 3: Terkirim ke Menpan --}}
-            <div class="bg-white rounded-xl p-6">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-gray-900 font-bold text-base">Terkirim ke Menpan</h3>
-                </div>
-                <div class="space-y-2">
-                    <div class="flex items-center justify-between p-2.5 bg-blue-50 rounded-lg border border-blue-100">
-                        <div class="flex items-center gap-2">
-                            <div class="w-2 h-2 rounded-full bg-blue-500"></div>
-                            <span class="text-sm font-medium text-blue-800">Terkirim</span>
-                        </div>
-                        <span class="font-bold text-blue-700 text-lg">{{ $verifikasiStats['terkirim'] ?? 0 }}</span>
                     </div>
                 </div>
             </div>
