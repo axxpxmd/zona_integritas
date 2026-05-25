@@ -20,6 +20,11 @@ composer dev             # Start server + queue + vite concurrently
 php artisan migrate:fresh --seed  # Reset database with seeders
 ```
 
+## Jawaban tiap rolenya
+- **Operator:** `jawaban_text`, `jawaban_angka` (input asli operator)
+- **Verifikator:** `verifikator_jawaban_text`, `verifikator_jawaban_angka` (input verifikator, tetap simpan jawaban asli operator)
+- **Verifikator Menpan:** `menpan_jawaban_text`, `menpan_jawaban_angka` (input verifikator menpan, tetap simpan jawaban asli operator dan verifikator biasa)
+
 ## Business Logic & Workflow (STRICT)
 - **Struktur Kuesioner (Hierarkis):** `tm_komponen` -> `tm_kategori` -> `tm_sub_kategori` -> `tm_indikator` -> `tm_pertanyaan` -> `tm_sub_pertanyaan` (opsional).
 - **Periode (`tm_periode`):** Memiliki rentang waktu pengerjaan. Operator dan Verifikator hanya bisa bekerja jika tanggal saat ini masuk dalam rentang waktu sesi/periode tersebut.
