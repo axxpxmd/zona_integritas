@@ -18,8 +18,28 @@ class UserSeeder extends Seeder
             'username' => 'admin',
             'nama_instansi' => 'Administrator',
             'email' => 'admin@tangselkota.go.id',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('password123'),
             'role' => 'admin',
+        ]);
+
+        User::create([
+            'username' => 'verifikator',
+            'nama_instansi' => 'Inspektorat',
+            'email' => 'verifikator@gmail.com',
+            'password' => Hash::make('password123'),
+            'role' => 'verifikator',
+            'no_hp' => '0',
+            'alamat' => '-',
+        ]);
+
+        User::create([
+            'username' => 'verifikator_menpan',
+            'nama_instansi' => 'Menteri Pendayagunaan Aparatur Negara',
+            'email' => 'verifikator_menpan@gmail.com',
+            'password' => Hash::make('password123'),
+            'role' => 'verifikator_menpan',
+            'no_hp' => '0',
+            'alamat' => '',
         ]);
 
         $opds = Opd::all();
@@ -31,7 +51,7 @@ class UserSeeder extends Seeder
                 'username' => 'operator_' . $slug,
                 'nama_instansi' => $opd->n_opd,
                 'email' => 'operator_' . $slug . '@tangselkota.go.id',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('password123'),
                 'role' => 'operator',
             ]);
         }
