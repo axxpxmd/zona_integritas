@@ -158,23 +158,6 @@
                     </div>
                 </div>
 
-                {{-- Remember Me & Forgot Password --}}
-                <div class="flex items-center justify-between">
-                    <label class="flex items-center gap-2 cursor-pointer group">
-                        <div class="relative flex items-center justify-center">
-                            <input type="checkbox" id="remember" name="remember"
-                                class="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded focus:ring-4 focus:ring-primary/20 focus:outline-none checked:bg-primary checked:border-primary transition-colors cursor-pointer">
-                            <svg class="absolute w-3 h-3 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity"
-                                fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                            </svg>
-                        </div>
-                        <span
-                            class="text-sm font-medium text-gray-600 group-hover:text-gray-900 transition-colors">Ingat
-                            Saya</span>
-                    </label>
-                </div>
-
                 {{-- Submit Button --}}
                 <button type="submit"
                     class="w-full bg-primary text-white py-3.5 px-4 rounded-xl text-sm font-bold hover:bg-primary-dark hover:shadow-primary/40 focus:ring-4 focus:ring-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
