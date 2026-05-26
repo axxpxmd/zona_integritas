@@ -114,10 +114,6 @@
             <td><strong>Periode</strong></td>
             <td>: {{ $periode->nama_periode }}</td>
         </tr>
-        <tr>
-            <td><strong>Tanggal Cetak</strong></td>
-            <td>: {{ date('d-m-Y H:i') }}</td>
-        </tr>
     </table>
 
     @php
@@ -263,7 +259,7 @@
                     <tr class="grand-total-row">
                         <td class="text-right">NILAI EVALUASI ZI (A+B)</td>
                         <td class="text-center">{{ number_format($grandTotalBobot, 2) }}</td>
-                        <td colspan="2" style="background:#0150A8;"></td>
+                        <td colspan="2"></td>
                         <td class="text-center" style="font-size: 14px;">{{ number_format($grandTotalNilai, 2) }}</td>
                         <td class="text-center" style="font-size: 14px;">{{ number_format($grandTotalPersen, 2) }}%</td>
                     </tr>
