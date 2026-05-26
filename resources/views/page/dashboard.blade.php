@@ -347,61 +347,6 @@
 						<p class="text-3xl font-bold text-red-500">{{ $opdNotStarted }}</p>
 					</div>
 				</div>
-
-				@if($opdProgress->isNotEmpty())
-					<div class="bg-white rounded-xl overflow-hidden mt-6">
-						<div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-							<h3 class="text-sm font-semibold text-gray-900">Progress Pengisian LKE Tiap OPD</h3>
-						</div>
-						<div class="overflow-x-auto">
-							<table class="w-full text-sm text-left text-gray-600">
-								<thead class="bg-gray-50 border-b border-gray-100">
-									<tr>
-										<th class="px-5 py-3 font-medium text-gray-700">Unit Kerja</th>
-										<th class="px-5 py-3 font-medium text-gray-700 text-center">Pengisian</th>
-										<th class="px-5 py-3 font-medium text-gray-700 text-center">Status</th>
-										<th class="px-5 py-3 font-medium text-gray-700">Progress</th>
-									</tr>
-								</thead>
-								<tbody class="divide-y divide-gray-100">
-									@foreach($opdProgress->take(5) as $row)
-										<tr class="hover:bg-gray-50/50 transition-colors">
-											<td class="px-5 py-3">
-												<p class="font-medium text-gray-900 text-sm">{{ $row->opd->n_opd }}</p>
-											</td>
-											<td class="px-5 py-3 text-center">
-												<span class="text-sm font-bold text-gray-800">{{ $row->terisi }}</span>
-												<span class="text-xs text-gray-500 font-medium">/ {{ $row->total }}</span>
-											</td>
-											<td class="px-5 py-3 text-center">
-												@if($row->color === 'green')
-													<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-bold bg-green-100 text-green-700 uppercase tracking-wider">Selesai</span>
-												@elseif($row->color === 'yellow')
-													<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-bold bg-yellow-100 text-yellow-700 uppercase tracking-wider">Proses</span>
-												@else
-													<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-bold bg-gray-100 text-gray-600 uppercase tracking-wider">Belum</span>
-												@endif
-											</td>
-											<td class="px-5 py-3">
-												<div class="flex items-center gap-2">
-													<div class="w-full max-w-[200px] bg-gray-100 rounded-full h-1.5 overflow-hidden">
-														<div class="h-1.5 rounded-full bg-{{ $row->color === 'green' ? 'green-500' : ($row->color === 'yellow' ? 'yellow-500' : 'gray-400') }}" style="width: {{ $row->persentase }}%"></div>
-													</div>
-													<span class="text-xs font-semibold text-gray-600 w-8">{{ $row->persentase }}%</span>
-												</div>
-											</td>
-										</tr>
-									@endforeach
-								</tbody>
-							</table>
-							@if($opdProgress->count() > 5)
-								<div class="px-5 py-3 border-t border-gray-100 bg-gray-50 text-center">
-									<span class="text-xs text-gray-500">Menampilkan 5 OPD dengan progress tertinggi. Anda bisa melihat lebih lengkap di menu laporan (opsional).</span>
-								</div>
-							@endif
-						</div>
-					</div>
-				@endif
 			@endif
 			{{-- ========== END ADMIN OVERVIEW STATS ========== --}}
 
