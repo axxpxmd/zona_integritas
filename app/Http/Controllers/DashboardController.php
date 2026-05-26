@@ -129,13 +129,13 @@ class DashboardController extends Controller
 
         // Hitung stats verifikasi khusus verifikator/admin
         $verifikatorStats = [];
-        if ($user->role === 'verifikator') {
+        if (in_array($user->role, ['verifikator', 'admin'])) {
             $verifikatorStats = $this->getVerifikatorStats($activePeriode, $user);
         }
 
         // Hitung stats verifikasi khusus verifikator menpan/admin
         $menpanStats = [];
-        if ($user->role === 'verifikator_menpan') {
+        if (in_array($user->role, ['verifikator_menpan', 'admin'])) {
             $menpanStats = $this->getVerifikatorMenpanStats($activePeriode, $user);
         }
 
@@ -494,4 +494,3 @@ class DashboardController extends Controller
         ];
     }
 }
-
