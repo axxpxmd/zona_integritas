@@ -23,7 +23,7 @@
         <div class="flex items-center gap-2 lg:gap-3 pl-2 lg:pl-3 border-l border-gray-200">
             <div class="header-user-info text-right hidden md:block">
                 <p class="text-sm font-medium text-gray-700">{{ Auth::user()->nama_instansi }}</p>
-                <p class="text-xs text-gray-500">{{ Auth::user()->username }}</p>
+                <p class="text-xs text-gray-500">{{ Auth::user()->role }}</p>
             </div>
             <!-- Profile -->
             <a href="{{ route('profile.index') }}" class="p-2 text-gray-500 hover:text-primary hover:bg-primary-light rounded-lg transition-colors" title="Profil">
