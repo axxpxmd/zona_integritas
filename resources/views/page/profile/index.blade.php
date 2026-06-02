@@ -152,7 +152,29 @@
                                     </svg>
                                 </button>
                             </div>
-                            <p class="mt-1 text-xs text-gray-500">Minimal 8 karakter, ada huruf kecil, huruf besar, angka, dan simbol.</p>
+                            <p class="mt-1 text-xs text-gray-500">Syarat password:</p>
+                            <div class="mt-2 space-y-1" id="passwordRules">
+                                <div class="flex items-center gap-2" data-rule="length">
+                                    <span class="rule-icon flex h-4 w-4 items-center justify-center rounded-full border text-[10px] font-bold bg-red-50 border-red-400 text-red-500">X</span>
+                                    <span class="rule-text text-xs text-red-600">Minimal 8 karakter</span>
+                                </div>
+                                <div class="flex items-center gap-2" data-rule="lower">
+                                    <span class="rule-icon flex h-4 w-4 items-center justify-center rounded-full border text-[10px] font-bold bg-red-50 border-red-400 text-red-500">X</span>
+                                    <span class="rule-text text-xs text-red-600">Minimal 1 huruf kecil</span>
+                                </div>
+                                <div class="flex items-center gap-2" data-rule="upper">
+                                    <span class="rule-icon flex h-4 w-4 items-center justify-center rounded-full border text-[10px] font-bold bg-red-50 border-red-400 text-red-500">X</span>
+                                    <span class="rule-text text-xs text-red-600">Minimal 1 huruf besar</span>
+                                </div>
+                                <div class="flex items-center gap-2" data-rule="number">
+                                    <span class="rule-icon flex h-4 w-4 items-center justify-center rounded-full border text-[10px] font-bold bg-red-50 border-red-400 text-red-500">X</span>
+                                    <span class="rule-text text-xs text-red-600">Minimal 1 angka</span>
+                                </div>
+                                <div class="flex items-center gap-2" data-rule="symbol">
+                                    <span class="rule-icon flex h-4 w-4 items-center justify-center rounded-full border text-[10px] font-bold bg-red-50 border-red-400 text-red-500">X</span>
+                                    <span class="rule-text text-xs text-red-600">Minimal 1 karakter khusus</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div>
@@ -202,12 +224,34 @@ function checkPasswordStrength() {
     const strengthBar = document.getElementById('passwordStrengthBar');
     const strengthText = document.getElementById('passwordStrengthText');
 
+    const rules = {
+        length: password.length >= 8,
+        lower: /[a-z]+/.test(password),
+        upper: /[A-Z]+/.test(password),
+        number: /[0-9]+/.test(password),
+        symbol: /[^a-zA-Z0-9]+/.test(password),
+    };
+
     let strength = 0;
-    if (password.length >= 8) strength++;
-    if (password.match(/[a-z]+/)) strength++;
-    if (password.match(/[A-Z]+/)) strength++;
-    if (password.match(/[0-9]+/)) strength++;
-    if (password.match(/[^a-zA-Z0-9]+/)) strength++;
+    if (rules.length) strength++;
+    if (rules.lower) strength++;
+    if (rules.upper) strength++;
+    if (rules.number) strength++;
+    if (rules.symbol) strength++;
+
+    const ruleIconBase = 'rule-icon flex h-4 w-4 items-center justify-center rounded-full border text-[10px] font-bold';
+    const ruleTextBase = 'rule-text text-xs';
+    Object.entries(rules).forEach(([ruleKey, isValid]) => {
+        const ruleEl = document.querySelector(`[data-rule="${ruleKey}"]`);
+        if (!ruleEl) return;
+        const icon = ruleEl.querySelector('.rule-icon');
+        const text = ruleEl.querySelector('.rule-text');
+        if (!icon || !text) return;
+
+        icon.textContent = isValid ? 'V' : 'X';
+        icon.className = `${ruleIconBase} ${isValid ? 'bg-green-50 border-green-500 text-green-600' : 'bg-red-50 border-red-400 text-red-500'}`;
+        text.className = `${ruleTextBase} ${isValid ? 'text-green-700' : 'text-red-600'}`;
+    });
 
     const widths = ['0%', '20%', '40%', '60%', '80%', '100%'];
     const colors = ['bg-gray-300', 'bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-lime-500', 'bg-green-500'];
