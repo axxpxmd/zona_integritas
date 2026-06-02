@@ -40,17 +40,17 @@ note: kolom tersebut ada di tabel jawaban. pastikan pada setiap pertanyaan sudah
 Untuk bisa menuju WBK, syarat nilai hasil kuesioner:
 1. **Total Nilai Evaluasi ZI:** minimal 75,00
 2. **Total Pengungkit:** minimal 40,00
-3. **Bobot Minimal Per Area Pengungkit:** masing-masing minimal 60,00%
-    - a. MANAJEMEN PERUBAHAN (8%)
-    - b. PENATAAN TATALAKSANA (7%)
-    - c. PENATAAN SISTEM MANAJEMEN SDM APARATUR (10%)
-    - d. PENGUATAN AKUNTABILITAS (10%)
-    - e. PENGUATAN PENGAWASAN (15%)
-    - f. PENINGKATAN KUALITAS PELAYANAN PUBLIK (10%)
+3. **Bobot Minimal Per Area Pengungkit:**
+    - a. MANAJEMEN PERUBAHAN (60%)
+    - b. PENATAAN TATALAKSANA (60%)
+    - c. PENATAAN SISTEM MANAJEMEN SDM APARATUR (60%)
+    - d. PENGUATAN AKUNTABILITAS (60%)
+    - e. PENGUATAN PENGAWASAN (60%)
+    - f. PENINGKATAN KUALITAS PELAYANAN PUBLIK (60%)
 4. **BIROKRASI YANG BERSIH DAN AKUNTABEL":** minimal 18,25
-    - a. "Nilai Survey Persepsi Korupsi (Survei Eksternal)": minimal 15,75 (3,60)
+    - a. "Nilai Survey Persepsi Korupsi (Survei Eksternal)": minimal 15,75
     - b. "Capaian Kinerja Lebih Baik dari pada Capaian Kinerja Sebelumnya": minimal 2,50
-5. **Nilai Minimal Komponen Hasil "PELAYANAN PUBLIK YANG PRIMA":** minimal 14,00 (3,20)
+5. **Nilai Minimal Komponen Hasil "PELAYANAN PUBLIK YANG PRIMA":** minimal 14,00
 
 ## Design System (STRICT)
 - **Colors:** Primary `#0164CA`, hover `#0150A8`, accent `#F7D558`

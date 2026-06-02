@@ -43,7 +43,7 @@
 
         @if (Auth::user()->role === 'operator')
             <p class="section-label text-[10px] font-semibold text-white/40 uppercase tracking-wider mb-3 mt-6">
-                Lembar Kerja 
+                Lembar Kerja
             </p>
             <div class="space-y-1.5">
                 <a href="{{ route('kuesioner.index') }}" data-tooltip="Kuesioner"
@@ -94,12 +94,21 @@
                 @if (in_array(Auth::user()->role, ['admin', 'verifikator']))
                     <a href="{{ route('verifikasi.index') }}" data-tooltip="Verifikasi"
                         class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                                      {{ request()->routeIs('verifikasi.*') ? 'bg-white text-primary shadow-lg shadow-black/10' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
+                                      {{ request()->routeIs('verifikasi.*') && !request()->routeIs('verifikasi.rekap') ? 'bg-white text-primary shadow-lg shadow-black/10' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                         </svg>
                         <span class="sidebar-text transition-all duration-300 whitespace-nowrap">Verifikasi LKE</span>
+                    </a>
+                    <a href="{{ route('verifikasi.rekap') }}" data-tooltip="Rekapan WBK"
+                        class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                                      {{ request()->routeIs('verifikasi.rekap') ? 'bg-white text-primary shadow-lg shadow-black/10' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M3 3v18h18M7 15l3-3 4 4 5-6" />
+                        </svg>
+                        <span class="sidebar-text transition-all duration-300 whitespace-nowrap">Rekapan WBK</span>
                     </a>
                 @endif
                 @if (in_array(Auth::user()->role, ['admin', 'verifikator_menpan']))
