@@ -136,7 +136,7 @@
                         </svg>
                     </div>
                     <h3 class="text-base font-semibold text-gray-900">Belum Ada Rekapan Hasil</h3>
-                    <p class="text-sm text-gray-500 mt-1 max-w-sm mx-auto">Belum ada OPD dengan status kuesioner yang selesai diverifikasi pada periode ini.</p>
+                    <p class="text-sm text-gray-500 mt-1 max-w-sm mx-auto">Belum ada Unit Kerja dengan yang selesai diverifikasi pada periode ini.</p>
                 </div>
             @else
                 <div class="bg-white rounded-xl overflow-hidden">
@@ -343,7 +343,7 @@
 
         <!-- Modal Content Container -->
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div id="wbkModalCard" class="rounded-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] transition-all duration-300 scale-95 opacity-0 border border-gray-100/30 shadow-2xl">
+            <div id="wbkModalCard" class="rounded-2xl w-full max-w-4xl overflow-hidden flex flex-col max-h-[90vh] transition-all duration-300 scale-95 opacity-0 border border-gray-100/30 shadow-2xl">
                 <!-- Modal Header -->
                 <div class="bg-primary text-white px-6 py-3 flex items-center justify-between">
                     <div>
