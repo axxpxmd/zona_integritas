@@ -252,6 +252,201 @@
                 @endif
             </div>
         </div>
+
+        {{-- WBK Compliance Status Card --}}
+        @if($isReadySendMenpan || $isSentToMenpan)
+            <div class="bg-white rounded-xl p-6 {{ $meetsWbk ? 'border border-green-200 bg-green-50/10' : 'border border-red-200 bg-red-50/10' }}">
+                <!-- Header (Always Visible) -->
+                <div class="flex items-center justify-between cursor-pointer select-none" onclick="toggleWbkCollapse()">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 {{ $meetsWbk ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                            @if($meetsWbk)
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                                </svg>
+                            @else
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            @endif
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-3">
+                                <h3 class="text-base font-bold text-gray-900">Kelayakan Kualifikasi WBK</h3>
+                                @if($meetsWbk)
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-green-200 text-green-800">
+                                        MEMENUHI SYARAT
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-200 text-red-800">
+                                        BELUM MEMENUHI SYARAT
+                                    </span>
+                                @endif
+                            </div>
+                            <p class="text-xs text-gray-400 mt-0.5">Klik untuk menampilkan/menyembunyikan detail kelayakan</p>
+                        </div>
+                    </div>
+                    <button type="button" class="text-gray-400 hover:text-gray-600 transition-colors p-1 focus:outline-none">
+                        <svg id="wbkCollapseIcon" class="w-5 h-5 transform transition-transform duration-200 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Collapsible Content Wrapper -->
+                <div id="wbkCollapseContent" class="transition-all duration-500 ease-in-out max-h-0 opacity-0 overflow-hidden">
+                    <div class="mt-5 pl-0 sm:pl-16">
+                        <p class="text-xs text-gray-500">
+                        @if($meetsWbk)
+                            Unit kerja ini telah berhasil memenuhi seluruh batas minimal kriteria penilaian LKE untuk diajukan menuju Wilayah Bebas dari Korupsi (WBK).
+                        @else
+                            Unit kerja ini belum dapat diajukan menuju WBK karena terdapat beberapa kriteria batas minimal penilaian LKE yang belum terpenuhi. Silakan lihat rincian checklist di bawah ini.
+                        @endif
+                    </p>
+
+                    {{-- Checklist Kriteria WBK --}}
+                    <div class="mt-4 border border-gray-200 rounded-xl bg-white overflow-hidden divide-y divide-gray-100">
+                        <!-- Header Grid -->
+                        <div class="grid grid-cols-12 bg-gray-50/80 text-[10px] font-bold text-gray-400 uppercase tracking-wider px-4 py-2 border-b border-gray-100">
+                            <div class="col-span-6">Kriteria Kelayakan WBK</div>
+                            <div class="col-span-3 text-center">Ambang Batas</div>
+                            <div class="col-span-3 text-right">Nilai Hasil</div>
+                        </div>
+
+                        <!-- Rule 1: Total Nilai Evaluasi ZI -->
+                        @php
+                            $r1 = $compliance['total_zi'];
+                        @endphp
+                        <div class="grid grid-cols-12 items-center px-4 py-3 text-xs {{ !$r1['is_passed'] ? 'bg-red-50/20' : '' }}">
+                            <div class="col-span-6 font-semibold text-gray-700 flex items-center gap-2">
+                                {!! $r1['is_passed'] ? '<span class="text-green-600 font-bold">✓</span>' : '<span class="text-red-500 font-bold">✗</span>' !!}
+                                <span>Total Nilai Evaluasi ZI</span>
+                            </div>
+                            <div class="col-span-3 text-center font-medium text-gray-500">&ge; 75.00</div>
+                            <div class="col-span-3 text-right font-bold {{ $r1['is_passed'] ? 'text-green-600' : 'text-red-650' }}">
+                                {{ number_format($r1['nilai'], 2) }}
+                                @if(!$r1['is_passed'])
+                                    <span class="block text-[9px] text-red-500 font-bold mt-0.5">Kurang {{ number_format($r1['threshold'] - $r1['nilai'], 2) }}</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Rule 2: Total Nilai Pengungkit -->
+                        @php
+                            $r2 = $compliance['total_pengungkit'];
+                        @endphp
+                        <div class="grid grid-cols-12 items-center px-4 py-3 text-xs {{ !$r2['is_passed'] ? 'bg-red-50/20' : '' }}">
+                            <div class="col-span-6 font-semibold text-gray-700 flex items-center gap-2">
+                                {!! $r2['is_passed'] ? '<span class="text-green-600 font-bold">✓</span>' : '<span class="text-red-500 font-bold">✗</span>' !!}
+                                <span>Total Nilai Komponen Pengungkit</span>
+                            </div>
+                            <div class="col-span-3 text-center font-medium text-gray-500">&ge; 40.00</div>
+                            <div class="col-span-3 text-right font-bold {{ $r2['is_passed'] ? 'text-green-600' : 'text-red-650' }}">
+                                {{ number_format($r2['nilai'], 2) }}
+                                @if(!$r2['is_passed'])
+                                    <span class="block text-[9px] text-red-500 font-bold mt-0.5">Kurang {{ number_format($r2['threshold'] - $r2['nilai'], 2) }}</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Rule 3: Kepatuhan Area Pengungkit (min 60% per area) -->
+                        @php
+                            $allAreasPassed = collect($compliance['areas'])->every(fn($a) => $a['is_passed']);
+                        @endphp
+                        <div class="grid grid-cols-12 items-start px-4 py-3 text-xs {{ !$allAreasPassed ? 'bg-red-50/20' : '' }}">
+                            <div class="col-span-6 font-semibold text-gray-700">
+                                <div class="flex items-center gap-2">
+                                    {!! $allAreasPassed ? '<span class="text-green-600 font-bold">✓</span>' : '<span class="text-red-500 font-bold">✗</span>' !!}
+                                    <span>Bobot Minimal Per Area Pengungkit</span>
+                                </div>
+                                <div class="pl-4 mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px]">
+                                    @foreach($compliance['areas'] as $name => $area)
+                                        <div class="flex items-center justify-between p-1.5 rounded {{ $area['is_passed'] ? 'bg-green-50/40 text-green-700' : 'bg-red-50/50 text-red-700 ring-1 ring-red-100/50' }}">
+                                            <span class="font-medium truncate max-w-[120px]">{{ $name }}</span>
+                                            <span class="font-bold ml-1">{{ number_format($area['persen'], 1) }}% (min. 60%)</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div class="col-span-3 text-center font-medium text-gray-500">&ge; 60% per Area</div>
+                            <div class="col-span-3 text-right font-bold {{ $allAreasPassed ? 'text-green-600' : 'text-red-650' }}">
+                                {{ $allAreasPassed ? 'Semua Lolos' : 'Ada Yang Kurang' }}
+                            </div>
+                        </div>
+
+                        <!-- Rule 4: Birokrasi Bersih dan Akuntabel (Total & Subs) -->
+                        @php
+                            $r4 = $compliance['birokrasi_total'];
+                            $spak = $compliance['spak'];
+                            $capaian = $compliance['capaian'];
+                        @endphp
+                        <div class="grid grid-cols-12 items-start px-4 py-3 text-xs {{ !$r4['is_passed'] || !$spak['is_passed'] || !$capaian['is_passed'] ? 'bg-red-50/20' : '' }}">
+                            <div class="col-span-6 font-semibold text-gray-700">
+                                <div class="flex items-center gap-2">
+                                    {!! ($r4['is_passed'] && $spak['is_passed'] && $capaian['is_passed']) ? '<span class="text-green-600 font-bold">✓</span>' : '<span class="text-red-500 font-bold">✗</span>' !!}
+                                    <span>Birokrasi yang Bersih dan Akuntabel</span>
+                                </div>
+                                <div class="pl-4 mt-2 space-y-1.5 text-[10px]">
+                                    <!-- SPAK Subrow -->
+                                    <div class="flex items-center justify-between p-1.5 rounded {{ $spak['is_passed'] ? 'bg-green-50/40 text-green-700' : 'bg-red-50/50 text-red-700 ring-1 ring-red-100/50' }}">
+                                        <span class="font-medium">Survei Persepsi Korupsi (SPAK)</span>
+                                        <span class="font-bold">{{ number_format($spak['nilai'], 2) }} / 17.50 (min. 15.75)</span>
+                                    </div>
+                                    <!-- Capaian Subrow -->
+                                    <div class="flex items-center justify-between p-1.5 rounded {{ $capaian['is_passed'] ? 'bg-green-50/40 text-green-700' : 'bg-red-50/50 text-red-700 ring-1 ring-red-100/50' }}">
+                                        <span class="font-medium">Capaian Kinerja Lebih Baik</span>
+                                        <span class="font-bold">{{ number_format($capaian['nilai'], 2) }} / 5.00 (min. 2.50)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-span-3 text-center font-medium text-gray-500">&ge; 18.25</div>
+                            <div class="col-span-3 text-right font-bold {{ $r4['is_passed'] ? 'text-green-600' : 'text-red-650' }}">
+                                {{ number_format($r4['nilai'], 2) }}
+                                @if(!$r4['is_passed'])
+                                    <span class="block text-[9px] text-red-500 font-bold mt-0.5">Kurang {{ number_format($r4['threshold'] - $r4['nilai'], 2) }}</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Rule 5: Pelayanan Publik Prima -->
+                        @php
+                            $r5 = $compliance['pelayanan'];
+                        @endphp
+                        <div class="grid grid-cols-12 items-center px-4 py-3 text-xs {{ !$r5['is_passed'] ? 'bg-red-50/20' : '' }}">
+                            <div class="col-span-6 font-semibold text-gray-700 flex items-center gap-2">
+                                {!! $r5['is_passed'] ? '<span class="text-green-600 font-bold">✓</span>' : '<span class="text-red-500 font-bold">✗</span>' !!}
+                                <span>Pelayanan Publik yang Prima (Hasil II)</span>
+                            </div>
+                            <div class="col-span-3 text-center font-medium text-gray-500">&ge; 14.00</div>
+                            <div class="col-span-3 text-right font-bold {{ $r5['is_passed'] ? 'text-green-600' : 'text-red-650' }}">
+                                {{ number_format($r5['nilai'], 2) }}
+                                @if(!$r5['is_passed'])
+                                    <span class="block text-[9px] text-red-500 font-bold mt-0.5">Kurang {{ number_format($r5['threshold'] - $r5['nilai'], 2) }}</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function toggleWbkCollapse() {
+                const content = document.getElementById('wbkCollapseContent');
+                const icon = document.getElementById('wbkCollapseIcon');
+                if (content.classList.contains('max-h-0')) {
+                    content.classList.remove('max-h-0', 'opacity-0');
+                    content.classList.add('max-h-[1500px]', 'opacity-100');
+                    icon.classList.remove('rotate-180');
+                } else {
+                    content.classList.remove('max-h-[1500px]', 'opacity-100');
+                    content.classList.add('max-h-0', 'opacity-0');
+                    icon.classList.add('rotate-180');
+                }
+            }
+        </script>
+    @endif
+
         @if(config('app.debug') || env('APP_ENV') === 'local')
             <form action="{{ route('verifikasi.verify-all-dev', [$periode->id, $opd->id]) }}" method="POST"
                 onsubmit="return confirm('Yakin ingin verifikasi semua pertanyaan untuk OPD ini secara otomatis (DEV ONLY)?');">
