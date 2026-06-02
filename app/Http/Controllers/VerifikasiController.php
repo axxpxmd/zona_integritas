@@ -265,17 +265,62 @@ class VerifikasiController extends Controller
                     $grandTotalNilai = $totalPengungkitNilai + $totalHasilNilai;
                     $grandTotalPersen = $grandTotalBobot > 0 ? ($grandTotalNilai / $grandTotalBobot) * 100 : 0;
 
-                    $meetsArea = collect($areaData)->every(function ($area) {
-                        return $area['bobot'] == 0 || $area['persen'] >= 60;
+                    $areaCompliance = [];
+                    foreach ($areaData as $area) {
+                        $areaCompliance[$area['nama']] = [
+                            'nilai' => (float) $area['nilai'],
+                            'bobot' => (float) $area['bobot'],
+                            'persen' => (float) $area['persen'],
+                            'threshold' => (float) ($area['bobot'] * 0.60),
+                            'is_passed' => $area['bobot'] == 0 || $area['persen'] >= 60,
+                        ];
+                    }
+
+                    $compliance = [
+                        'total_zi' => [
+                            'nilai' => (float) $grandTotalNilai,
+                            'threshold' => 75.00,
+                            'is_passed' => $grandTotalNilai >= 75.00,
+                        ],
+                        'total_pengungkit' => [
+                            'nilai' => (float) $totalPengungkitNilai,
+                            'threshold' => 40.00,
+                            'is_passed' => $totalPengungkitNilai >= 40.00,
+                        ],
+                        'areas' => $areaCompliance,
+                        'birokrasi_total' => [
+                            'nilai' => (float) $birokrasiNilai,
+                            'threshold' => 18.25,
+                            'is_passed' => $birokrasiNilai >= 18.25,
+                        ],
+                        'spak' => [
+                            'nilai' => (float) $spakNilai,
+                            'threshold' => 15.75,
+                            'is_passed' => $spakNilai >= 15.75,
+                        ],
+                        'capaian' => [
+                            'nilai' => (float) $capaianNilai,
+                            'threshold' => 2.50,
+                            'is_passed' => $capaianNilai >= 2.50,
+                        ],
+                        'pelayanan' => [
+                            'nilai' => (float) $pelayananNilai,
+                            'threshold' => 14.00,
+                            'is_passed' => $pelayananNilai >= 14.00,
+                        ],
+                    ];
+
+                    $meetsArea = collect($areaCompliance)->every(function ($area) {
+                        return $area['is_passed'];
                     });
 
-                    $meetsWbk = $grandTotalNilai >= 75.00
-                        && $totalPengungkitNilai >= 40.00
+                    $meetsWbk = $compliance['total_zi']['is_passed']
+                        && $compliance['total_pengungkit']['is_passed']
                         && $meetsArea
-                        && $birokrasiNilai >= 18.25
-                        && $spakNilai >= 15.75
-                        && $capaianNilai >= 2.50
-                        && $pelayananNilai >= 14.00;
+                        && $compliance['birokrasi_total']['is_passed']
+                        && $compliance['spak']['is_passed']
+                        && $compliance['capaian']['is_passed']
+                        && $compliance['pelayanan']['is_passed'];
 
                     $rekapRows->push([
                         'opd_id' => $opd->id,
@@ -317,6 +362,7 @@ class VerifikasiController extends Controller
                             'persen' => $grandTotalPersen,
                         ],
                         'meets_wbk' => $meetsWbk,
+                        'compliance' => $compliance,
                     ]);
                 }
             }

@@ -36,7 +36,7 @@ note: kolom tersebut ada di tabel jawaban. pastikan pada setiap pertanyaan sudah
 - **Periode (`tm_periode`):** Memiliki rentang waktu pengerjaan. Operator dan Verifikator hanya bisa bekerja jika tanggal saat ini masuk dalam rentang waktu sesi/periode tersebut.
 - **Histori Jawaban (`jawaban`):** Tabel jawaban menyimpan input asli operator (`jawaban_text`, `jawaban_angka`). Ketika verifikator mengubah, jawaban verifikator disimpan di field terpisah (misal `verifikator_jawaban_text`) sehingga riwayat asli operator tetap aman. Terdapat *flag/status* revisi atau disetujui.
 
-## Rules WBK - Nilai Hasil Kuesioner (STRICT)
+## Rules WBK - Nilai Hasil Kuesioner (STRICT) (Menuju WBK)
 Untuk bisa menuju WBK, syarat nilai hasil kuesioner:
 1. **Total Nilai Evaluasi ZI:** minimal 75,00
 2. **Total Pengungkit:** minimal 40,00
