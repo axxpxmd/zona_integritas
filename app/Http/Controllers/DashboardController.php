@@ -342,7 +342,7 @@ class DashboardController extends Controller
 
                 $jmlDisetujui = (clone $opd_base)->whereIn('status_verifikasi', ['disetujui', 'terkirim'])->count();
                 $jmlDirevisi = (clone $opd_base)->where('status_verifikasi', 'direvisi')->count();
-                $jmlBelum = (clone $opd_base)->where('status_verifikasi', 'belum_diverifikasi')->count();
+                $jmlBelum = (clone $opd_base)->where('status_verifikasi', 'belum_diverifikasi')->where('status', 'final')->count();
                 $jmlTotal = (clone $opd_base)->count();
                 $jmlMenunggu = (clone $opd_base)->where('menunggu_dicek_ulang', true)->count();
 
