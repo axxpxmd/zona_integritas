@@ -207,7 +207,7 @@
                                         <td class="px-4 py-3.5 font-semibold text-gray-900 border-r border-gray-100">
                                             <div class="line-clamp-2" title="{{ $row['opd'] }}">{{ $row['opd'] }}</div>
                                         </td>
-                                        
+
                                         <!-- Areas -->
                                         @foreach($row['areas'] as $area)
                                             @php
@@ -224,7 +224,7 @@
                                                 </div>
                                             </td>
                                         @endforeach
-                                        
+
                                         <!-- Jumlah Pengungkit -->
                                         @php
                                             $isPengungkitPassed = $row['compliance']['total_pengungkit']['is_passed'];
@@ -237,7 +237,7 @@
                                                 {{ number_format($row['pengungkit']['persen'], 1) }}%
                                             </div>
                                         </td>
-                                        
+
                                         <!-- SPAK -->
                                         @php
                                             $isSpakPassed = $row['compliance']['spak']['is_passed'];
@@ -250,7 +250,7 @@
                                                 {{ number_format($row['spak']['persen'], 1) }}%
                                             </div>
                                         </td>
-                                        
+
                                         <!-- Capaian Kinerja -->
                                         @php
                                             $isCapaianPassed = $row['compliance']['capaian']['is_passed'];
@@ -263,7 +263,7 @@
                                                 {{ number_format($row['capaian']['persen'], 1) }}%
                                             </div>
                                         </td>
-                                        
+
                                         <!-- Birokrasi Bersih Total -->
                                         @php
                                             $isBirokrasiPassed = $row['compliance']['birokrasi_total']['is_passed'];
@@ -276,7 +276,7 @@
                                                 {{ number_format($row['birokrasi']['persen'], 1) }}%
                                             </div>
                                         </td>
-                                        
+
                                         <!-- SPP / Pelayanan Publik Prima -->
                                         @php
                                             $isPelayananPassed = $row['compliance']['pelayanan']['is_passed'];
@@ -289,7 +289,7 @@
                                                 {{ number_format($row['pelayanan']['persen'], 1) }}%
                                             </div>
                                         </td>
-                                        
+
                                         <!-- Jumlah Hasil -->
                                         <td class="px-2 py-3.5 text-center border-r border-gray-200">
                                             <div class="font-semibold text-gray-800">
@@ -299,7 +299,7 @@
                                                 {{ number_format($row['hasil']['persen'], 1) }}%
                                             </div>
                                         </td>
-                                        
+
                                         <!-- Total ZI -->
                                         @php
                                             $isTotalPassed = $row['compliance']['total_zi']['is_passed'];
@@ -312,7 +312,7 @@
                                                 {{ number_format($row['total']['persen'], 1) }}%
                                             </div>
                                         </td>
-                                        
+
                                         <!-- Simpulan & Aksi -->
                                         <td class="px-3 py-3.5 text-center">
                                             <div class="flex flex-col items-center justify-center gap-1.5">
@@ -327,7 +327,7 @@
                                                         Belum
                                                     </span>
                                                 @endif
-                                                <button type="button" 
+                                                <button type="button"
                                                     data-opd="{{ $row['opd'] }}"
                                                     data-compliance="{!! htmlspecialchars(json_encode($row['compliance']), ENT_QUOTES, 'UTF-8') !!}"
                                                     onclick="openWbkModal(this)"
@@ -355,12 +355,12 @@
     <div id="wbkModal" class="fixed inset-0 z-50 hidden transition-all duration-300">
         <!-- Backdrop -->
         <div id="wbkModalBackdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 opacity-0" onclick="closeWbkModal()"></div>
-        
+
         <!-- Modal Content Container -->
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div id="wbkModalCard" class="bg-white rounded-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] transition-all duration-300 scale-95 opacity-0 border border-gray-100/30 shadow-2xl">
+            <div id="wbkModalCard" class="rounded-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] transition-all duration-300 scale-95 opacity-0 border border-gray-100/30 shadow-2xl">
                 <!-- Modal Header -->
-                <div class="bg-primary text-white px-6 py-4.5 flex items-center justify-between">
+                <div class="bg-primary text-white px-6 py-3 flex items-center justify-between">
                     <div>
                         <h3 class="text-base font-bold tracking-wide">Detail Syarat Kelayakan WBK</h3>
                         <p id="modalOpdName" class="text-xs text-white/80 font-medium mt-0.5"></p>
@@ -371,12 +371,12 @@
                         </svg>
                     </button>
                 </div>
-                
+
                 <!-- Modal Body (Scrollable) -->
-                <div class="p-6 overflow-y-auto space-y-5 text-sm text-gray-700 bg-gray-50/50" id="modalBody">
+                <div class="bg-white p-6 overflow-y-auto space-y-5 text-sm text-gray-700 bg-gray-50/50" id="modalBody">
                     <!-- Dynamic content will be injected by JavaScript -->
                 </div>
-                
+
                 <!-- Modal Footer -->
                 <div class="bg-white px-6 py-4 border-t border-gray-100 flex justify-end">
                     <button type="button" onclick="closeWbkModal()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2.5 rounded-lg font-semibold text-xs transition-all focus:ring-2 focus:ring-gray-300 cursor-pointer">
@@ -393,62 +393,71 @@
     function openWbkModal(btn) {
         const opdName = btn.getAttribute('data-opd');
         const compliance = JSON.parse(btn.getAttribute('data-compliance'));
-        
+
         document.getElementById('modalOpdName').innerText = opdName;
-        
+
         const body = document.getElementById('modalBody');
         body.innerHTML = ''; // Clear previous content
-        
+
         // Helper function to build custom styled badge
         function getStatusBadge(passed) {
-            return passed 
-                ? `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.8" d="M5 13l4 4L19 7"/></svg>
+            return passed
+                ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                     Memenuhi
                    </span>`
-                : `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.8" d="M6 18L18 6M6 6l12 12"/></svg>
-                    Belum Memenuhi
+                : `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
+                    Belum
                    </span>`;
         }
-        
+
         // 1. Total Evaluasi ZI
         const zi = compliance.total_zi;
         const ziDiff = zi.threshold - zi.nilai;
-        const ziDiffText = zi.is_passed ? '' : `<p class="text-xs text-red-600 font-semibold mt-2.5 bg-red-50 p-2 rounded border border-red-100/40">Kurang <strong>${ziDiff.toFixed(2)}</strong> poin untuk mencapai minimal 75.00</p>`;
-        
+        const ziDiffText = zi.is_passed ? '' : `<p class="text-[11px] text-red-650 font-semibold mt-1">Kurang <strong>${ziDiff.toFixed(2)}</strong> poin untuk mencapai minimal 75.00</p>`;
+
         // 2. Total Pengungkit
         const pengungkit = compliance.total_pengungkit;
         const pengungkitDiff = pengungkit.threshold - pengungkit.nilai;
-        const pengungkitDiffText = pengungkit.is_passed ? '' : `<p class="text-xs text-red-600 font-semibold mt-2.5 bg-red-50 p-2 rounded border border-red-100/40">Kurang <strong>${pengungkitDiff.toFixed(2)}</strong> poin untuk mencapai minimal 40.00</p>`;
-        
+        const pengungkitDiffText = pengungkit.is_passed ? '' : `<p class="text-[11px] text-red-650 font-semibold mt-1">Kurang <strong>${pengungkitDiff.toFixed(2)}</strong> poin untuk mencapai minimal 40.00</p>`;
+
         // 3. Area Pengungkit (60% per area)
-        let areasHtml = '<div class="mt-3.5 grid grid-cols-1 sm:grid-cols-2 gap-3">';
+        let areasHtml = `
+            <div class="mt-3 border border-gray-100 rounded-xl bg-gray-50/50 overflow-hidden divide-y divide-gray-100">
+                <div class="grid grid-cols-12 bg-gray-100/50 text-[9px] font-bold text-gray-500 uppercase tracking-wider px-3.5 py-2">
+                    <div class="col-span-6">Area Pengungkit</div>
+                    <div class="col-span-3 text-center">Skor (Bobot)</div>
+                    <div class="col-span-3 text-right">Capaian</div>
+                </div>
+        `;
         let allAreasPassed = true;
         for (const [name, area] of Object.entries(compliance.areas)) {
             const areaDiff = area.threshold - area.nilai;
-            const statusIcon = area.is_passed 
-                ? `<span class="text-green-600 bg-green-50 p-0.5 rounded-full"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg></span>`
-                : `<span class="text-red-600 bg-red-50 p-0.5 rounded-full"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg></span>`;
-            const diffText = area.is_passed ? '' : `<span class="text-red-500 font-bold block text-[10px] mt-1 bg-red-50/50 px-1.5 py-0.5 rounded w-max">Kurang ${areaDiff.toFixed(2)} poin</span>`;
-            
+            const diffText = area.is_passed ? '' : `<span class="block text-[9px] font-bold text-red-500 mt-0.5">Kurang ${areaDiff.toFixed(2)} poin</span>`;
+            const icon = area.is_passed
+                ? '<span class="text-green-600 mr-1.5 font-bold">✓</span>'
+                : '<span class="text-red-500 mr-1.5 font-bold">✗</span>';
+
             areasHtml += `
-                <div class="bg-white p-3.5 rounded-xl flex flex-col justify-between ${!area.is_passed ? 'ring-1 ring-red-200/50' : 'border border-gray-100'}">
-                    <div class="flex items-start justify-between gap-3">
-                        <span class="text-[10px] font-bold text-gray-700 uppercase tracking-wider leading-tight">${name}</span>
-                        ${statusIcon}
+                <div class="grid grid-cols-12 items-center px-3.5 py-2.5 text-[11px] ${!area.is_passed ? 'bg-red-50/20' : ''}">
+                    <div class="col-span-6 font-semibold text-gray-700 flex items-center leading-tight">
+                        ${icon}
+                        <span>${name}</span>
                     </div>
-                    <div class="mt-3.5 flex items-baseline justify-between border-t border-gray-50 pt-2">
-                        <span class="text-[11px] text-gray-500">Nilai: <strong class="text-gray-800">${area.nilai.toFixed(2)}</strong> / ${area.bobot.toFixed(2)}</span>
-                        <span class="text-[11px] font-bold ${area.is_passed ? 'text-green-600' : 'text-red-600'}">${area.persen.toFixed(1)}%</span>
+                    <div class="col-span-3 text-center font-medium text-gray-600">
+                        ${area.nilai.toFixed(2)} <span class="text-[9px] text-gray-450">/ ${area.bobot.toFixed(2)}</span>
                     </div>
-                    ${diffText}
+                    <div class="col-span-3 text-right font-bold ${area.is_passed ? 'text-green-600' : 'text-red-650'}">
+                        ${area.persen.toFixed(1)}%
+                        ${diffText}
+                    </div>
                 </div>
             `;
             if (!area.is_passed) allAreasPassed = false;
         }
         areasHtml += '</div>';
-        
+
         // 4. Birokrasi Bersih (Total & Sub)
         const birokrasi = compliance.birokrasi_total;
         const spak = compliance.spak;
@@ -456,53 +465,87 @@
         const birokrasiDiff = birokrasi.threshold - birokrasi.nilai;
         const spakDiff = spak.threshold - spak.nilai;
         const capaianDiff = capaian.threshold - capaian.nilai;
-        const birokrasiDiffText = birokrasi.is_passed ? '' : `<p class="text-xs text-red-600 font-semibold mt-2.5 bg-red-50 p-2 rounded border border-red-100/40">Kurang <strong>${birokrasiDiff.toFixed(2)}</strong> poin untuk mencapai minimal 18.25</p>`;
-        
+        const birokrasiDiffText = birokrasi.is_passed ? '' : `<p class="text-[11px] text-red-650 font-semibold mt-1">Kurang <strong>${birokrasiDiff.toFixed(2)}</strong> poin untuk mencapai minimal 18.25</p>`;
+
+        let birokrasiHtml = `
+            <div class="mt-3 border border-gray-100 rounded-xl bg-gray-50/50 overflow-hidden divide-y divide-gray-100">
+                <div class="grid grid-cols-12 bg-gray-100/50 text-[9px] font-bold text-gray-500 uppercase tracking-wider px-3.5 py-2">
+                    <div class="col-span-6">Sub-Komponen Hasil</div>
+                    <div class="col-span-3 text-center">Batas Minimal</div>
+                    <div class="col-span-3 text-right">Skor Riil</div>
+                </div>
+                <!-- SPAK Row -->
+                <div class="grid grid-cols-12 items-center px-3.5 py-2.5 text-[11px] ${!spak.is_passed ? 'bg-red-50/20' : ''}">
+                    <div class="col-span-6 font-semibold text-gray-700 flex items-center leading-tight">
+                        ${spak.is_passed ? '<span class="text-green-600 mr-1.5 font-bold">✓</span>' : '<span class="text-red-500 mr-1.5 font-bold">✗</span>'}
+                        <span>Survei Persepsi Korupsi (SPAK)</span>
+                    </div>
+                    <div class="col-span-3 text-center font-medium text-gray-500">&ge; 15.75</div>
+                    <div class="col-span-3 text-right font-bold ${spak.is_passed ? 'text-green-600' : 'text-red-650'}">
+                        ${spak.nilai.toFixed(2)} <span class="text-[9px] text-gray-400">/ 17.50</span>
+                        ${!spak.is_passed ? `<span class="block text-[9px] text-red-500 font-bold mt-0.5">Kurang ${spakDiff.toFixed(2)}</span>` : ''}
+                    </div>
+                </div>
+                <!-- Capaian Kinerja Row -->
+                <div class="grid grid-cols-12 items-center px-3.5 py-2.5 text-[11px] ${!capaian.is_passed ? 'bg-red-50/20' : ''}">
+                    <div class="col-span-6 font-semibold text-gray-700 flex items-center leading-tight">
+                        ${capaian.is_passed ? '<span class="text-green-600 mr-1.5 font-bold">✓</span>' : '<span class="text-red-500 mr-1.5 font-bold">✗</span>'}
+                        <span>Capaian Kinerja Lebih Baik</span>
+                    </div>
+                    <div class="col-span-3 text-center font-medium text-gray-500">&ge; 2.50</div>
+                    <div class="col-span-3 text-right font-bold ${capaian.is_passed ? 'text-green-600' : 'text-red-650'}">
+                        ${capaian.nilai.toFixed(2)} <span class="text-[9px] text-gray-400">/ 5.00</span>
+                        ${!capaian.is_passed ? `<span class="block text-[9px] text-red-500 font-bold mt-0.5">Kurang ${capaianDiff.toFixed(2)}</span>` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+
         // 5. Pelayanan Publik Prima
         const pelayanan = compliance.pelayanan;
         const pelayananDiff = pelayanan.threshold - pelayanan.nilai;
-        const pelayananDiffText = pelayanan.is_passed ? '' : `<p class="text-xs text-red-600 font-semibold mt-2.5 bg-red-50 p-2 rounded border border-red-100/40">Kurang <strong>${pelayananDiff.toFixed(2)}</strong> poin untuk mencapai minimal 14.00</p>`;
+        const pelayananDiffText = pelayanan.is_passed ? '' : `<p class="text-[11px] text-red-650 font-semibold mt-1">Kurang <strong>${pelayananDiff.toFixed(2)}</strong> poin untuk mencapai minimal 14.00</p>`;
 
         // Build entire modal body HTML
         body.innerHTML = `
             <!-- Requirement 1 -->
-            <div class="bg-white p-4.5 rounded-xl border border-gray-100">
-                <div class="flex items-center justify-between gap-4">
-                    <div>
-                        <h4 class="font-bold text-gray-800 text-sm">1. Total Nilai Evaluasi ZI</h4>
-                        <p class="text-xs text-gray-400 mt-0.5">Nilai gabungan total seluruh komponen pengungkit dan hasil (Min. 75.00)</p>
+            <div class="bg-white p-4 rounded-xl border border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div class="flex-1">
+                    <h4 class="font-bold text-gray-800 text-xs">1. Total Nilai Evaluasi ZI</h4>
+                    <p class="text-[11px] text-gray-400 mt-0.5">Skor gabungan seluruh komponen pengungkit & hasil (Min. 75.00)</p>
+                    ${ziDiffText}
+                </div>
+                <div class="flex items-center sm:flex-col sm:items-end justify-between sm:justify-center shrink-0 border-t sm:border-t-0 border-gray-50 pt-2 sm:pt-0">
+                    <div class="sm:text-right pr-2 sm:pr-0">
+                        <span class="text-[10px] text-gray-400 block sm:inline">Nilai:</span>
+                        <span class="text-sm font-extrabold ${zi.is_passed ? 'text-green-600' : 'text-red-650'}">${zi.nilai.toFixed(2)}</span>
                     </div>
-                    ${getStatusBadge(zi.is_passed)}
+                    <div class="mt-1">${getStatusBadge(zi.is_passed)}</div>
                 </div>
-                <div class="mt-3 flex items-center justify-between border-t border-gray-50 pt-3">
-                    <span class="text-xs text-gray-500">Nilai Saat Ini:</span>
-                    <span class="text-base font-extrabold ${zi.is_passed ? 'text-green-600' : 'text-red-600'}">${zi.nilai.toFixed(2)}</span>
-                </div>
-                ${ziDiffText}
             </div>
 
             <!-- Requirement 2 -->
-            <div class="bg-white p-4.5 rounded-xl border border-gray-100">
-                <div class="flex items-center justify-between gap-4">
-                    <div>
-                        <h4 class="font-bold text-gray-800 text-sm">2. Total Nilai Pengungkit</h4>
-                        <p class="text-xs text-gray-400 mt-0.5">Jumlah skor dari ke-6 Area Pengungkit (Min. 40.00)</p>
+            <div class="bg-white p-4 rounded-xl border border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div class="flex-1">
+                    <h4 class="font-bold text-gray-800 text-xs">2. Total Nilai Pengungkit</h4>
+                    <p class="text-[11px] text-gray-400 mt-0.5">Jumlah skor dari ke-6 Area Pengungkit (Min. 40.00)</p>
+                    ${pengungkitDiffText}
+                </div>
+                <div class="flex items-center sm:flex-col sm:items-end justify-between sm:justify-center shrink-0 border-t sm:border-t-0 border-gray-50 pt-2 sm:pt-0">
+                    <div class="sm:text-right pr-2 sm:pr-0">
+                        <span class="text-[10px] text-gray-400 block sm:inline">Nilai:</span>
+                        <span class="text-sm font-extrabold ${pengungkit.is_passed ? 'text-green-600' : 'text-red-650'}">${pengungkit.nilai.toFixed(2)}</span>
                     </div>
-                    ${getStatusBadge(pengungkit.is_passed)}
+                    <div class="mt-1">${getStatusBadge(pengungkit.is_passed)}</div>
                 </div>
-                <div class="mt-3 flex items-center justify-between border-t border-gray-50 pt-3">
-                    <span class="text-xs text-gray-500">Nilai Saat Ini:</span>
-                    <span class="text-base font-extrabold ${pengungkit.is_passed ? 'text-green-600' : 'text-red-600'}">${pengungkit.nilai.toFixed(2)}</span>
-                </div>
-                ${pengungkitDiffText}
             </div>
 
             <!-- Requirement 3 -->
-            <div class="bg-white p-4.5 rounded-xl border border-gray-100">
+            <div class="bg-white p-4 rounded-xl border border-gray-100">
                 <div class="flex items-center justify-between gap-4">
                     <div>
-                        <h4 class="font-bold text-gray-800 text-sm">3. Bobot Per Area Pengungkit (Min. 60%)</h4>
-                        <p class="text-xs text-gray-400 mt-0.5">Masing-masing dari 6 Area Pengungkit wajib memperoleh minimal 60.00%</p>
+                        <h4 class="font-bold text-gray-800 text-xs">3. Bobot Per Area Pengungkit (Min. 60%)</h4>
+                        <p class="text-[11px] text-gray-400 mt-0.5">Setiap area pengungkit wajib memenuhi minimal 60% dari bobot total area</p>
                     </div>
                     ${getStatusBadge(allAreasPassed)}
                 </div>
@@ -510,85 +553,56 @@
             </div>
 
             <!-- Requirement 4 -->
-            <div class="bg-white p-4.5 rounded-xl border border-gray-100">
+            <div class="bg-white p-4 rounded-xl border border-gray-100">
                 <div class="flex items-center justify-between gap-4">
                     <div>
-                        <h4 class="font-bold text-gray-800 text-sm">4. Birokrasi yang Bersih dan Akuntabel</h4>
-                        <p class="text-xs text-gray-400 mt-0.5">Total minimal harus mencapai 18.25 dengan ambang batas sub-komponen</p>
+                        <h4 class="font-bold text-gray-800 text-xs">4. Birokrasi yang Bersih dan Akuntabel</h4>
+                        <p class="text-[11px] text-gray-400 mt-0.5">Minimal skor 18.25 dengan detail batas sub-komponen berikut</p>
+                        ${birokrasiDiffText}
                     </div>
-                    ${getStatusBadge(birokrasi.is_passed)}
-                </div>
-                <div class="mt-3 flex items-center justify-between border-t border-gray-50 pt-3">
-                    <span class="text-xs text-gray-500">Nilai Total Birokrasi:</span>
-                    <span class="text-base font-extrabold ${birokrasi.is_passed ? 'text-green-600' : 'text-red-600'}">${birokrasi.nilai.toFixed(2)} / 22.50</span>
-                </div>
-                ${birokrasiDiffText}
-                
-                <div class="mt-4 space-y-3 border-t border-gray-50 pt-4">
-                    <!-- Sub SPAK -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-gray-50/80 p-3 rounded-xl border border-gray-100 ${!spak.is_passed ? 'ring-1 ring-red-200/50 bg-red-50/20' : ''}">
-                        <div>
-                            <span class="text-xs font-bold text-gray-700 block">Survei Persepsi Korupsi (Eksternal)</span>
-                            <span class="text-[10px] text-gray-400 block mt-0.5">Minimal: 15.75 | Bobot: 17.50</span>
+                    <div class="flex flex-col items-end shrink-0 justify-center">
+                        <div class="text-right">
+                            <span class="text-[10px] text-gray-400">Total:</span>
+                            <span class="text-sm font-extrabold ${birokrasi.is_passed ? 'text-green-600' : 'text-red-650'}">${birokrasi.nilai.toFixed(2)}</span>
                         </div>
-                        <div class="text-left sm:text-right mt-2 sm:mt-0">
-                            <div class="flex items-center sm:justify-end gap-1.5">
-                                <span class="text-xs font-extrabold ${spak.is_passed ? 'text-green-600' : 'text-red-600'}">${spak.nilai.toFixed(2)}</span>
-                                ${spak.is_passed ? '<span class="text-green-600 font-bold text-xs">✓</span>' : '<span class="text-red-600 font-bold text-xs">✗</span>'}
-                            </div>
-                            ${!spak.is_passed ? `<span class="text-[9px] text-red-500 font-bold block mt-0.5">Kurang ${spakDiff.toFixed(2)}</span>` : ''}
-                        </div>
-                    </div>
-
-                    <!-- Sub Capaian Kinerja -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-gray-50/80 p-3 rounded-xl border border-gray-100 ${!capaian.is_passed ? 'ring-1 ring-red-200/50 bg-red-50/20' : ''}">
-                        <div>
-                            <span class="text-xs font-bold text-gray-700 block">Capaian Kinerja Lebih Baik dari Sebelumnya</span>
-                            <span class="text-[10px] text-gray-400 block mt-0.5">Minimal: 2.50 | Bobot: 5.00</span>
-                        </div>
-                        <div class="text-left sm:text-right mt-2 sm:mt-0">
-                            <div class="flex items-center sm:justify-end gap-1.5">
-                                <span class="text-xs font-extrabold ${capaian.is_passed ? 'text-green-600' : 'text-red-600'}">${capaian.nilai.toFixed(2)}</span>
-                                ${capaian.is_passed ? '<span class="text-green-600 font-bold text-xs">✓</span>' : '<span class="text-red-600 font-bold text-xs">✗</span>'}
-                            </div>
-                            ${!capaian.is_passed ? `<span class="text-[9px] text-red-500 font-bold block mt-0.5">Kurang ${capaianDiff.toFixed(2)}</span>` : ''}
-                        </div>
+                        <div class="mt-1">${getStatusBadge(birokrasi.is_passed)}</div>
                     </div>
                 </div>
+                ${birokrasiHtml}
             </div>
 
             <!-- Requirement 5 -->
-            <div class="bg-white p-4.5 rounded-xl border border-gray-100">
-                <div class="flex items-center justify-between gap-4">
-                    <div>
-                        <h4 class="font-bold text-gray-800 text-sm">5. Pelayanan Publik yang Prima</h4>
-                        <p class="text-xs text-gray-400 mt-0.5">Skor Survei Persepsi Kualitas Pelayanan (Min. 14.00 | Bobot: 17.50)</p>
+            <div class="bg-white p-4 rounded-xl border border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div class="flex-1">
+                    <h4 class="font-bold text-gray-800 text-xs">5. Pelayanan Publik yang Prima</h4>
+                    <p class="text-[11px] text-gray-400 mt-0.5">Skor Survei Kualitas Pelayanan (Eksternal) (Min. 14.00 | Bobot 17.50)</p>
+                    ${pelayananDiffText}
+                </div>
+                <div class="flex items-center sm:flex-col sm:items-end justify-between sm:justify-center shrink-0 border-t sm:border-t-0 border-gray-50 pt-2 sm:pt-0">
+                    <div class="sm:text-right pr-2 sm:pr-0">
+                        <span class="text-[10px] text-gray-400 block sm:inline">Nilai:</span>
+                        <span class="text-sm font-extrabold ${pelayanan.is_passed ? 'text-green-600' : 'text-red-650'}">${pelayanan.nilai.toFixed(2)}</span>
                     </div>
-                    ${getStatusBadge(pelayanan.is_passed)}
+                    <div class="mt-1">${getStatusBadge(pelayanan.is_passed)}</div>
                 </div>
-                <div class="mt-3 flex items-center justify-between border-t border-gray-50 pt-3">
-                    <span class="text-xs text-gray-500">Nilai Saat Ini:</span>
-                    <span class="text-base font-extrabold ${pelayanan.is_passed ? 'text-green-600' : 'text-red-600'}">${pelayanan.nilai.toFixed(2)}</span>
-                </div>
-                ${pelayananDiffText}
             </div>
         `;
-        
+
         // Open Animation
         const modal = document.getElementById('wbkModal');
         const backdrop = document.getElementById('wbkModalBackdrop');
         const card = document.getElementById('wbkModalCard');
-        
+
         modal.classList.remove('hidden');
         // Force Reflow
         modal.offsetHeight;
-        
+
         backdrop.classList.remove('opacity-0');
         backdrop.classList.add('opacity-100');
-        
+
         card.classList.remove('scale-95', 'opacity-0');
         card.classList.add('scale-100', 'opacity-100');
-        
+
         document.body.style.overflow = 'hidden';
     }
 
@@ -596,13 +610,13 @@
         const modal = document.getElementById('wbkModal');
         const backdrop = document.getElementById('wbkModalBackdrop');
         const card = document.getElementById('wbkModalCard');
-        
+
         backdrop.classList.remove('opacity-100');
         backdrop.classList.add('opacity-0');
-        
+
         card.classList.remove('scale-100', 'opacity-100');
         card.classList.add('scale-95', 'opacity-0');
-        
+
         setTimeout(() => {
             modal.classList.add('hidden');
             document.body.style.overflow = '';
