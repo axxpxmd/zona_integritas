@@ -80,7 +80,7 @@
                                         <td class="px-5 py-3 text-center">
                                             <div class="flex flex-col items-center justify-center gap-1.5">
                                                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-800">
-                                                    Terkirim ke Menpan
+                                                    Siap
                                                 </span>
                                                 <span class="text-[10px] text-gray-500 font-medium">Terisi: {{ $opd->total_jawaban }}/{{ $opd->total_jawaban }}</span>
                                             </div>

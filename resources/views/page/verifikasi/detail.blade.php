@@ -126,8 +126,8 @@
                 {{-- Page Indicator --}}
                 <div class="flex items-center gap-1.5 overflow-x-auto">
                     @for($i = 1; $i <= $totalIndikator; $i++)
-                    <a href="{{ route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $i]) }}"
-                       class="w-7 h-7 flex items-center justify-center rounded-lg text-sm font-medium transition-colors flex-shrink-0 {{ $i === $currentPage ? 'bg-[#0E7C7B] text-white shadow-sm' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50' }}">
+                          <a href="{{ route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $i]) }}"
+                              class="js-verify-nav w-7 h-7 flex items-center justify-center rounded-lg text-sm font-medium transition-colors flex-shrink-0 {{ $i === $currentPage ? 'bg-[#0E7C7B] text-white shadow-sm' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50' }}">
                         {{ $i }}
                     </a>
                     @endfor
@@ -618,8 +618,8 @@
             <div class="flex items-center justify-between">
                 {{-- Previous Button --}}
                 @if($currentPage > 1)
-                <a href="{{ route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage - 1]) }}"
-                   class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                     <a href="{{ route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage - 1]) }}"
+                         class="js-verify-nav inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>
@@ -637,8 +637,8 @@
                 {{-- Page Indicator --}}
                 <div class="flex items-center gap-2">
                     @for($i = 1; $i <= $totalIndikator; $i++)
-                    <a href="{{ route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $i]) }}"
-                       class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors {{ $i === $currentPage ? 'bg-[#0E7C7B] text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50' }}">
+                          <a href="{{ route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $i]) }}"
+                              class="js-verify-nav w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors {{ $i === $currentPage ? 'bg-[#0E7C7B] text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50' }}">
                         {{ $i }}
                     </a>
                     @endfor
@@ -646,16 +646,16 @@
 
                 {{-- Next Button --}}
                 @if($currentPage < $totalIndikator)
-                <a href="{{ route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage + 1]) }}"
-                   class="inline-flex items-center gap-2 px-4 py-2 bg-[#0E7C7B] text-white rounded-lg hover:bg-[#0E7C7B]-dark transition-colors">
+                     <a href="{{ route('verifikasi.detail', ['periode' => $periode->id, 'opd' => $opd->id, 'subKategori' => $subKategori->id, 'indikator' => $currentPage + 1]) }}"
+                         class="js-verify-nav inline-flex items-center gap-2 px-4 py-2 bg-[#0E7C7B] text-white rounded-lg hover:bg-[#0E7C7B]-dark transition-colors">
                     <span class="text-sm font-medium">Indikator Selanjutnya</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                     </svg>
                 </a>
                 @else
-                <a href="{{ route('verifikasi.show', [$periode->id, $opd->id]) }}"
-                   class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                     <a href="{{ route('verifikasi.show', [$periode->id, $opd->id]) }}"
+                         class="js-verify-nav inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
                     <span class="text-sm font-medium">Selesai</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -700,6 +700,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('verifikasiForm');
+    let hasUnsavedChanges = false;
 
     const filePreviewModal = document.getElementById('filePreviewModal');
     const filePreviewFrame = document.getElementById('filePreviewFrame');
@@ -752,6 +753,29 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     if (!form) return;
+
+    const markDirty = (event) => {
+        const target = event?.target;
+        if (!target || target.disabled) return;
+        if (!['INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName)) return;
+        hasUnsavedChanges = true;
+    };
+
+    form.addEventListener('input', markDirty);
+    form.addEventListener('change', markDirty);
+
+    form.addEventListener('submit', function() {
+        hasUnsavedChanges = false;
+    });
+
+    document.querySelectorAll('.js-verify-nav').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                alert('Ada perubahan yang belum disimpan. Klik "Simpan Verifikasi Halaman Ini" terlebih dahulu.');
+            }
+        });
+    });
 
     // Auto-sum logic: sama seperti di form kuesioner
     // Field dengan class "sum-part-{id}" akan dijumlahkan ke "sum-target-{id}"
