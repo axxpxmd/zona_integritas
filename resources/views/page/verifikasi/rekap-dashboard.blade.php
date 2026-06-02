@@ -329,7 +329,7 @@
                                                 @endif
                                                 <button type="button" 
                                                     data-opd="{{ $row['opd'] }}"
-                                                    data-compliance="{{ htmlspecialchars(json_encode($row['compliance']), ENT_QUOTES, 'UTF-8') }}"
+                                                    data-compliance="{!! htmlspecialchars(json_encode($row['compliance']), ENT_QUOTES, 'UTF-8') !!}"
                                                     onclick="openWbkModal(this)"
                                                     class="inline-flex items-center text-[9px] font-bold text-primary hover:text-primary-dark transition-colors underline cursor-pointer focus:outline-none">
                                                     Detail Syarat
