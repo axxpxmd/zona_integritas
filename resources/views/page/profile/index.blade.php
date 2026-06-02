@@ -152,7 +152,7 @@
                                     </svg>
                                 </button>
                             </div>
-                            <p class="mt-1 text-xs text-gray-500">Minimal 8 karakter</p>
+                            <p class="mt-1 text-xs text-gray-500">Minimal 8 karakter, ada huruf kecil, huruf besar, angka, dan simbol.</p>
                         </div>
 
                         <div>
