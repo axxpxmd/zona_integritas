@@ -28,6 +28,17 @@
                 </svg>
                 <span class="sidebar-text transition-all duration-300 whitespace-nowrap">Beranda</span>
             </a>
+            <a href="{{ route('profile.index') }}" data-tooltip="Profil"
+                class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                      {{ request()->routeIs('profile.*') ? 'bg-white text-primary shadow-lg shadow-black/10' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M5.121 17.804A8.966 8.966 0 0112 15a8.966 8.966 0 016.879 2.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
+                </svg>
+                <span class="sidebar-text transition-all duration-300 whitespace-nowrap">Profil</span>
+            </a>
             @if (Auth::user()->role === 'operator')
                 <a href="{{ route('kuesioner.index') }}" data-tooltip="Kuesioner"
                     class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
