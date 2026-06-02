@@ -441,7 +441,7 @@ class DashboardController extends Controller
                 }
 
                 $jmlDisetujuiMenpan = (clone $opd_base)->where('status_verifikasi_menpan', 'disetujui')->count();
-                $jmlBelumMenpan = (clone $opd_base)->where('status_verifikasi_menpan', 'belum_diverifikasi')->count();
+                $jmlBelumMenpan = (clone $opd_base)->where('status_verifikasi_menpan', 'belum_diverifikasi')->where('status_verifikasi', 'terkirim')->count();
 
                 $persen = $jmlTotal > 0
                     ? min(100, round(($jmlDisetujuiMenpan / $jmlTotal) * 100))
