@@ -350,8 +350,6 @@
 			@endif
 			{{-- ========== END ADMIN OVERVIEW STATS ========== --}}
 
-			{{-- ========== END VERIFIKATOR MENPAN STATS ========== --}}
-
 			{{-- ========== VERIFIKATOR STATS ========== --}}
 			@if(in_array(auth()->user()->role, ['verifikator', 'admin']) && !empty($verifikatorStats))
 				@php $v = $verifikatorStats; @endphp
@@ -584,6 +582,8 @@
 						</div>
 					</div>
 				@endif
+			@endif
+			{{-- ========== END VERIFIKATOR STATS ========== --}}
 
 			{{-- ========== VERIFIKATOR MENPAN STATS ========== --}}
 			@if(in_array(auth()->user()->role, ['verifikator_menpan', 'admin']) && !empty($menpanStats))
@@ -634,10 +634,10 @@
 					</div>
 				</div>
 
-				<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+				<div class="grid grid-cols-2 md:grid-cols-3 gap-3">
 					<div class="bg-white rounded-xl p-5">
 						<div class="flex items-center justify-between mb-3">
-							<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">OPD Siap Menpan</p>
+							<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Unit Kerja Ditangani</p>
 							<div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
 								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -655,7 +655,7 @@
 
 					<div class="bg-white rounded-xl p-5 col-span-1 md:col-span-1">
 						<div class="flex items-center justify-between mb-3">
-							<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Progress Menpan</p>
+							<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Progress Verifikasi Menpan</p>
 							<div class="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center text-teal-600">
 								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -674,7 +674,7 @@
 					</div>
 
 					<div class="bg-white rounded-xl p-5">
-						<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Status Menpan</p>
+						<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Status Pengecekan Menpan</p>
 						<div class="space-y-2">
 							<div class="flex items-center justify-between">
 								<div class="flex items-center gap-1.5">
@@ -692,33 +692,19 @@
 							</div>
 						</div>
 					</div>
-
-					<div class="bg-white rounded-xl p-5">
-						<div class="flex items-center justify-between mb-3">
-							<p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">OPD Belum Siap</p>
-							<div class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-300">
-								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-										d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-								</svg>
-							</div>
-						</div>
-						<p class="text-3xl font-bold text-gray-300">{{ $m['opdBelumSiapMenpan'] }}</p>
-						<p class="text-xs text-gray-400 mt-1">menunggu verifikator</p>
-					</div>
 				</div>
 
 				@if($m['opdProgressMenpan']->isNotEmpty())
 					<div class="bg-white rounded-xl overflow-hidden">
 						<div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-							<h3 class="text-sm font-semibold text-gray-900">Progress Verifikasi Menpan per OPD</h3>
+							<h3 class="text-sm font-semibold text-gray-900">Progress Verifikasi Menpan per Unit Kerja</h3>
 							<span class="text-xs text-gray-400">{{ $activePeriode->nama_periode }}</span>
 						</div>
 						<div class="overflow-x-auto">
 							<table class="w-full text-sm text-left text-gray-600">
 								<thead class="bg-gray-50 border-b border-gray-100">
 									<tr>
-										<th class="px-5 py-3 font-medium text-gray-700">Nama OPD</th>
+										<th class="px-5 py-3 font-medium text-gray-700">Nama Unit Kerja</th>
 										<th class="px-5 py-3 font-medium text-gray-700 text-center">Status Verifikator</th>
 										<th class="px-5 py-3 font-medium text-gray-700 text-center">Disetujui</th>
 										<th class="px-5 py-3 font-medium text-gray-700 text-center">Belum</th>
@@ -777,7 +763,6 @@
 						</div>
 					</div>
 				@endif
-			@endif
 			@endif
 		@else
 			<div class="bg-yellow-50 text-yellow-800 rounded-xl p-6 border border-yellow-200">
