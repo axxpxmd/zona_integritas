@@ -147,7 +147,7 @@
                                     <th rowspan="2" class="px-3 py-3.5 text-center font-bold uppercase tracking-wider border-r border-white/10">No</th>
                                     <th rowspan="2" class="px-4 py-3.5 text-left font-bold uppercase tracking-wider border-r border-white/10 min-w-[200px]">Unit Kerja</th>
                                     <th colspan="7" class="px-3 py-2 text-center font-bold uppercase tracking-wider border-b border-white/10 border-r border-white/10">Pengungkit ({{ number_format($bobotMeta['pengungkit_total'], 2) }}%)</th>
-                                    <th colspan="5" class="px-3 py-2 text-center font-bold uppercase tracking-wider border-b border-white/10 border-r border-white/10">Hasil ({{ number_format($bobotMeta['hasil_total'], 2) }}%)</th>
+                                    <th colspan="4" class="px-3 py-2 text-center font-bold uppercase tracking-wider border-b border-white/10 border-r border-white/10">Hasil ({{ number_format($bobotMeta['hasil_total'], 2) }}%)</th>
                                     <th rowspan="2" class="px-3 py-3.5 text-center font-bold uppercase tracking-wider border-r border-white/10">Total (100%)</th>
                                     <th rowspan="2" class="px-3 py-3.5 text-center font-bold uppercase tracking-wider">Simpulan</th>
                                 </tr>
@@ -178,10 +178,6 @@
                                         SPP / Pelayanan
                                         <div class="text-[8px] text-white/70 mt-0.5">({{ number_format($bobotMeta['hasil']['pelayanan'], 2) }}%)</div>
                                     </th>
-                                    <th class="px-2 py-2 text-center text-[9px] font-bold uppercase border-r border-white/10">
-                                        Jumlah Hasil
-                                        <div class="text-[8px] text-white/70 mt-0.5">({{ number_format($bobotMeta['hasil_total'], 2) }}%)</div>
-                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100">
@@ -196,7 +192,6 @@
                                     <td class="px-2 py-2 text-center border-r border-gray-100">&ge; {{ number_format($thresholds['capaian'], 2) }}</td>
                                     <td class="px-2 py-2 text-center border-r border-gray-100 bg-amber-100/40">&ge; 18.25</td>
                                     <td class="px-2 py-2 text-center border-r border-gray-200">&ge; {{ number_format($thresholds['pelayanan'], 2) }}</td>
-                                    <td class="px-2 py-2 text-center border-r border-gray-200">&ge; {{ number_format($thresholds['hasil_total'], 2) }}</td>
                                     <td class="px-2 py-2 text-center border-r border-gray-200">&ge; {{ number_format($thresholds['total'], 2) }}</td>
                                     <td class="px-2 py-2 text-center">-</td>
                                 </tr>
@@ -287,16 +282,6 @@
                                             </div>
                                             <div class="text-[9px] {{ !$isPelayananPassed ? 'text-red-500 font-semibold' : 'text-gray-400' }}">
                                                 {{ number_format($row['pelayanan']['persen'], 1) }}%
-                                            </div>
-                                        </td>
-
-                                        <!-- Jumlah Hasil -->
-                                        <td class="px-2 py-3.5 text-center border-r border-gray-200">
-                                            <div class="font-semibold text-gray-800">
-                                                {{ number_format($row['hasil']['nilai'], 2) }}
-                                            </div>
-                                            <div class="text-[9px] text-gray-400">
-                                                {{ number_format($row['hasil']['persen'], 1) }}%
                                             </div>
                                         </td>
 
