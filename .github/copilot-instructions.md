@@ -36,6 +36,22 @@ note: kolom tersebut ada di tabel jawaban. pastikan pada setiap pertanyaan sudah
 - **Periode (`tm_periode`):** Memiliki rentang waktu pengerjaan. Operator dan Verifikator hanya bisa bekerja jika tanggal saat ini masuk dalam rentang waktu sesi/periode tersebut.
 - **Histori Jawaban (`jawaban`):** Tabel jawaban menyimpan input asli operator (`jawaban_text`, `jawaban_angka`). Ketika verifikator mengubah, jawaban verifikator disimpan di field terpisah (misal `verifikator_jawaban_text`) sehingga riwayat asli operator tetap aman. Terdapat *flag/status* revisi atau disetujui.
 
+## Rules WBK - Nilai Hasil Kuesioner (STRICT)
+Untuk bisa menuju WBK, syarat nilai hasil kuesioner:
+1. **Total Nilai Evaluasi ZI:** minimal 75,00
+2. **Total Pengungkit:** minimal 40,00
+3. **Bobot Minimal Per Area Pengungkit:** masing-masing minimal 60,00%
+    - a. MANAJEMEN PERUBAHAN (8%)
+    - b. PENATAAN TATALAKSANA (7%)
+    - c. PENATAAN SISTEM MANAJEMEN SDM APARATUR (10%)
+    - d. PENGUATAN AKUNTABILITAS (10%)
+    - e. PENGUATAN PENGAWASAN (15%)
+    - f. PENINGKATAN KUALITAS PELAYANAN PUBLIK (10%)
+4. **BIROKRASI YANG BERSIH DAN AKUNTABEL":** minimal 18,25
+    - a. "Nilai Survey Persepsi Korupsi (Survei Eksternal)": minimal 15,75 (3,60)
+    - b. "Capaian Kinerja Lebih Baik dari pada Capaian Kinerja Sebelumnya": minimal 2,50
+5. **Nilai Minimal Komponen Hasil "PELAYANAN PUBLIK YANG PRIMA":** minimal 14,00 (3,20)
+
 ## Design System (STRICT)
 - **Colors:** Primary `#0164CA`, hover `#0150A8`, accent `#F7D558`
 - **Cards:** `bg-white rounded-xl` - NO borders, NO shadows
@@ -119,3 +135,5 @@ resources/views/
 - [resources/views/layouts/app.blade.php](resources/views/layouts/app.blade.php) - Layout + Tailwind config
 - [resources/views/page/opd/index.blade.php](resources/views/page/opd/index.blade.php) - Index page template
 - [app/Http/Controllers/UserController.php](app/Http/Controllers/UserController.php) - CRUD with validation
+
+
