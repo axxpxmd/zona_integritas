@@ -15,6 +15,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerifikasiController;
 use App\Http\Controllers\VerifikasiMenpanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\LogViewerController;
 use Illuminate\Support\Facades\Route;
 
 // Auth Routes
@@ -57,6 +58,11 @@ Route::middleware('auth')->group(function () {
 
         // Sub Pertanyaan Management
         Route::resource('sub-pertanyaan', SubPertanyaanController::class)->names('sub-pertanyaan');
+
+        // Log Viewer
+        Route::get('logs', [LogViewerController::class, 'index'])->name('logs.index');
+        Route::get('logs/{file}/download', [LogViewerController::class, 'download'])->name('logs.download');
+        Route::delete('logs/{file}', [LogViewerController::class, 'destroy'])->name('logs.destroy');
     });
 
     // Profile
