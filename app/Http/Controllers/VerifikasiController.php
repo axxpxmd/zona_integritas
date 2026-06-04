@@ -164,7 +164,7 @@ class VerifikasiController extends Controller
                     ->whereNull('sub_pertanyaan_id')
                     ->whereIn('opd_id', $assignedOpdIds);
 
-                if (Auth::user()->role !== 'operator') {
+                if (!in_array(Auth::user()->role, ['operator', 'verifikator'])) {
                     $query->where('status', 'final');
                 }
 
@@ -182,7 +182,7 @@ class VerifikasiController extends Controller
                     $totalJawaban = (clone $opdBase)->count();
                     $totalVerified = (clone $opdBase)->whereIn('status_verifikasi', $verifiedStatuses)->count();
 
-                    if (Auth::user()->role !== 'operator') {
+                    if (!in_array(Auth::user()->role, ['operator', 'verifikator'])) {
                         if ($totalJawaban === 0 || $totalVerified < $totalJawaban) {
                             continue;
                         }
@@ -1007,7 +1007,7 @@ class VerifikasiController extends Controller
             if ($pertanyaan->has_sub_pertanyaan) {
                 $jawabanSub = [];
                 foreach ($pertanyaan->subPertanyaans as $subPertanyaan) {
-                    $key = $pertanyaan->id . '_' . $subPertanyaan->id;
+                    $key = $pertanyaan->id.'_'.$subPertanyaan->id;
                     $jawabanSubModel = $jawabanMap[$key] ?? null;
                     if ($jawabanSubModel) {
                         $value = null;
@@ -1019,8 +1019,8 @@ class VerifikasiController extends Controller
                         } elseif ($role === 'menpan') {
                             $isMenpanDisetujui = $jawabanSubModel->status_verifikasi_menpan === 'disetujui';
                             $isVerified = in_array($jawabanSubModel->status_verifikasi, ['disetujui', 'terkirim'], true);
-                            
-                            $value = $isMenpanDisetujui 
+
+                            $value = $isMenpanDisetujui
                                 ? ($jawabanSubModel->menpan_jawaban_angka !== null ? $jawabanSubModel->menpan_jawaban_angka : ($jawabanSubModel->verifikator_jawaban_angka ?? $jawabanSubModel->jawaban_angka))
                                 : ($isVerified ? ($jawabanSubModel->verifikator_jawaban_angka ?? $jawabanSubModel->jawaban_angka) : $jawabanSubModel->jawaban_angka);
                         }
@@ -1044,8 +1044,8 @@ class VerifikasiController extends Controller
                     } elseif ($role === 'verifikator') {
                         $isVerified = in_array($jawaban->status_verifikasi, ['disetujui', 'terkirim'], true);
                         if ($isVerified) {
-                            $value = in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda']) 
-                                ? ($jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text) 
+                            $value = in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda'])
+                                ? ($jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text)
                                 : ($jawaban->verifikator_jawaban_angka ?? $jawaban->jawaban_angka);
                         } else {
                             $value = in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda']) ? $jawaban->jawaban_text : $jawaban->jawaban_angka;
@@ -1053,7 +1053,7 @@ class VerifikasiController extends Controller
                     } elseif ($role === 'menpan') {
                         $isMenpanDisetujui = $jawaban->status_verifikasi_menpan === 'disetujui';
                         $isVerified = in_array($jawaban->status_verifikasi, ['disetujui', 'terkirim'], true);
-                        
+
                         if ($isMenpanDisetujui) {
                             if (in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda'])) {
                                 $value = $jawaban->menpan_jawaban_text !== null ? $jawaban->menpan_jawaban_text : ($jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text);
@@ -1062,8 +1062,8 @@ class VerifikasiController extends Controller
                             }
                         } else {
                             if ($isVerified) {
-                                $value = in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda']) 
-                                    ? ($jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text) 
+                                $value = in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda'])
+                                    ? ($jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text)
                                     : ($jawaban->verifikator_jawaban_angka ?? $jawaban->jawaban_angka);
                             } else {
                                 $value = in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda']) ? $jawaban->jawaban_text : $jawaban->jawaban_angka;
