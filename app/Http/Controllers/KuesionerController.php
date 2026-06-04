@@ -2,7 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Periode, Komponen, Kategori, SubKategori, Indikator, Pertanyaan, Jawaban, JawabanFile};
+use App\Models\Indikator;
+use App\Models\Jawaban;
+use App\Models\JawabanFile;
+use App\Models\Kategori;
+use App\Models\Komponen;
+use App\Models\Periode;
+use App\Models\Pertanyaan;
+use App\Models\SubKategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -52,7 +59,7 @@ class KuesionerController extends Controller
         $user = Auth::user();
         $opd = $user->opd;
 
-        if (!$opd) {
+        if (! $opd) {
             return redirect()->route('kuesioner.index')
                 ->with('error', 'User Anda belum terhubung dengan OPD');
         }
@@ -70,7 +77,7 @@ class KuesionerController extends Controller
                 },
                 'kategoris.subKategoris.indikators.pertanyaans' => function ($q) {
                     $q->where('status', 1);
-                }
+                },
             ])
             ->orderBy('urutan')
             ->get();
@@ -86,7 +93,7 @@ class KuesionerController extends Controller
             ->where('opd_id', $opd->id)
             ->whereNotNull('sub_pertanyaan_id')
             ->get()
-            ->keyBy(fn ($j) => $j->pertanyaan_id . '-' . $j->sub_pertanyaan_id);
+            ->keyBy(fn ($j) => $j->pertanyaan_id.'-'.$j->sub_pertanyaan_id);
         $progressOp = [];
         $progressVer = [];
         $progressMen = [];
@@ -97,19 +104,24 @@ class KuesionerController extends Controller
                     $totalNilaiVer = 0;
                     $totalNilaiMen = 0;
                     foreach ($subKategori->indikators as $indikator) {
-                        $indTerjawabOp = 0; $indTotalOp = 0;
-                        $indTerjawabVer = 0; $indTotalVer = 0;
-                        $indTerjawabMen = 0; $indTotalMen = 0;
+                        $indTerjawabOp = 0;
+                        $indTotalOp = 0;
+                        $indTerjawabVer = 0;
+                        $indTotalVer = 0;
+                        $indTerjawabMen = 0;
+                        $indTotalMen = 0;
                         foreach ($indikator->pertanyaans as $pertanyaan) {
                             $jawaban = $jawabans[$pertanyaan->id] ?? null;
                             if ($jawaban) {
-                                $valOp = null; $valVer = null; $valMen = null;
+                                $valOp = null;
+                                $valVer = null;
+                                $valMen = null;
 
                                 // OPERATOR
                                 if ($pertanyaan->has_sub_pertanyaan) {
                                     $subAns = [];
                                     foreach ($pertanyaan->subPertanyaans as $sp) {
-                                        $spKey = $pertanyaan->id . '-' . $sp->id;
+                                        $spKey = $pertanyaan->id.'-'.$sp->id;
                                         if (isset($subJawabansAll[$spKey]) && $subJawabansAll[$spKey]->jawaban_angka !== null) {
                                             $subAns[$sp->id] = $subJawabansAll[$spKey]->jawaban_angka;
                                         }
@@ -119,7 +131,10 @@ class KuesionerController extends Controller
                                     $effOp = in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda']) ? $jawaban->jawaban_text : $jawaban->jawaban_angka;
                                     $valOp = $effOp !== null ? $this->hitungNilai($pertanyaan, $effOp) : $jawaban->nilai;
                                 }
-                                if ($valOp !== null) { $indTerjawabOp++; $indTotalOp += $valOp; }
+                                if ($valOp !== null) {
+                                    $indTerjawabOp++;
+                                    $indTotalOp += $valOp;
+                                }
 
                                 // VERIFIKATOR
                                 $isVerified = in_array($jawaban->status_verifikasi, ['disetujui', 'terkirim'], true);
@@ -127,11 +142,13 @@ class KuesionerController extends Controller
                                     if ($pertanyaan->has_sub_pertanyaan) {
                                         $subAns = [];
                                         foreach ($pertanyaan->subPertanyaans as $sp) {
-                                            $spKey = $pertanyaan->id . '-' . $sp->id;
+                                            $spKey = $pertanyaan->id.'-'.$sp->id;
                                             if (isset($subJawabansAll[$spKey])) {
                                                 $sja = $subJawabansAll[$spKey];
                                                 $effSp = $sja->verifikator_jawaban_angka ?? $sja->jawaban_angka;
-                                                if ($effSp !== null) $subAns[$sp->id] = $effSp;
+                                                if ($effSp !== null) {
+                                                    $subAns[$sp->id] = $effSp;
+                                                }
                                             }
                                         }
                                         $valVer = (count($subAns) >= 2) ? $this->hitungNilaiSubPertanyaan($pertanyaan, $subAns) : $jawaban->nilai;
@@ -144,7 +161,10 @@ class KuesionerController extends Controller
                                 } else {
                                     $valVer = $valOp;
                                 }
-                                if ($valVer !== null) { $indTerjawabVer++; $indTotalVer += $valVer; }
+                                if ($valVer !== null) {
+                                    $indTerjawabVer++;
+                                    $indTotalVer += $valVer;
+                                }
 
                                 // MENPAN
                                 $isMenpanDisetujui = $jawaban->status_verifikasi_menpan === 'disetujui';
@@ -152,11 +172,13 @@ class KuesionerController extends Controller
                                     if ($pertanyaan->has_sub_pertanyaan) {
                                         $subAns = [];
                                         foreach ($pertanyaan->subPertanyaans as $sp) {
-                                            $spKey = $pertanyaan->id . '-' . $sp->id;
+                                            $spKey = $pertanyaan->id.'-'.$sp->id;
                                             if (isset($subJawabansAll[$spKey])) {
                                                 $sja = $subJawabansAll[$spKey];
                                                 $effSp = $sja->menpan_jawaban_angka !== null ? $sja->menpan_jawaban_angka : ($sja->verifikator_jawaban_angka ?? $sja->jawaban_angka);
-                                                if ($effSp !== null) $subAns[$sp->id] = $effSp;
+                                                if ($effSp !== null) {
+                                                    $subAns[$sp->id] = $effSp;
+                                                }
                                             }
                                         }
                                         $valMen = (count($subAns) >= 2) ? $this->hitungNilaiSubPertanyaan($pertanyaan, $subAns) : $jawaban->nilai;
@@ -169,7 +191,10 @@ class KuesionerController extends Controller
                                 } else {
                                     $valMen = $valVer;
                                 }
-                                if ($valMen !== null) { $indTerjawabMen++; $indTotalMen += $valMen; }
+                                if ($valMen !== null) {
+                                    $indTerjawabMen++;
+                                    $indTotalMen += $valMen;
+                                }
                             }
                         }
 
@@ -186,7 +211,7 @@ class KuesionerController extends Controller
         }
 
         // Siapkan Helper untuk membentuk rekapan
-        $buildRekap = function($progressSet) use ($komponens) {
+        $buildRekap = function ($progressSet) use ($komponens) {
             $pengungkit = [];
             $hasil = [];
             foreach ($komponens as $komponen) {
@@ -194,7 +219,7 @@ class KuesionerController extends Controller
                     foreach ($komponen->kategoris as $kategori) {
                         foreach ($kategori->subKategoris as $subKategori) {
                             $namaArea = trim($subKategori->nama);
-                            if (!isset($pengungkit[$namaArea])) {
+                            if (! isset($pengungkit[$namaArea])) {
                                 $pengungkit[$namaArea] = [
                                     'nama' => $namaArea,
                                     'pemenuhan_bobot' => 0,
@@ -206,13 +231,13 @@ class KuesionerController extends Controller
                             if (stripos($kategori->nama, 'PEMENUHAN') !== false) {
                                 $pengungkit[$namaArea]['pemenuhan_bobot'] = $subKategori->bobot;
                                 $pengungkit[$namaArea]['pemenuhan_nilai'] = $progressSet[$subKategori->id] ?? 0;
-                            } else if (stripos($kategori->nama, 'REFORM') !== false) {
+                            } elseif (stripos($kategori->nama, 'REFORM') !== false) {
                                 $pengungkit[$namaArea]['reform_bobot'] = $subKategori->bobot;
                                 $pengungkit[$namaArea]['reform_nilai'] = $progressSet[$subKategori->id] ?? 0;
                             }
                         }
                     }
-                } else if ($komponen->nama == 'HASIL') {
+                } elseif ($komponen->nama == 'HASIL') {
                     foreach ($komponen->kategoris as $kategori) {
                         $subs = [];
                         $nilaiKategori = 0;
@@ -223,7 +248,7 @@ class KuesionerController extends Controller
                                 'kode' => $subKategori->kode,
                                 'nama' => $subKategori->nama,
                                 'bobot' => $subKategori->bobot,
-                                'nilai' => $subNilai
+                                'nilai' => $subNilai,
                             ];
                         }
                         $hasil[] = [
@@ -231,11 +256,12 @@ class KuesionerController extends Controller
                             'nama' => $kategori->nama,
                             'bobot' => $kategori->bobot,
                             'nilai' => $nilaiKategori,
-                            'subs' => $subs
+                            'subs' => $subs,
                         ];
                     }
                 }
             }
+
             return ['rekapPengungkit' => $pengungkit, 'rekapHasil' => $hasil];
         };
 
@@ -271,7 +297,7 @@ class KuesionerController extends Controller
         $user = Auth::user();
         $opd = $user->opd;
 
-        if (!$opd) {
+        if (! $opd) {
             return redirect()->route('kuesioner.index')->with('error', 'User Anda belum terhubung dengan OPD');
         }
 
@@ -279,32 +305,41 @@ class KuesionerController extends Controller
             'kategoris' => fn ($q) => $q->where('status', 1)->orderBy('urutan'),
             'kategoris.subKategoris' => fn ($q) => $q->where('status', 1)->orderBy('urutan'),
             'kategoris.subKategoris.indikators' => fn ($q) => $q->where('status', 1),
-            'kategoris.subKategoris.indikators.pertanyaans' => fn ($q) => $q->where('status', 1)
+            'kategoris.subKategoris.indikators.pertanyaans' => fn ($q) => $q->where('status', 1),
         ])->orderBy('urutan')->get();
 
         $jawabans = Jawaban::where('periode_id', $periode_id)->where('opd_id', $opd->id)->whereNull('sub_pertanyaan_id')->get()->keyBy('pertanyaan_id');
-        $subJawabansAll = Jawaban::where('periode_id', $periode_id)->where('opd_id', $opd->id)->whereNotNull('sub_pertanyaan_id')->get()->keyBy(fn ($j) => $j->pertanyaan_id . '-' . $j->sub_pertanyaan_id);
+        $subJawabansAll = Jawaban::where('periode_id', $periode_id)->where('opd_id', $opd->id)->whereNotNull('sub_pertanyaan_id')->get()->keyBy(fn ($j) => $j->pertanyaan_id.'-'.$j->sub_pertanyaan_id);
 
-        $progressOp = []; $progressVer = []; $progressMen = [];
+        $progressOp = [];
+        $progressVer = [];
+        $progressMen = [];
 
         foreach ($komponens as $komponen) {
             foreach ($komponen->kategoris as $kategori) {
                 foreach ($kategori->subKategoris as $subKategori) {
-                    $totalNilaiOp = 0; $totalNilaiVer = 0; $totalNilaiMen = 0;
+                    $totalNilaiOp = 0;
+                    $totalNilaiVer = 0;
+                    $totalNilaiMen = 0;
                     foreach ($subKategori->indikators as $indikator) {
-                        $indTerjawabOp = 0; $indTotalOp = 0;
-                        $indTerjawabVer = 0; $indTotalVer = 0;
-                        $indTerjawabMen = 0; $indTotalMen = 0;
+                        $indTerjawabOp = 0;
+                        $indTotalOp = 0;
+                        $indTerjawabVer = 0;
+                        $indTotalVer = 0;
+                        $indTerjawabMen = 0;
+                        $indTotalMen = 0;
                         foreach ($indikator->pertanyaans as $pertanyaan) {
                             $jawaban = $jawabans[$pertanyaan->id] ?? null;
                             if ($jawaban) {
-                                $valOp = null; $valVer = null; $valMen = null;
+                                $valOp = null;
+                                $valVer = null;
+                                $valMen = null;
 
                                 // OPERATOR
                                 if ($pertanyaan->has_sub_pertanyaan) {
                                     $subAns = [];
                                     foreach ($pertanyaan->subPertanyaans as $sp) {
-                                        $spKey = $pertanyaan->id . '-' . $sp->id;
+                                        $spKey = $pertanyaan->id.'-'.$sp->id;
                                         if (isset($subJawabansAll[$spKey]) && $subJawabansAll[$spKey]->jawaban_angka !== null) {
                                             $subAns[$sp->id] = $subJawabansAll[$spKey]->jawaban_angka;
                                         }
@@ -314,7 +349,10 @@ class KuesionerController extends Controller
                                     $effOp = in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda']) ? $jawaban->jawaban_text : $jawaban->jawaban_angka;
                                     $valOp = $effOp !== null ? $this->hitungNilai($pertanyaan, $effOp) : $jawaban->nilai;
                                 }
-                                if ($valOp !== null) { $indTerjawabOp++; $indTotalOp += $valOp; }
+                                if ($valOp !== null) {
+                                    $indTerjawabOp++;
+                                    $indTotalOp += $valOp;
+                                }
 
                                 // VERIFIKATOR
                                 $isVerified = in_array($jawaban->status_verifikasi, ['disetujui', 'terkirim'], true);
@@ -322,11 +360,13 @@ class KuesionerController extends Controller
                                     if ($pertanyaan->has_sub_pertanyaan) {
                                         $subAns = [];
                                         foreach ($pertanyaan->subPertanyaans as $sp) {
-                                            $spKey = $pertanyaan->id . '-' . $sp->id;
+                                            $spKey = $pertanyaan->id.'-'.$sp->id;
                                             if (isset($subJawabansAll[$spKey])) {
                                                 $sja = $subJawabansAll[$spKey];
                                                 $effSp = $sja->verifikator_jawaban_angka ?? $sja->jawaban_angka;
-                                                if ($effSp !== null) $subAns[$sp->id] = $effSp;
+                                                if ($effSp !== null) {
+                                                    $subAns[$sp->id] = $effSp;
+                                                }
                                             }
                                         }
                                         $valVer = (count($subAns) >= 2) ? $this->hitungNilaiSubPertanyaan($pertanyaan, $subAns) : $jawaban->nilai;
@@ -339,7 +379,10 @@ class KuesionerController extends Controller
                                 } else {
                                     $valVer = $valOp;
                                 }
-                                if ($valVer !== null) { $indTerjawabVer++; $indTotalVer += $valVer; }
+                                if ($valVer !== null) {
+                                    $indTerjawabVer++;
+                                    $indTotalVer += $valVer;
+                                }
 
                                 // MENPAN
                                 $isMenpanDisetujui = $jawaban->status_verifikasi_menpan === 'disetujui';
@@ -347,11 +390,13 @@ class KuesionerController extends Controller
                                     if ($pertanyaan->has_sub_pertanyaan) {
                                         $subAns = [];
                                         foreach ($pertanyaan->subPertanyaans as $sp) {
-                                            $spKey = $pertanyaan->id . '-' . $sp->id;
+                                            $spKey = $pertanyaan->id.'-'.$sp->id;
                                             if (isset($subJawabansAll[$spKey])) {
                                                 $sja = $subJawabansAll[$spKey];
                                                 $effSp = $sja->menpan_jawaban_angka !== null ? $sja->menpan_jawaban_angka : ($sja->verifikator_jawaban_angka ?? $sja->jawaban_angka);
-                                                if ($effSp !== null) $subAns[$sp->id] = $effSp;
+                                                if ($effSp !== null) {
+                                                    $subAns[$sp->id] = $effSp;
+                                                }
                                             }
                                         }
                                         $valMen = (count($subAns) >= 2) ? $this->hitungNilaiSubPertanyaan($pertanyaan, $subAns) : $jawaban->nilai;
@@ -364,7 +409,10 @@ class KuesionerController extends Controller
                                 } else {
                                     $valMen = $valVer;
                                 }
-                                if ($valMen !== null) { $indTerjawabMen++; $indTotalMen += $valMen; }
+                                if ($valMen !== null) {
+                                    $indTerjawabMen++;
+                                    $indTotalMen += $valMen;
+                                }
                             }
                         }
 
@@ -380,28 +428,30 @@ class KuesionerController extends Controller
             }
         }
 
-        $buildRekap = function($progressSet) use ($komponens) {
-            $pengungkit = []; $hasil = [];
+        $buildRekap = function ($progressSet) use ($komponens) {
+            $pengungkit = [];
+            $hasil = [];
             foreach ($komponens as $komponen) {
                 if ($komponen->nama == 'PENGUNGKIT') {
                     foreach ($komponen->kategoris as $kategori) {
                         foreach ($kategori->subKategoris as $subKategori) {
                             $namaArea = trim($subKategori->nama);
-                            if (!isset($pengungkit[$namaArea])) {
+                            if (! isset($pengungkit[$namaArea])) {
                                 $pengungkit[$namaArea] = ['nama' => $namaArea, 'pemenuhan_bobot' => 0, 'pemenuhan_nilai' => 0, 'reform_bobot' => 0, 'reform_nilai' => 0];
                             }
                             if (stripos($kategori->nama, 'PEMENUHAN') !== false) {
                                 $pengungkit[$namaArea]['pemenuhan_bobot'] = $subKategori->bobot;
                                 $pengungkit[$namaArea]['pemenuhan_nilai'] = $progressSet[$subKategori->id] ?? 0;
-                            } else if (stripos($kategori->nama, 'REFORM') !== false) {
+                            } elseif (stripos($kategori->nama, 'REFORM') !== false) {
                                 $pengungkit[$namaArea]['reform_bobot'] = $subKategori->bobot;
                                 $pengungkit[$namaArea]['reform_nilai'] = $progressSet[$subKategori->id] ?? 0;
                             }
                         }
                     }
-                } else if ($komponen->nama == 'HASIL') {
+                } elseif ($komponen->nama == 'HASIL') {
                     foreach ($komponen->kategoris as $kategori) {
-                        $subs = []; $nilaiKategori = 0;
+                        $subs = [];
+                        $nilaiKategori = 0;
                         foreach ($kategori->subKategoris as $subKategori) {
                             $subNilai = $progressSet[$subKategori->id] ?? 0;
                             $nilaiKategori += $subNilai;
@@ -411,6 +461,7 @@ class KuesionerController extends Controller
                     }
                 }
             }
+
             return ['rekapPengungkit' => $pengungkit, 'rekapHasil' => $hasil];
         };
 
@@ -421,7 +472,7 @@ class KuesionerController extends Controller
         ];
 
         $role = request()->get('role', 'operator');
-        if (!in_array($role, ['operator', 'verifikator', 'menpan'])) {
+        if (! in_array($role, ['operator', 'verifikator', 'menpan'])) {
             $role = 'operator';
         }
 
@@ -442,23 +493,24 @@ class KuesionerController extends Controller
             'menpan' => $totalPertanyaanAktif > 0 && $jawabans->where('status_verifikasi_menpan', 'disetujui')->count() >= $totalPertanyaanAktif,
         ];
 
-        if (!$isFinished[$role]) {
+        if (! $isFinished[$role]) {
             return redirect()->back()->with('error', "Evaluasi LKE untuk {$role} belum selesai. Tidak dapat mengekspor PDF.");
         }
 
         $rekapDataView = [
-            $role => $rekapData[$role]
+            $role => $rekapData[$role],
         ];
 
         // Karena DomPDF tidak menggunakan tailwind secara sempurna, kita akan menggunakan styling manual
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('page.kuesioner.rekapan_pdf', [
             'periode' => $periode,
             'opd' => $opd,
-            'rekapData' => $rekapDataView
+            'rekapData' => $rekapDataView,
         ])->setPaper('a4', 'portrait');
 
         $roleTitle = ucfirst($role);
-        return $pdf->download("Rekapan_LKE_{$roleTitle}_". str_replace(' ','_',$opd->n_opd) . "_" . $periode->nama_periode . ".pdf");
+
+        return $pdf->download("Rekapan_LKE_{$roleTitle}_".str_replace(' ', '_', $opd->n_opd).'_'.$periode->nama_periode.'.pdf');
     }
 
     /**
@@ -472,7 +524,7 @@ class KuesionerController extends Controller
         $user = Auth::user();
         $opd = $user->opd;
 
-        if (!$opd) {
+        if (! $opd) {
             return redirect()->route('kuesioner.index')
                 ->with('error', 'User Anda belum terhubung dengan OPD');
         }
@@ -491,7 +543,7 @@ class KuesionerController extends Controller
                 },
                 'kategoris.subKategoris.indikators.pertanyaans' => function ($q) {
                     $q->where('status', 1);
-                }
+                },
             ])
             ->orderBy('urutan')
             ->get();
@@ -509,7 +561,7 @@ class KuesionerController extends Controller
             ->where('opd_id', $opd->id)
             ->whereNotNull('sub_pertanyaan_id')
             ->get()
-            ->keyBy(fn ($j) => $j->pertanyaan_id . '-' . $j->sub_pertanyaan_id);
+            ->keyBy(fn ($j) => $j->pertanyaan_id.'-'.$j->sub_pertanyaan_id);
 
         $totalSemuaPertanyaan = 0;
         $totalPertanyaanTerjawab = 0;
@@ -543,7 +595,7 @@ class KuesionerController extends Controller
                                     // Ambil sub-jawaban dari collection yang sudah di-preload
                                     $subJawabanAngka = [];
                                     foreach ($pertanyaan->subPertanyaans as $sp) {
-                                        $spKey = $pertanyaan->id . '-' . $sp->id;
+                                        $spKey = $pertanyaan->id.'-'.$sp->id;
                                         $spJawaban = $subJawabansAll[$spKey] ?? null;
                                         if ($spJawaban) {
                                             $effVal = $spJawaban->verifikator_jawaban_angka ?? $spJawaban->jawaban_angka;
@@ -588,7 +640,7 @@ class KuesionerController extends Controller
                         'terjawab' => $pertanyaanTerjawab,
                         'persen' => $totalPertanyaan > 0 ? round(($pertanyaanTerjawab / $totalPertanyaan) * 100) : 0,
                         'nilai' => $totalNilaiSubKategori,
-                        'capaian' => $persenCapaian
+                        'capaian' => $persenCapaian,
                     ];
                 }
             }
@@ -637,7 +689,7 @@ class KuesionerController extends Controller
         $user = Auth::user();
         $opd = $user->opd;
 
-        if (!$opd) {
+        if (! $opd) {
             return redirect()->back()->with('error', 'User belum terhubung dengan OPD');
         }
 
@@ -655,10 +707,10 @@ class KuesionerController extends Controller
     public function revisiIndex($periode_id)
     {
         $periode = Periode::findOrFail($periode_id);
-        $user    = Auth::user();
-        $opd     = $user->opd;
+        $user = Auth::user();
+        $opd = $user->opd;
 
-        if (!$opd) {
+        if (! $opd) {
             return redirect()->route('kuesioner.index')->with('error', 'User Anda belum terhubung dengan OPD');
         }
 
@@ -678,7 +730,7 @@ class KuesionerController extends Controller
             ->whereIn('pertanyaan_id', $pertanyaanIds)
             ->whereNotNull('sub_pertanyaan_id')
             ->get()
-            ->keyBy(fn ($j) => $j->pertanyaan_id . '-' . $j->sub_pertanyaan_id);
+            ->keyBy(fn ($j) => $j->pertanyaan_id.'-'.$j->sub_pertanyaan_id);
 
         // Muat struktur pertanyaan yang direvisi, dikelompokkan per sub-kategori → per indikator
         $pertanyaanAllRevisi = Pertanyaan::whereIn('id', $pertanyaanIds)
@@ -724,31 +776,31 @@ class KuesionerController extends Controller
     public function revisiSubmit(Request $request)
     {
         $user = Auth::user();
-        $opd  = $user->opd;
+        $opd = $user->opd;
 
-        if (!$opd) {
+        if (! $opd) {
             return redirect()->back()->with('error', 'User belum terhubung dengan OPD');
         }
 
         $request->validate([
-            'periode_id'    => 'required|exists:tm_periode,id',
+            'periode_id' => 'required|exists:tm_periode,id',
             'pertanyaan_id' => 'required|array',
-            'jawaban'       => 'nullable|array',
-            'keterangan'    => 'nullable|array',
-            'file'          => 'nullable|array',
-            'file.*.*'      => 'file|mimes:pdf|max:5120',
+            'jawaban' => 'nullable|array',
+            'keterangan' => 'nullable|array',
+            'file' => 'nullable|array',
+            'file.*.*' => 'file|mimes:pdf|max:5120',
         ]);
 
-        $periodeId      = $request->periode_id;
-        $pertanyaanIds  = $request->pertanyaan_id;
-        $jawabanData    = $request->jawaban ?? [];
+        $periodeId = $request->periode_id;
+        $pertanyaanIds = $request->pertanyaan_id;
+        $jawabanData = $request->jawaban ?? [];
         $jawabanSubData = $request->jawaban_sub ?? [];
         $keteranganData = $request->keterangan ?? [];
-        $fileData       = $request->file('file') ?? [];
+        $fileData = $request->file('file') ?? [];
 
         foreach ($pertanyaanIds as $pertanyaanId) {
             $pertanyaan = Pertanyaan::find($pertanyaanId);
-            if (!$pertanyaan) {
+            if (! $pertanyaan) {
                 continue;
             }
 
@@ -760,27 +812,27 @@ class KuesionerController extends Controller
                 ->where('status_verifikasi', 'direvisi')
                 ->first();
 
-            if (!$existingJawaban) {
+            if (! $existingJawaban) {
                 continue;
             }
 
-            if (!$pertanyaan->has_sub_pertanyaan) {
-                $jawaban    = $jawabanData[$pertanyaanId] ?? null;
+            if (! $pertanyaan->has_sub_pertanyaan) {
+                $jawaban = $jawabanData[$pertanyaanId] ?? null;
                 $keterangan = $keteranganData[$pertanyaanId] ?? null;
-                $files      = $fileData[$pertanyaanId] ?? [];
+                $files = $fileData[$pertanyaanId] ?? [];
 
-                if (!is_array($files)) {
+                if (! is_array($files)) {
                     $files = [$files];
                 }
 
                 // Update jawaban
                 if ($jawaban !== null) {
                     if (in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda'])) {
-                        $existingJawaban->jawaban_text  = $jawaban;
+                        $existingJawaban->jawaban_text = $jawaban;
                         $existingJawaban->jawaban_angka = null;
                     } else {
                         $existingJawaban->jawaban_angka = is_numeric($jawaban) ? $jawaban : null;
-                        $existingJawaban->jawaban_text  = null;
+                        $existingJawaban->jawaban_text = null;
                     }
                     $existingJawaban->nilai = $this->hitungNilai($pertanyaan, $jawaban);
                 }
@@ -790,8 +842,8 @@ class KuesionerController extends Controller
             } else {
                 // Sub-pertanyaan
                 $keterangan = $keteranganData[$pertanyaanId] ?? null;
-                $files      = $fileData[$pertanyaanId] ?? [];
-                if (!is_array($files)) {
+                $files = $fileData[$pertanyaanId] ?? [];
+                if (! is_array($files)) {
                     $files = [$files];
                 }
 
@@ -804,18 +856,18 @@ class KuesionerController extends Controller
                             ->where('sub_pertanyaan_id', $subId)
                             ->first();
                         if ($subJawaban) {
-                            $subJawaban->jawaban_angka        = is_numeric($subVal) ? $subVal : null;
+                            $subJawaban->jawaban_angka = is_numeric($subVal) ? $subVal : null;
                             $subJawaban->menunggu_dicek_ulang = true;
-                            $subJawaban->revised_at           = now();
-                            $subJawaban->revised_by           = $user->id;
-                            $subJawaban->revisi_count         = ($subJawaban->revisi_count ?? 0) + 1;
-                            $subJawaban->status_verifikasi    = 'belum_diverifikasi';
+                            $subJawaban->revised_at = now();
+                            $subJawaban->revised_by = $user->id;
+                            $subJawaban->revisi_count = ($subJawaban->revisi_count ?? 0) + 1;
+                            $subJawaban->status_verifikasi = 'belum_diverifikasi';
                             $subJawaban->status_verifikasi_menpan = 'belum_diverifikasi';
                             $subJawaban->menpan_jawaban_text = null;
                             $subJawaban->menpan_jawaban_angka = null;
                             $subJawaban->menpan_verified_by = null;
                             $subJawaban->menpan_verified_at = null;
-                            $subJawaban->updated_by           = $user->id;
+                            $subJawaban->updated_by = $user->id;
                             $subJawaban->save();
                         }
                     }
@@ -827,17 +879,17 @@ class KuesionerController extends Controller
             }
 
             // Tandai sudah direvisi operator → menunggu dicek ulang verifikator
-            $existingJawaban->status_verifikasi    = 'belum_diverifikasi';
+            $existingJawaban->status_verifikasi = 'belum_diverifikasi';
             $existingJawaban->status_verifikasi_menpan = 'belum_diverifikasi';
             $existingJawaban->menunggu_dicek_ulang = true;
-            $existingJawaban->revised_at           = now();
-            $existingJawaban->revised_by           = $user->id;
-            $existingJawaban->revisi_count         = ($existingJawaban->revisi_count ?? 0) + 1;
-            $existingJawaban->menpan_jawaban_text  = null;
+            $existingJawaban->revised_at = now();
+            $existingJawaban->revised_by = $user->id;
+            $existingJawaban->revisi_count = ($existingJawaban->revisi_count ?? 0) + 1;
+            $existingJawaban->menpan_jawaban_text = null;
             $existingJawaban->menpan_jawaban_angka = null;
-            $existingJawaban->menpan_verified_by   = null;
-            $existingJawaban->menpan_verified_at   = null;
-            $existingJawaban->updated_by           = $user->id;
+            $existingJawaban->menpan_verified_by = null;
+            $existingJawaban->menpan_verified_at = null;
+            $existingJawaban->updated_by = $user->id;
             $existingJawaban->save();
 
             // Simpan file jika ada
@@ -872,14 +924,14 @@ class KuesionerController extends Controller
             },
             'indikators.pertanyaans.subPertanyaans' => function ($q) {
                 $q->where('status', 1)->orderBy('urutan');
-            }
+            },
         ])->findOrFail($sub_kategori_id);
 
         // Ambil OPD user yang login
         $user = Auth::user();
         $opd = $user->opd;
 
-        if (!$opd) {
+        if (! $opd) {
             return redirect()->route('kuesioner.index')
                 ->with('error', 'User Anda belum terhubung dengan OPD');
         }
@@ -896,7 +948,7 @@ class KuesionerController extends Controller
         $currentPage = (int) max(1, min($request->get('indikator', 1), $totalIndikator));
         $currentIndikator = $indikators->get($currentPage - 1);
 
-        if (!$currentIndikator) {
+        if (! $currentIndikator) {
             return redirect()->route('kuesioner.fill', [$periode_id, $sub_kategori_id, 'indikator' => 1]);
         }
 
@@ -908,7 +960,7 @@ class KuesionerController extends Controller
             ->keyBy(function ($item) {
                 // Key: pertanyaan_id atau pertanyaan_id-sub_pertanyaan_id
                 return $item->sub_pertanyaan_id
-                    ? $item->pertanyaan_id . '-' . $item->sub_pertanyaan_id
+                    ? $item->pertanyaan_id.'-'.$item->sub_pertanyaan_id
                     : $item->pertanyaan_id;
             });
 
@@ -932,7 +984,7 @@ class KuesionerController extends Controller
         $user = Auth::user();
         $opd = $user->opd;
 
-        if (!$opd) {
+        if (! $opd) {
             return redirect()->back()->with('error', 'User belum terhubung dengan OPD');
         }
 
@@ -960,12 +1012,12 @@ class KuesionerController extends Controller
 
         foreach ($pertanyaanIds as $pertanyaanId) {
             $pertanyaan = Pertanyaan::find($pertanyaanId);
-            if (!$pertanyaan) {
+            if (! $pertanyaan) {
                 continue;
             }
 
             // Handle jawaban untuk pertanyaan utama (non-sub)
-            if (!$pertanyaan->has_sub_pertanyaan) {
+            if (! $pertanyaan->has_sub_pertanyaan) {
                 $jawaban = $jawabanData[$pertanyaanId] ?? null;
                 if ($jawaban === null || $jawaban === '') {
                     continue;
@@ -977,7 +1029,7 @@ class KuesionerController extends Controller
                     $files = [$files];
                 }
 
-                if (!is_array($files)) {
+                if (! is_array($files)) {
                     $files = [];
                 }
 
@@ -988,7 +1040,7 @@ class KuesionerController extends Controller
             else {
                 $nilaiGabungan = null;
                 $jawabanSubRaw = $jawabanSubData[$pertanyaanId] ?? [];
-                if (!is_array($jawabanSubRaw)) {
+                if (! is_array($jawabanSubRaw)) {
                     $jawabanSubRaw = [];
                 }
                 $jawabanSub = array_filter($jawabanSubRaw, function ($val) {
@@ -1015,7 +1067,7 @@ class KuesionerController extends Controller
                     $files = [$files];
                 }
 
-                if (!is_array($files)) {
+                if (! is_array($files)) {
                     $files = [];
                 }
 
@@ -1061,7 +1113,7 @@ class KuesionerController extends Controller
                 }
             }
             // Hitung nilai hanya untuk jawaban utama yang bukan gabungan
-            if (!$subPertanyaanId && $nilaiGabungan === null) {
+            if (! $subPertanyaanId && $nilaiGabungan === null) {
                 $nilai = $this->hitungNilai($pertanyaan, $jawabanValue);
             }
         }
@@ -1084,11 +1136,11 @@ class KuesionerController extends Controller
                 unset($data['jawaban_angka']);
 
                 // Jika tidak ada nilai gabungan yang dikirim (bukan parent update nilai)
-                if ($nilaiGabungan === null && !$subPertanyaanId) {
+                if ($nilaiGabungan === null && ! $subPertanyaanId) {
                     unset($data['nilai']);
                 }
             }
-            if (!$keterangan) {
+            if (! $keterangan) {
                 unset($data['keterangan']);
             }
 
@@ -1101,6 +1153,7 @@ class KuesionerController extends Controller
                 // Biarkan 'nilai' bisa divaluesi 0 (null di filter jika di set)
                 return $val !== null || $key === 'nilai';
             }, ARRAY_FILTER_USE_BOTH));
+
             return $existingJawaban;
         } else {
             return Jawaban::updateOrCreate(
@@ -1126,26 +1179,25 @@ class KuesionerController extends Controller
         $pertanyaanId,
         $subPertanyaanId = null,
         $revisiKe = null
-    ): void
-    {
+    ): void {
         if (empty($files)) {
             return;
         }
 
         $user = Auth::user();
-        $storagePath = 'kuesioner/' . $periodeId . '/' . $opdId . '/';
+        $storagePath = 'kuesioner/'.$periodeId.'/'.$opdId.'/';
         $lastFilePath = null;
 
         foreach ($files as $file) {
-            if (!$file || !$file->isValid()) {
+            if (! $file || ! $file->isValid()) {
                 continue;
             }
 
             $ext = strtolower($file->getClientOriginalExtension());
-            $fileName = time() . '_' . $pertanyaanId . ($subPertanyaanId ? '_' . $subPertanyaanId : '') . '_' . Str::random(6) . '.' . $ext;
+            $fileName = time().'_'.$pertanyaanId.($subPertanyaanId ? '_'.$subPertanyaanId : '').'_'.Str::random(6).'.'.$ext;
 
             $file->storeAs($storagePath, $fileName, 'sftp');
-            $filePath = $storagePath . $fileName;
+            $filePath = $storagePath.$fileName;
 
             JawabanFile::create([
                 'jawaban_id' => $jawaban->id,
@@ -1214,6 +1266,7 @@ class KuesionerController extends Controller
             if ($angka > 1 && $angka <= 100) {
                 return $angka / 100;
             }
+
             return $angka;
         }
 
@@ -1260,6 +1313,7 @@ class KuesionerController extends Controller
                 foreach ($letters as $index => $letter) {
                     $map[$letter] = round(1 - ($index / ($jumlahOpsi - 1)), 2);
                 }
+
                 return $map;
         }
     }
@@ -1302,11 +1356,13 @@ class KuesionerController extends Controller
                 // Rumus: (Tahun Lalu - Tahun Ini) / Tahun Lalu
                 // misal: (10 - 5) / 10 = 50%, (10 - 7) / 10 = 30%
                 $capaian = ($nilaiAcuan - $nilaiRealisasi) / $nilaiAcuan;
+
                 // Pastikan tidak negatif
                 return max(0, min($capaian, 1.0));
             }
 
             $capaian = $nilaiRealisasi / $nilaiAcuan;
+
             return min($capaian, 1.0); // max 100%
         }
 
@@ -1337,7 +1393,7 @@ class KuesionerController extends Controller
                     // Kumpulkan nilai sub dari jawaban verifikator
                     $subJawabanAngka = [];
                     foreach ($pertanyaan->subPertanyaans as $sp) {
-                        $spKey = $pertanyaan->id . '-' . $sp->id;
+                        $spKey = $pertanyaan->id.'-'.$sp->id;
                         $spJawaban = $jawabans[$spKey] ?? null;
                         if ($spJawaban) {
                             $effVal = $spJawaban->verifikator_jawaban_angka ?? $spJawaban->jawaban_angka;
@@ -1411,7 +1467,7 @@ class KuesionerController extends Controller
         $indikator = Indikator::with([
             'pertanyaans' => function ($q) {
                 $q->where('status', 1)->orderBy('urutan');
-            }
+            },
         ])->findOrFail($request->indikator_id);
 
         $jawabanInput = $request->jawaban ?? [];
@@ -1428,14 +1484,14 @@ class KuesionerController extends Controller
             if ($pertanyaan->has_sub_pertanyaan) {
                 // Untuk pertanyaan dengan sub, cek array jawaban sub-nya
                 $jawabanSub = $jawabanSubInput[$pertanyaan->id] ?? null;
-                if (!empty($jawabanSub) && is_array($jawabanSub) && count($jawabanSub) >= 2) {
+                if (! empty($jawabanSub) && is_array($jawabanSub) && count($jawabanSub) >= 2) {
                     $nilai = $this->hitungNilaiSubPertanyaan($pertanyaan, $jawabanSub);
                     $terjawab = true;
                 }
             } else {
                 // Untuk pertanyaan biasa
                 $jawaban = $jawabanInput[$pertanyaan->id] ?? null;
-                if (!empty($jawaban)) {
+                if (! empty($jawaban)) {
                     $nilai = $this->hitungNilai($pertanyaan, $jawaban);
                     $terjawab = true;
                 }
@@ -1477,7 +1533,7 @@ class KuesionerController extends Controller
     {
         $jawaban = Jawaban::findOrFail($id);
 
-        if (!$jawaban->file_path || !Storage::disk('sftp')->exists($jawaban->file_path)) {
+        if (! $jawaban->file_path || ! Storage::disk('sftp')->exists($jawaban->file_path)) {
             abort(404, 'File tidak ditemukan.');
         }
 
@@ -1492,7 +1548,7 @@ class KuesionerController extends Controller
 
         return response($fileContent, 200, [
             'Content-Type' => $mimeType,
-            'Content-Disposition' => 'inline; filename="' . basename($jawaban->file_path) . '"'
+            'Content-Disposition' => 'inline; filename="'.basename($jawaban->file_path).'"',
         ]);
     }
 
@@ -1504,7 +1560,7 @@ class KuesionerController extends Controller
         $file = JawabanFile::with('jawaban')->findOrFail($id);
         $jawaban = $file->jawaban;
 
-        if (!$file->file_path || !Storage::disk('sftp')->exists($file->file_path)) {
+        if (! $file->file_path || ! Storage::disk('sftp')->exists($file->file_path)) {
             abort(404, 'File tidak ditemukan.');
         }
 
@@ -1519,7 +1575,7 @@ class KuesionerController extends Controller
 
         return response($fileContent, 200, [
             'Content-Type' => $mimeType,
-            'Content-Disposition' => 'inline; filename="' . ($file->original_name ?: basename($file->file_path)) . '"'
+            'Content-Disposition' => 'inline; filename="'.($file->original_name ?: basename($file->file_path)).'"',
         ]);
     }
 
@@ -1554,10 +1610,7 @@ class KuesionerController extends Controller
 
             return response()->json(['success' => true, 'message' => 'File berhasil dihapus.']);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Gagal menghapus file: ' . $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Gagal menghapus file: '.$e->getMessage()], 500);
         }
     }
 }
-
-
-

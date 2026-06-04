@@ -770,6 +770,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
+            // Validate file size (max 5MB)
+            const oversizedFiles = files.filter(file => file.size > 5 * 1024 * 1024);
+            if (oversizedFiles.length > 0) {
+                alert('Ukuran file maksimal adalah 5MB!');
+                this.value = ''; // Reset file input
+                listEl.classList.add('hidden');
+                listEl.innerHTML = '';
+                return;
+            }
+
             const items = files.map((file, index) => {
                 return `<div class="truncate">${index + 1}. ${file.name}</div>`;
             }).join('');

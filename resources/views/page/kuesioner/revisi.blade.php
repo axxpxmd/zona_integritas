@@ -390,6 +390,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
 
+                // Validate file size (max 5MB)
+                const oversizedFiles = files.filter(file => file.size > 5 * 1024 * 1024);
+                if (oversizedFiles.length > 0) {
+                    alert('Ukuran file maksimal adalah 5MB!');
+                    this.value = ''; // Reset file input
+                    listEl.classList.add('hidden');
+                    listEl.innerHTML = '';
+                    return;
+                }
+
                 const items = files.map((f, i) => `<div class="truncate">${i + 1}. ${f.name}</div>`).join('');
                 listEl.innerHTML = `<div class="text-orange-600 ml-4 space-y-0.5">${items}</div>`;
                 listEl.classList.remove('hidden');
