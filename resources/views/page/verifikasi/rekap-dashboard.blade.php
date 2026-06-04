@@ -145,6 +145,7 @@
 
             <!-- Nav Tabs -->
             <div class="mb-8 border-b border-gray-200 flex flex-wrap gap-6">
+                {{-- NILAI OPERATOR --}}
                 <button type="button" onclick="switchTab('operator')" id="tab-operator"
                     class="pb-3 text-sm font-semibold transition-all duration-200 flex items-center gap-2 border-b-2 border-primary text-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"
@@ -154,6 +155,7 @@
                     </svg>
                     Nilai Unit Kerja
                 </button>
+                {{-- NILAI VERIFIKATOR --}}
                 <button type="button" onclick="switchTab('verifikator')" id="tab-verifikator"
                     class="pb-3 text-sm font-medium transition-all duration-200 flex items-center gap-2 border-b-2 border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"
@@ -163,6 +165,7 @@
                     </svg>
                     Nilai TPI
                 </button>
+                {{-- NILAI VERIFIKATOR MENPAN --}}
                 <button type="button" onclick="switchTab('menpan')" id="tab-menpan"
                     class="pb-3 text-sm font-medium transition-all duration-200 flex items-center gap-2 border-b-2 border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"
