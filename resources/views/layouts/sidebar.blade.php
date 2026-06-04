@@ -53,11 +53,17 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <span class="sidebar-text transition-all duration-300 whitespace-nowrap">Lembar Kerja Evaluasi</span>
+                    <span class="sidebar-text transition-all duration-300 whitespace-nowrap">Lembar Kerja
+                        Evaluasi</span>
                 </a>
                 @php
                     $opd = Auth::user()->opd;
-                    $periodeAktif = $opd ? \App\Models\Periode::where('status', 'aktif')->where('is_template', false)->orderByDesc('tahun')->first() : null;
+                    $periodeAktif = $opd
+                        ? \App\Models\Periode::where('status', 'aktif')
+                            ->where('is_template', false)
+                            ->orderByDesc('tahun')
+                            ->first()
+                        : null;
                     $totalRevisiSidebar = 0;
                     if ($periodeAktif && $opd) {
                         $totalRevisiSidebar = \App\Models\Jawaban::where('periode_id', $periodeAktif->id)
@@ -67,22 +73,33 @@
                             ->count();
                     }
                 @endphp
-                @if($periodeAktif)
-                <a href="{{ route('kuesioner.revisi.index', $periodeAktif->id) }}" data-tooltip="Revisi Jawaban"
-                    class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                @if ($periodeAktif)
+                    <a href="{{ route('kuesioner.revisi.index', $periodeAktif->id) }}" data-tooltip="Revisi Jawaban"
+                        class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
                                   {{ request()->routeIs('kuesioner.revisi.*') ? 'bg-white text-primary shadow-lg shadow-black/10' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        <span
+                            class="sidebar-text transition-all duration-300 whitespace-nowrap flex items-center gap-2">
+                            Revisi Jawaban
+                            @if ($totalRevisiSidebar > 0)
+                                <span
+                                    class="inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold bg-orange-400 text-white">{{ $totalRevisiSidebar }}</span>
+                            @endif
+                        </span>
+                    </a>
+                @endif
+                <a href="{{ route('verifikasi.rekap') }}" data-tooltip="Rekapan WBK"
+                    class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                                  {{ request()->routeIs('verifikasi.rekap') ? 'bg-white text-primary shadow-lg shadow-black/10' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            d="M3 3v18h18M7 15l3-3 4 4 5-6" />
                     </svg>
-                    <span class="sidebar-text transition-all duration-300 whitespace-nowrap flex items-center gap-2">
-                        Revisi Jawaban
-                        @if($totalRevisiSidebar > 0)
-                        <span class="inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold bg-orange-400 text-white">{{ $totalRevisiSidebar }}</span>
-                        @endif
-                    </span>
+                    <span class="sidebar-text transition-all duration-300 whitespace-nowrap">Rekapan WBK</span>
                 </a>
-                @endif
             </div>
         @endif
 
@@ -119,15 +136,17 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                 d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                         </svg>
-                        <span class="sidebar-text transition-all duration-300 whitespace-nowrap">Verifikasi Menpan</span>
+                        <span class="sidebar-text transition-all duration-300 whitespace-nowrap">Verifikasi
+                            Menpan</span>
                     </a>
                 @endif
             </div>
         @endif
 
-        @if(Auth::user()->role === 'admin')
+        @if (Auth::user()->role === 'admin')
             <!-- Grup Pengaturan Sistem -->
-            <p class="section-label text-[10px] font-semibold text-white/40 uppercase tracking-wider mb-3 mt-6">Pengaturan
+            <p class="section-label text-[10px] font-semibold text-white/40 uppercase tracking-wider mb-3 mt-6">
+                Pengaturan
                 Sistem</p>
             <div class="space-y-1.5">
                 <a href="{{ route('periode.index') }}" data-tooltip="Data Periode"
@@ -160,7 +179,8 @@
             </div>
 
             <!-- Grup Struktur Kuesioner -->
-            <p class="section-label text-[10px] font-semibold text-white/40 uppercase tracking-wider mb-3 mt-6">Struktur
+            <p class="section-label text-[10px] font-semibold text-white/40 uppercase tracking-wider mb-3 mt-6">
+                Struktur
                 Kuesioner</p>
             <div class="space-y-1.5">
                 <a href="{{ route('komponen.index') }}" data-tooltip="Data Komponen"

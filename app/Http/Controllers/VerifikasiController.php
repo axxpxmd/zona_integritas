@@ -82,7 +82,7 @@ class VerifikasiController extends Controller
 
     public function rekapDashboard(Request $request)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
+        if (!in_array(Auth::user()->role, ['admin', 'verifikator', 'operator'])) {
             abort(403, 'Akses ditolak.');
         }
 
@@ -147,6 +147,8 @@ class VerifikasiController extends Controller
 
             if (Auth::user()->role === 'admin') {
                 $assignedOpdIds = Opd::where('status', 1)->pluck('id');
+            } elseif (Auth::user()->role === 'operator') {
+                $assignedOpdIds = collect([Auth::user()->opd_id]);
             } else {
                 $assignedOpdIds = \Illuminate\Support\Facades\DB::table('opd_verifikator')
                     ->where('user_id', Auth::id())
@@ -154,12 +156,15 @@ class VerifikasiController extends Controller
             }
 
             if ($assignedOpdIds->isNotEmpty()) {
-                $submittedOpdIds = Jawaban::where('periode_id', $activePeriode->id)
-                    ->where('status', 'final')
+                $query = Jawaban::where('periode_id', $activePeriode->id)
                     ->whereNull('sub_pertanyaan_id')
-                    ->whereIn('opd_id', $assignedOpdIds)
-                    ->distinct()
-                    ->pluck('opd_id');
+                    ->whereIn('opd_id', $assignedOpdIds);
+
+                if (Auth::user()->role !== 'operator') {
+                    $query->where('status', 'final');
+                }
+
+                $submittedOpdIds = $query->distinct()->pluck('opd_id');
 
                 $opds = Opd::whereIn('id', $submittedOpdIds)
                     ->orderBy('n_opd')
@@ -173,8 +178,14 @@ class VerifikasiController extends Controller
                     $totalJawaban = (clone $opdBase)->count();
                     $totalVerified = (clone $opdBase)->whereIn('status_verifikasi', $verifiedStatuses)->count();
 
-                    if ($totalJawaban === 0 || $totalVerified < $totalJawaban) {
-                        continue;
+                    if (Auth::user()->role !== 'operator') {
+                        if ($totalJawaban === 0 || $totalVerified < $totalJawaban) {
+                            continue;
+                        }
+                    } else {
+                        if ($totalJawaban === 0) {
+                            continue;
+                        }
                     }
 
                     $jawabans = Jawaban::where('periode_id', $activePeriode->id)
