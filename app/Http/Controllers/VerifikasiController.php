@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Jawaban;
-use App\Models\Opd;
-use App\Models\Komponen;
-use App\Models\SubKategori;
-use App\Models\Periode;
 use App\Models\Indikator;
+use App\Models\Jawaban;
+use App\Models\Komponen;
+use App\Models\Opd;
+use App\Models\Periode;
 use App\Models\Pertanyaan;
+use App\Models\SubKategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,7 +16,7 @@ class VerifikasiController extends Controller
 {
     public function index(Request $request)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
+        if (! in_array(Auth::user()->role, ['admin', 'verifikator'])) {
             abort(403, 'Akses ditolak.');
         }
 
@@ -82,7 +82,7 @@ class VerifikasiController extends Controller
 
     public function rekapDashboard(Request $request)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator', 'operator'])) {
+        if (! in_array(Auth::user()->role, ['admin', 'verifikator', 'operator'])) {
             abort(403, 'Akses ditolak.');
         }
 
@@ -103,7 +103,11 @@ class VerifikasiController extends Controller
             'PENINGKATAN KUALITAS PELAYANAN PUBLIK',
         ];
 
-        $rekapRows = collect();
+        $rekapData = [
+            'operator' => collect(),
+            'verifikator' => collect(),
+            'menpan' => collect(),
+        ];
         $bobotMeta = [
             'area' => array_fill_keys($areaOrder, 0),
             'pengungkit_total' => 0,
@@ -198,183 +202,185 @@ class VerifikasiController extends Controller
                         $jawabanMap[$key] = $j;
                     }
 
-                    $progressSet = $this->buildProgressRekap($komponens, $jawabanMap);
-                    $rekap = $this->buildRekapFromProgress($progressSet, $komponens);
+                    foreach (['operator', 'verifikator', 'menpan'] as $roleKey) {
+                        $progressSet = $this->buildProgressRekapRole($roleKey, $komponens, $jawabanMap);
+                        $rekap = $this->buildRekapFromProgress($progressSet, $komponens);
 
-                    $areaData = [];
-                    $totalPengungkitBobot = 0;
-                    $totalPengungkitNilai = 0;
-                    foreach ($areaOrder as $areaName) {
-                        $area = $rekap['rekapPengungkit'][$areaName] ?? [
-                            'pemenuhan_bobot' => 0,
-                            'pemenuhan_nilai' => 0,
-                            'reform_bobot' => 0,
-                            'reform_nilai' => 0,
+                        $areaData = [];
+                        $totalPengungkitBobot = 0;
+                        $totalPengungkitNilai = 0;
+                        foreach ($areaOrder as $areaName) {
+                            $area = $rekap['rekapPengungkit'][$areaName] ?? [
+                                'pemenuhan_bobot' => 0,
+                                'pemenuhan_nilai' => 0,
+                                'reform_bobot' => 0,
+                                'reform_nilai' => 0,
+                            ];
+                            $bobotArea = (float) $area['pemenuhan_bobot'] + (float) $area['reform_bobot'];
+                            $nilaiArea = (float) $area['pemenuhan_nilai'] + (float) $area['reform_nilai'];
+                            $persenArea = $bobotArea > 0 ? ($nilaiArea / $bobotArea) * 100 : 0;
+
+                            $areaData[] = [
+                                'nama' => $areaName,
+                                'bobot' => $bobotArea,
+                                'nilai' => $nilaiArea,
+                                'persen' => $persenArea,
+                            ];
+
+                            $totalPengungkitBobot += $bobotArea;
+                            $totalPengungkitNilai += $nilaiArea;
+                        }
+
+                        $pengungkitPersen = $totalPengungkitBobot > 0
+                            ? ($totalPengungkitNilai / $totalPengungkitBobot) * 100
+                            : 0;
+
+                        $hasilMap = collect($rekap['rekapHasil'] ?? [])->keyBy('nama');
+                        $birokrasi = $hasilMap->get('BIROKRASI YANG BERSIH DAN AKUNTABEL', [
+                            'nilai' => 0,
+                            'bobot' => $bobotMeta['hasil']['birokrasi'],
+                            'subs' => [],
+                        ]);
+                        $pelayanan = $hasilMap->get('PELAYANAN PUBLIK YANG PRIMA', [
+                            'nilai' => 0,
+                            'bobot' => $bobotMeta['hasil']['pelayanan'],
+                            'subs' => [],
+                        ]);
+
+                        $birokrasiSubs = collect($birokrasi['subs'] ?? []);
+                        $spak = $birokrasiSubs->firstWhere('nama', 'Nilai Survey Persepsi Korupsi (Survei Eksternal)')
+                            ?? ['nilai' => 0, 'bobot' => $bobotMeta['hasil']['spak']];
+                        $capaian = $birokrasiSubs->firstWhere('nama', 'Capaian Kinerja Lebih Baik dari pada Capaian Kinerja Sebelumnya')
+                            ?? ['nilai' => 0, 'bobot' => $bobotMeta['hasil']['capaian']];
+
+                        $pelayananSubs = collect($pelayanan['subs'] ?? []);
+                        $spp = $pelayananSubs->firstWhere('nama', 'Nilai Persepsi Kualitas Pelayanan (Survei Eksternal)')
+                            ?? ['nilai' => 0, 'bobot' => $bobotMeta['hasil']['pelayanan']];
+
+                        $birokrasiNilai = (float) ($birokrasi['nilai'] ?? 0);
+                        $birokrasiBobot = (float) ($birokrasi['bobot'] ?? $bobotMeta['hasil']['birokrasi']);
+                        $birokrasiPersen = $birokrasiBobot > 0 ? ($birokrasiNilai / $birokrasiBobot) * 100 : 0;
+
+                        $spakNilai = (float) ($spak['nilai'] ?? 0);
+                        $spakBobot = (float) ($spak['bobot'] ?? $bobotMeta['hasil']['spak']);
+                        $spakPersen = $spakBobot > 0 ? ($spakNilai / $spakBobot) * 100 : 0;
+
+                        $capaianNilai = (float) ($capaian['nilai'] ?? 0);
+                        $capaianBobot = (float) ($capaian['bobot'] ?? $bobotMeta['hasil']['capaian']);
+                        $capaianPersen = $capaianBobot > 0 ? ($capaianNilai / $capaianBobot) * 100 : 0;
+
+                        $pelayananNilai = (float) ($spp['nilai'] ?? $pelayanan['nilai'] ?? 0);
+                        $pelayananBobot = (float) ($pelayanan['bobot'] ?? $bobotMeta['hasil']['pelayanan']);
+                        $pelayananPersen = $pelayananBobot > 0 ? ($pelayananNilai / $pelayananBobot) * 100 : 0;
+
+                        $totalHasilNilai = (float) ($birokrasiNilai + (float) ($pelayanan['nilai'] ?? $pelayananNilai));
+                        $totalHasilBobot = (float) ($birokrasiBobot + $pelayananBobot);
+                        $hasilPersen = $totalHasilBobot > 0 ? ($totalHasilNilai / $totalHasilBobot) * 100 : 0;
+
+                        $grandTotalBobot = $totalPengungkitBobot + $totalHasilBobot;
+                        $grandTotalNilai = $totalPengungkitNilai + $totalHasilNilai;
+                        $grandTotalPersen = $grandTotalBobot > 0 ? ($grandTotalNilai / $grandTotalBobot) * 100 : 0;
+
+                        $areaCompliance = [];
+                        foreach ($areaData as $area) {
+                            $areaCompliance[$area['nama']] = [
+                                'nilai' => (float) $area['nilai'],
+                                'bobot' => (float) $area['bobot'],
+                                'persen' => (float) $area['persen'],
+                                'threshold' => (float) ($area['bobot'] * 0.60),
+                                'is_passed' => $area['bobot'] == 0 || $area['persen'] >= 60,
+                            ];
+                        }
+
+                        $compliance = [
+                            'total_zi' => [
+                                'nilai' => (float) $grandTotalNilai,
+                                'threshold' => 75.00,
+                                'is_passed' => $grandTotalNilai >= 75.00,
+                            ],
+                            'total_pengungkit' => [
+                                'nilai' => (float) $totalPengungkitNilai,
+                                'threshold' => 40.00,
+                                'is_passed' => $totalPengungkitNilai >= 40.00,
+                            ],
+                            'areas' => $areaCompliance,
+                            'birokrasi_total' => [
+                                'nilai' => (float) $birokrasiNilai,
+                                'threshold' => 18.25,
+                                'is_passed' => $birokrasiNilai >= 18.25,
+                            ],
+                            'spak' => [
+                                'nilai' => (float) $spakNilai,
+                                'threshold' => 15.75,
+                                'is_passed' => $spakNilai >= 15.75,
+                            ],
+                            'capaian' => [
+                                'nilai' => (float) $capaianNilai,
+                                'threshold' => 2.50,
+                                'is_passed' => $capaianNilai >= 2.50,
+                            ],
+                            'pelayanan' => [
+                                'nilai' => (float) $pelayananNilai,
+                                'threshold' => 14.00,
+                                'is_passed' => $pelayananNilai >= 14.00,
+                            ],
                         ];
-                        $bobotArea = (float) $area['pemenuhan_bobot'] + (float) $area['reform_bobot'];
-                        $nilaiArea = (float) $area['pemenuhan_nilai'] + (float) $area['reform_nilai'];
-                        $persenArea = $bobotArea > 0 ? ($nilaiArea / $bobotArea) * 100 : 0;
 
-                        $areaData[] = [
-                            'nama' => $areaName,
-                            'bobot' => $bobotArea,
-                            'nilai' => $nilaiArea,
-                            'persen' => $persenArea,
-                        ];
+                        $meetsArea = collect($areaCompliance)->every(function ($area) {
+                            return $area['is_passed'];
+                        });
 
-                        $totalPengungkitBobot += $bobotArea;
-                        $totalPengungkitNilai += $nilaiArea;
+                        $meetsWbk = $compliance['total_zi']['is_passed']
+                            && $compliance['total_pengungkit']['is_passed']
+                            && $meetsArea
+                            && $compliance['birokrasi_total']['is_passed']
+                            && $compliance['spak']['is_passed']
+                            && $compliance['capaian']['is_passed']
+                            && $compliance['pelayanan']['is_passed'];
+
+                        $rekapData[$roleKey]->push([
+                            'opd_id' => $opd->id,
+                            'opd' => $opd->n_opd,
+                            'areas' => $areaData,
+                            'pengungkit' => [
+                                'bobot' => $totalPengungkitBobot,
+                                'nilai' => $totalPengungkitNilai,
+                                'persen' => $pengungkitPersen,
+                            ],
+                            'birokrasi' => [
+                                'bobot' => $birokrasiBobot,
+                                'nilai' => $birokrasiNilai,
+                                'persen' => $birokrasiPersen,
+                            ],
+                            'spak' => [
+                                'bobot' => $spakBobot,
+                                'nilai' => $spakNilai,
+                                'persen' => $spakPersen,
+                            ],
+                            'capaian' => [
+                                'bobot' => $capaianBobot,
+                                'nilai' => $capaianNilai,
+                                'persen' => $capaianPersen,
+                            ],
+                            'pelayanan' => [
+                                'bobot' => $pelayananBobot,
+                                'nilai' => $pelayananNilai,
+                                'persen' => $pelayananPersen,
+                            ],
+                            'hasil' => [
+                                'bobot' => $totalHasilBobot,
+                                'nilai' => $totalHasilNilai,
+                                'persen' => $hasilPersen,
+                            ],
+                            'total' => [
+                                'bobot' => $grandTotalBobot,
+                                'nilai' => $grandTotalNilai,
+                                'persen' => $grandTotalPersen,
+                            ],
+                            'meets_wbk' => $meetsWbk,
+                            'compliance' => $compliance,
+                        ]);
                     }
-
-                    $pengungkitPersen = $totalPengungkitBobot > 0
-                        ? ($totalPengungkitNilai / $totalPengungkitBobot) * 100
-                        : 0;
-
-                    $hasilMap = collect($rekap['rekapHasil'] ?? [])->keyBy('nama');
-                    $birokrasi = $hasilMap->get('BIROKRASI YANG BERSIH DAN AKUNTABEL', [
-                        'nilai' => 0,
-                        'bobot' => $bobotMeta['hasil']['birokrasi'],
-                        'subs' => [],
-                    ]);
-                    $pelayanan = $hasilMap->get('PELAYANAN PUBLIK YANG PRIMA', [
-                        'nilai' => 0,
-                        'bobot' => $bobotMeta['hasil']['pelayanan'],
-                        'subs' => [],
-                    ]);
-
-                    $birokrasiSubs = collect($birokrasi['subs'] ?? []);
-                    $spak = $birokrasiSubs->firstWhere('nama', 'Nilai Survey Persepsi Korupsi (Survei Eksternal)')
-                        ?? ['nilai' => 0, 'bobot' => $bobotMeta['hasil']['spak']];
-                    $capaian = $birokrasiSubs->firstWhere('nama', 'Capaian Kinerja Lebih Baik dari pada Capaian Kinerja Sebelumnya')
-                        ?? ['nilai' => 0, 'bobot' => $bobotMeta['hasil']['capaian']];
-
-                    $pelayananSubs = collect($pelayanan['subs'] ?? []);
-                    $spp = $pelayananSubs->firstWhere('nama', 'Nilai Persepsi Kualitas Pelayanan (Survei Eksternal)')
-                        ?? ['nilai' => 0, 'bobot' => $bobotMeta['hasil']['pelayanan']];
-
-                    $birokrasiNilai = (float) ($birokrasi['nilai'] ?? 0);
-                    $birokrasiBobot = (float) ($birokrasi['bobot'] ?? $bobotMeta['hasil']['birokrasi']);
-                    $birokrasiPersen = $birokrasiBobot > 0 ? ($birokrasiNilai / $birokrasiBobot) * 100 : 0;
-
-                    $spakNilai = (float) ($spak['nilai'] ?? 0);
-                    $spakBobot = (float) ($spak['bobot'] ?? $bobotMeta['hasil']['spak']);
-                    $spakPersen = $spakBobot > 0 ? ($spakNilai / $spakBobot) * 100 : 0;
-
-                    $capaianNilai = (float) ($capaian['nilai'] ?? 0);
-                    $capaianBobot = (float) ($capaian['bobot'] ?? $bobotMeta['hasil']['capaian']);
-                    $capaianPersen = $capaianBobot > 0 ? ($capaianNilai / $capaianBobot) * 100 : 0;
-
-                    $pelayananNilai = (float) ($spp['nilai'] ?? $pelayanan['nilai'] ?? 0);
-                    $pelayananBobot = (float) ($pelayanan['bobot'] ?? $bobotMeta['hasil']['pelayanan']);
-                    $pelayananPersen = $pelayananBobot > 0 ? ($pelayananNilai / $pelayananBobot) * 100 : 0;
-
-                    $totalHasilNilai = (float) ($birokrasiNilai + (float) ($pelayanan['nilai'] ?? $pelayananNilai));
-                    $totalHasilBobot = (float) ($birokrasiBobot + $pelayananBobot);
-                    $hasilPersen = $totalHasilBobot > 0 ? ($totalHasilNilai / $totalHasilBobot) * 100 : 0;
-
-                    $grandTotalBobot = $totalPengungkitBobot + $totalHasilBobot;
-                    $grandTotalNilai = $totalPengungkitNilai + $totalHasilNilai;
-                    $grandTotalPersen = $grandTotalBobot > 0 ? ($grandTotalNilai / $grandTotalBobot) * 100 : 0;
-
-                    $areaCompliance = [];
-                    foreach ($areaData as $area) {
-                        $areaCompliance[$area['nama']] = [
-                            'nilai' => (float) $area['nilai'],
-                            'bobot' => (float) $area['bobot'],
-                            'persen' => (float) $area['persen'],
-                            'threshold' => (float) ($area['bobot'] * 0.60),
-                            'is_passed' => $area['bobot'] == 0 || $area['persen'] >= 60,
-                        ];
-                    }
-
-                    $compliance = [
-                        'total_zi' => [
-                            'nilai' => (float) $grandTotalNilai,
-                            'threshold' => 75.00,
-                            'is_passed' => $grandTotalNilai >= 75.00,
-                        ],
-                        'total_pengungkit' => [
-                            'nilai' => (float) $totalPengungkitNilai,
-                            'threshold' => 40.00,
-                            'is_passed' => $totalPengungkitNilai >= 40.00,
-                        ],
-                        'areas' => $areaCompliance,
-                        'birokrasi_total' => [
-                            'nilai' => (float) $birokrasiNilai,
-                            'threshold' => 18.25,
-                            'is_passed' => $birokrasiNilai >= 18.25,
-                        ],
-                        'spak' => [
-                            'nilai' => (float) $spakNilai,
-                            'threshold' => 15.75,
-                            'is_passed' => $spakNilai >= 15.75,
-                        ],
-                        'capaian' => [
-                            'nilai' => (float) $capaianNilai,
-                            'threshold' => 2.50,
-                            'is_passed' => $capaianNilai >= 2.50,
-                        ],
-                        'pelayanan' => [
-                            'nilai' => (float) $pelayananNilai,
-                            'threshold' => 14.00,
-                            'is_passed' => $pelayananNilai >= 14.00,
-                        ],
-                    ];
-
-                    $meetsArea = collect($areaCompliance)->every(function ($area) {
-                        return $area['is_passed'];
-                    });
-
-                    $meetsWbk = $compliance['total_zi']['is_passed']
-                        && $compliance['total_pengungkit']['is_passed']
-                        && $meetsArea
-                        && $compliance['birokrasi_total']['is_passed']
-                        && $compliance['spak']['is_passed']
-                        && $compliance['capaian']['is_passed']
-                        && $compliance['pelayanan']['is_passed'];
-
-                    $rekapRows->push([
-                        'opd_id' => $opd->id,
-                        'opd' => $opd->n_opd,
-                        'areas' => $areaData,
-                        'pengungkit' => [
-                            'bobot' => $totalPengungkitBobot,
-                            'nilai' => $totalPengungkitNilai,
-                            'persen' => $pengungkitPersen,
-                        ],
-                        'birokrasi' => [
-                            'bobot' => $birokrasiBobot,
-                            'nilai' => $birokrasiNilai,
-                            'persen' => $birokrasiPersen,
-                        ],
-                        'spak' => [
-                            'bobot' => $spakBobot,
-                            'nilai' => $spakNilai,
-                            'persen' => $spakPersen,
-                        ],
-                        'capaian' => [
-                            'bobot' => $capaianBobot,
-                            'nilai' => $capaianNilai,
-                            'persen' => $capaianPersen,
-                        ],
-                        'pelayanan' => [
-                            'bobot' => $pelayananBobot,
-                            'nilai' => $pelayananNilai,
-                            'persen' => $pelayananPersen,
-                        ],
-                        'hasil' => [
-                            'bobot' => $totalHasilBobot,
-                            'nilai' => $totalHasilNilai,
-                            'persen' => $hasilPersen,
-                        ],
-                        'total' => [
-                            'bobot' => $grandTotalBobot,
-                            'nilai' => $grandTotalNilai,
-                            'persen' => $grandTotalPersen,
-                        ],
-                        'meets_wbk' => $meetsWbk,
-                        'compliance' => $compliance,
-                    ]);
                 }
             }
         }
@@ -382,7 +388,7 @@ class VerifikasiController extends Controller
         return view('page.verifikasi.rekap-dashboard', compact(
             'periodes',
             'activePeriode',
-            'rekapRows',
+            'rekapData',
             'areaOrder',
             'bobotMeta',
             'thresholds'
@@ -391,7 +397,7 @@ class VerifikasiController extends Controller
 
     public function show(Periode $periode, Opd $opd)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
+        if (! in_array(Auth::user()->role, ['admin', 'verifikator'])) {
             abort(403, 'Akses ditolak.');
         }
 
@@ -616,7 +622,7 @@ class VerifikasiController extends Controller
 
     public function detail(Request $request, Periode $periode, Opd $opd, SubKategori $subKategori)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
+        if (! in_array(Auth::user()->role, ['admin', 'verifikator'])) {
             abort(403, 'Akses ditolak.');
         }
 
@@ -660,7 +666,7 @@ class VerifikasiController extends Controller
 
     public function store(Request $request, Periode $periode, Opd $opd, SubKategori $subKategori)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
+        if (! in_array(Auth::user()->role, ['admin', 'verifikator'])) {
             abort(403, 'Akses ditolak.');
         }
 
@@ -674,7 +680,7 @@ class VerifikasiController extends Controller
             : null;
         $isCanVerify = $startVerif && $endVerif && $now->between($startVerif, $endVerif);
 
-        if (!$isCanVerify) {
+        if (! $isCanVerify) {
             return redirect()->back()->with('error', 'Verifikasi tidak dapat dilakukan karena di luar masa waktu verifikasi.');
         }
 
@@ -740,7 +746,7 @@ class VerifikasiController extends Controller
 
     public function cancelPertanyaan(Request $request, Periode $periode, Opd $opd, SubKategori $subKategori, Pertanyaan $pertanyaan)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
+        if (! in_array(Auth::user()->role, ['admin', 'verifikator'])) {
             abort(403, 'Akses ditolak.');
         }
 
@@ -784,7 +790,7 @@ class VerifikasiController extends Controller
      */
     public function kirimRevisi(Request $request, Periode $periode, Opd $opd, SubKategori $subKategori, Pertanyaan $pertanyaan)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
+        if (! in_array(Auth::user()->role, ['admin', 'verifikator'])) {
             abort(403, 'Akses ditolak.');
         }
 
@@ -835,7 +841,7 @@ class VerifikasiController extends Controller
      */
     public function cancelRevisi(Request $request, Periode $periode, Opd $opd, SubKategori $subKategori, Pertanyaan $pertanyaan)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
+        if (! in_array(Auth::user()->role, ['admin', 'verifikator'])) {
             abort(403, 'Akses ditolak.');
         }
 
@@ -876,7 +882,7 @@ class VerifikasiController extends Controller
 
     public function verifyAllDev(Request $request, Periode $periode, Opd $opd)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
+        if (! in_array(Auth::user()->role, ['admin', 'verifikator'])) {
             abort(403, 'Akses ditolak.');
         }
 
@@ -913,7 +919,7 @@ class VerifikasiController extends Controller
      */
     public function kirimMenpan(Request $request, Periode $periode, Opd $opd)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'verifikator'])) {
+        if (! in_array(Auth::user()->role, ['admin', 'verifikator'])) {
             abort(403, 'Akses ditolak.');
         }
 
@@ -966,6 +972,138 @@ class VerifikasiController extends Controller
         return $progress;
     }
 
+    private function buildProgressRekapRole(string $role, $komponens, array $jawabanMap): array
+    {
+        $progress = [];
+
+        foreach ($komponens as $komponen) {
+            foreach ($komponen->kategoris as $kategori) {
+                foreach ($kategori->subKategoris as $subKategori) {
+                    $totalNilaiSubKategori = 0;
+                    foreach ($subKategori->indikators as $indikator) {
+                        $nilaiIndikatorData = $this->hitungNilaiIndikatorRole($role, $indikator, $jawabanMap);
+                        $totalNilaiSubKategori += $nilaiIndikatorData['nilai_indikator'];
+                    }
+                    $progress[$subKategori->id] = $totalNilaiSubKategori;
+                }
+            }
+        }
+
+        return $progress;
+    }
+
+    private function hitungNilaiIndikatorRole(string $role, Indikator $indikator, array $jawabanMap): array
+    {
+        $pertanyaans = $indikator->pertanyaans;
+        $totalPertanyaan = $pertanyaans->count();
+        $pertanyaanTerjawab = 0;
+        $totalNilai = 0;
+        $nilaiPerPertanyaan = [];
+
+        foreach ($pertanyaans as $pertanyaan) {
+            $nilai = null;
+            $terjawab = false;
+
+            if ($pertanyaan->has_sub_pertanyaan) {
+                $jawabanSub = [];
+                foreach ($pertanyaan->subPertanyaans as $subPertanyaan) {
+                    $key = $pertanyaan->id . '_' . $subPertanyaan->id;
+                    $jawabanSubModel = $jawabanMap[$key] ?? null;
+                    if ($jawabanSubModel) {
+                        $value = null;
+                        if ($role === 'operator') {
+                            $value = $jawabanSubModel->jawaban_angka;
+                        } elseif ($role === 'verifikator') {
+                            $isVerified = in_array($jawabanSubModel->status_verifikasi, ['disetujui', 'terkirim'], true);
+                            $value = $isVerified ? ($jawabanSubModel->verifikator_jawaban_angka ?? $jawabanSubModel->jawaban_angka) : $jawabanSubModel->jawaban_angka;
+                        } elseif ($role === 'menpan') {
+                            $isMenpanDisetujui = $jawabanSubModel->status_verifikasi_menpan === 'disetujui';
+                            $isVerified = in_array($jawabanSubModel->status_verifikasi, ['disetujui', 'terkirim'], true);
+                            
+                            $value = $isMenpanDisetujui 
+                                ? ($jawabanSubModel->menpan_jawaban_angka !== null ? $jawabanSubModel->menpan_jawaban_angka : ($jawabanSubModel->verifikator_jawaban_angka ?? $jawabanSubModel->jawaban_angka))
+                                : ($isVerified ? ($jawabanSubModel->verifikator_jawaban_angka ?? $jawabanSubModel->jawaban_angka) : $jawabanSubModel->jawaban_angka);
+                        }
+
+                        if ($value !== null && $value !== '') {
+                            $jawabanSub[$subPertanyaan->id] = $value;
+                        }
+                    }
+                }
+
+                if (count($jawabanSub) >= 2) {
+                    $nilai = $this->hitungNilaiSubPertanyaan($pertanyaan, $jawabanSub);
+                    $terjawab = true;
+                }
+            } else {
+                $jawaban = $jawabanMap[$pertanyaan->id] ?? null;
+                if ($jawaban) {
+                    $value = null;
+                    if ($role === 'operator') {
+                        $value = in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda']) ? $jawaban->jawaban_text : $jawaban->jawaban_angka;
+                    } elseif ($role === 'verifikator') {
+                        $isVerified = in_array($jawaban->status_verifikasi, ['disetujui', 'terkirim'], true);
+                        if ($isVerified) {
+                            $value = in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda']) 
+                                ? ($jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text) 
+                                : ($jawaban->verifikator_jawaban_angka ?? $jawaban->jawaban_angka);
+                        } else {
+                            $value = in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda']) ? $jawaban->jawaban_text : $jawaban->jawaban_angka;
+                        }
+                    } elseif ($role === 'menpan') {
+                        $isMenpanDisetujui = $jawaban->status_verifikasi_menpan === 'disetujui';
+                        $isVerified = in_array($jawaban->status_verifikasi, ['disetujui', 'terkirim'], true);
+                        
+                        if ($isMenpanDisetujui) {
+                            if (in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda'])) {
+                                $value = $jawaban->menpan_jawaban_text !== null ? $jawaban->menpan_jawaban_text : ($jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text);
+                            } else {
+                                $value = $jawaban->menpan_jawaban_angka !== null ? $jawaban->menpan_jawaban_angka : ($jawaban->verifikator_jawaban_angka ?? $jawaban->jawaban_angka);
+                            }
+                        } else {
+                            if ($isVerified) {
+                                $value = in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda']) 
+                                    ? ($jawaban->verifikator_jawaban_text ?? $jawaban->jawaban_text) 
+                                    : ($jawaban->verifikator_jawaban_angka ?? $jawaban->jawaban_angka);
+                            } else {
+                                $value = in_array($pertanyaan->tipe_jawaban, ['ya_tidak', 'pilihan_ganda']) ? $jawaban->jawaban_text : $jawaban->jawaban_angka;
+                            }
+                        }
+                    }
+
+                    if ($value !== null && $value !== '') {
+                        $nilai = $this->hitungNilai($pertanyaan, $value);
+                        $terjawab = true;
+                    }
+                }
+            }
+
+            $nilaiPerPertanyaan[$pertanyaan->id] = [
+                'nilai' => $nilai,
+                'terjawab' => $terjawab,
+            ];
+
+            if ($nilai !== null) {
+                $totalNilai += $nilai;
+                $pertanyaanTerjawab++;
+            }
+        }
+
+        $rataRataNilai = $pertanyaanTerjawab > 0 ? $totalNilai / $pertanyaanTerjawab : 0;
+        $nilaiIndikator = $rataRataNilai * $indikator->bobot;
+        $persenCapaian = $indikator->bobot > 0 ? ($nilaiIndikator / $indikator->bobot) * 100 : 0;
+
+        return [
+            'total_pertanyaan' => $totalPertanyaan,
+            'pertanyaan_terjawab' => $pertanyaanTerjawab,
+            'rata_rata_nilai' => round($rataRataNilai, 2),
+            'bobot' => $indikator->bobot,
+            'nilai_indikator' => round($nilaiIndikator, 2),
+            'persen_capaian' => round($persenCapaian, 2),
+            'nilai_per_pertanyaan' => $nilaiPerPertanyaan,
+        ];
+    }
+
     private function buildRekapFromProgress(array $progressSet, $komponens): array
     {
         $pengungkit = [];
@@ -976,7 +1114,7 @@ class VerifikasiController extends Controller
                 foreach ($komponen->kategoris as $kategori) {
                     foreach ($kategori->subKategoris as $subKategori) {
                         $namaArea = trim($subKategori->nama);
-                        if (!isset($pengungkit[$namaArea])) {
+                        if (! isset($pengungkit[$namaArea])) {
                             $pengungkit[$namaArea] = [
                                 'nama' => $namaArea,
                                 'pemenuhan_bobot' => 0,
@@ -1096,7 +1234,7 @@ class VerifikasiController extends Controller
             if ($pertanyaan->has_sub_pertanyaan) {
                 $jawabanSub = [];
                 foreach ($pertanyaan->subPertanyaans as $subPertanyaan) {
-                    $key = $pertanyaan->id . '_' . $subPertanyaan->id;
+                    $key = $pertanyaan->id.'_'.$subPertanyaan->id;
                     $jawabanSubModel = $jawabanMap[$key] ?? null;
                     if ($jawabanSubModel) {
                         if (in_array($jawabanSubModel->status_verifikasi, ['disetujui', 'terkirim'], true)) {
@@ -1241,6 +1379,7 @@ class VerifikasiController extends Controller
                 foreach ($letters as $index => $letter) {
                     $map[$letter] = round(1 - ($index / ($jumlahOpsi - 1)), 2);
                 }
+
                 return $map;
         }
     }
@@ -1274,10 +1413,12 @@ class VerifikasiController extends Controller
         if ($nilaiAcuan > 0) {
             if (str_contains($pertanyaan->pertanyaan, 'Penurunan pelanggaran disiplin pegawai')) {
                 $capaian = ($nilaiAcuan - $nilaiRealisasi) / $nilaiAcuan;
+
                 return max(0, min($capaian, 1.0));
             }
 
             $capaian = $nilaiRealisasi / $nilaiAcuan;
+
             return min($capaian, 1.0);
         }
 

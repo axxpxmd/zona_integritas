@@ -143,264 +143,314 @@
                 </div>
             </div>
 
-            @if ($rekapRows->isEmpty())
-                <div class="bg-white rounded-xl p-12 text-center border border-gray-200/60 shadow-none">
-                    <div
-                        class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 mb-4 text-gray-400">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                        </svg>
-                    </div>
-                    <h3 class="text-base font-semibold text-gray-900">Belum Ada Rekapan Hasil</h3>
-                    <p class="text-sm text-gray-500 mt-1 max-w-sm mx-auto">Belum ada Unit Kerja dengan yang selesai
-                        diverifikasi pada periode ini.</p>
-                </div>
-            @else
-                <div class="bg-white rounded-xl overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full text-[11px] text-gray-700 divide-y divide-gray-200">
-                            <thead class="bg-primary text-white">
-                                <tr>
-                                    <th rowspan="2"
-                                        class="px-3 py-3.5 text-center font-bold uppercase tracking-wider border-r border-white/10">
-                                        No</th>
-                                    <th rowspan="2"
-                                        class="px-4 py-3.5 text-left font-bold uppercase tracking-wider border-r border-white/10 min-w-[200px]">
-                                        Unit Kerja</th>
-                                    <th colspan="7"
-                                        class="px-3 py-2 text-center font-bold uppercase tracking-wider border-b border-white/10 border-r border-white/10">
-                                        Pengungkit ({{ number_format($bobotMeta['pengungkit_total'], 2) }}%)</th>
-                                    <th colspan="4"
-                                        class="px-3 py-2 text-center font-bold uppercase tracking-wider border-b border-white/10 border-r border-white/10">
-                                        Hasil ({{ number_format($bobotMeta['hasil_total'], 2) }}%)</th>
-                                    <th rowspan="2"
-                                        class="px-3 py-3.5 text-center font-bold uppercase tracking-wider border-r border-white/10">
-                                        Total (100%)</th>
-                                    <th rowspan="2" class="px-3 py-3.5 text-center font-bold uppercase tracking-wider">
-                                        Simpulan</th>
-                                </tr>
-                                <tr class="bg-primary-dark text-white/95">
-                                    @foreach ($areaOrder as $areaName)
-                                        <th
-                                            class="px-2 py-2 text-center text-[9px] font-bold uppercase border-r border-white/5 max-w-[90px] whitespace-normal">
-                                            <div class="leading-tight">{{ $areaName }}</div>
-                                            <div class="text-[8px] text-white/70 mt-0.5">
-                                                ({{ number_format($bobotMeta['area'][$areaName], 2) }}%)</div>
-                                        </th>
-                                    @endforeach
-                                    <th
-                                        class="px-2 py-2 text-center text-[9px] font-bold uppercase border-r border-white/10">
-                                        Jumlah Pengungkit
-                                        <div class="text-[8px] text-white/70 mt-0.5">
-                                            ({{ number_format($bobotMeta['pengungkit_total'], 2) }}%)</div>
-                                    </th>
-                                    <th
-                                        class="px-2 py-2 text-center text-[9px] font-bold uppercase border-r border-white/5">
-                                        SPAK
-                                        <div class="text-[8px] text-white/70 mt-0.5">
-                                            ({{ number_format($bobotMeta['hasil']['spak'], 2) }}%)</div>
-                                    </th>
-                                    <th
-                                        class="px-2 py-2 text-center text-[9px] font-bold uppercase border-r border-white/5">
-                                        Capaian Kinerja
-                                        <div class="text-[8px] text-white/70 mt-0.5">
-                                            ({{ number_format($bobotMeta['hasil']['capaian'], 2) }}%)</div>
-                                    </th>
-                                    <th
-                                        class="px-2 py-2 text-center text-[9px] font-bold uppercase border-r border-white/5 bg-primary-dark/80">
-                                        Birokrasi Bersih
-                                        <div class="text-[8px] text-white/70 mt-0.5">
-                                            ({{ number_format($bobotMeta['hasil']['birokrasi'], 2) }}%)</div>
-                                    </th>
-                                    <th
-                                        class="px-2 py-2 text-center text-[9px] font-bold uppercase border-r border-white/10">
-                                        SPP / Pelayanan
-                                        <div class="text-[8px] text-white/70 mt-0.5">
-                                            ({{ number_format($bobotMeta['hasil']['pelayanan'], 2) }}%)</div>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100">
-                                <!-- Threshold Header Indicator row -->
-                                <tr class="bg-amber-50/70 text-[10px] font-bold text-amber-900">
-                                    <td colspan="2" class="px-4 py-2 border-r border-gray-200">Ambang Batas WBK</td>
-                                    @foreach ($areaOrder as $areaName)
-                                        <td class="px-2 py-2 text-center border-r border-gray-100">&ge;
-                                            {{ number_format($thresholds['area'][$areaName], 2) }}</td>
-                                    @endforeach
-                                    <td class="px-2 py-2 text-center border-r border-gray-200">&ge;
-                                        {{ number_format($thresholds['pengungkit_total'], 2) }}</td>
-                                    <td class="px-2 py-2 text-center border-r border-gray-100">&ge;
-                                        {{ number_format($thresholds['spak'], 2) }}</td>
-                                    <td class="px-2 py-2 text-center border-r border-gray-100">&ge;
-                                        {{ number_format($thresholds['capaian'], 2) }}</td>
-                                    <td class="px-2 py-2 text-center border-r border-gray-100 bg-amber-100/40">&ge; 18.25
-                                    </td>
-                                    <td class="px-2 py-2 text-center border-r border-gray-200">&ge;
-                                        {{ number_format($thresholds['pelayanan'], 2) }}</td>
-                                    <td class="px-2 py-2 text-center border-r border-gray-200">&ge;
-                                        {{ number_format($thresholds['total'], 2) }}</td>
-                                    <td class="px-2 py-2 text-center">-</td>
-                                </tr>
+            <!-- Nav Tabs -->
+            <div class="mb-8 border-b border-gray-200 flex flex-wrap gap-6">
+                <button type="button" onclick="switchTab('operator')" id="tab-operator"
+                    class="pb-3 text-sm font-semibold transition-all duration-200 flex items-center gap-2 border-b-2 border-primary text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    Nilai Unit Kerja
+                </button>
+                <button type="button" onclick="switchTab('verifikator')" id="tab-verifikator"
+                    class="pb-3 text-sm font-medium transition-all duration-200 flex items-center gap-2 border-b-2 border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    Nilai TPI
+                </button>
+                <button type="button" onclick="switchTab('menpan')" id="tab-menpan"
+                    class="pb-3 text-sm font-medium transition-all duration-200 flex items-center gap-2 border-b-2 border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                    Nilai TPE
+                </button>
+            </div>
 
-                                @foreach ($rekapRows as $index => $row)
-                                    <tr
-                                        class="hover:bg-gray-50/50 transition-colors {{ $row['meets_wbk'] ? 'bg-green-50/30' : '' }}">
-                                        <td
-                                            class="px-3 py-3.5 text-center text-gray-400 font-medium border-r border-gray-100">
-                                            {{ $index + 1 }}</td>
-                                        <td class="px-4 py-3.5 font-semibold text-gray-900 border-r border-gray-100">
-                                            <div class="line-clamp-2" title="{{ $row['opd'] }}">{{ $row['opd'] }}
-                                            </div>
-                                        </td>
-
-                                        <!-- Areas -->
-                                        @foreach ($row['areas'] as $area)
-                                            @php
-                                                $areaName = $area['nama'];
-                                                $complianceArea = $row['compliance']['areas'][$areaName] ?? null;
-                                                $isAreaPassed = $complianceArea ? $complianceArea['is_passed'] : true;
-                                            @endphp
-                                            <td
-                                                class="px-2 py-3.5 text-center border-r border-gray-100 transition-colors {{ !$isAreaPassed ? 'bg-red-50/50 text-red-700' : '' }}">
-                                                <div
-                                                    class="font-bold {{ !$isAreaPassed ? 'text-red-700' : 'text-gray-800' }}">
-                                                    {{ number_format($area['nilai'], 2) }}
-                                                </div>
-                                                <div
-                                                    class="text-[9px] {{ !$isAreaPassed ? 'text-red-500 font-semibold' : 'text-gray-400' }}">
-                                                    {{ number_format($area['persen'], 1) }}%
-                                                </div>
+            @foreach (['operator', 'verifikator', 'menpan'] as $role)
+                @php
+                    $rekapRows = $rekapData[$role];
+                @endphp
+                <div id="content-{{ $role }}" class="{{ $role == 'operator' ? 'block' : 'hidden' }} space-y-6">
+                    @if ($rekapRows->isEmpty())
+                        <div class="bg-white rounded-xl p-12 text-center border border-gray-200/60 shadow-none">
+                            <div
+                                class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 mb-4 text-gray-400">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                </svg>
+                            </div>
+                            <h3 class="text-base font-semibold text-gray-900">Belum Ada Rekapan Hasil</h3>
+                            <p class="text-sm text-gray-500 mt-1 max-w-sm mx-auto">Belum ada Unit Kerja dengan yang selesai
+                                diverifikasi pada periode ini.</p>
+                        </div>
+                    @else
+                        <div class="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-250/20">
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full text-[11px] text-gray-700 divide-y divide-gray-200">
+                                    <thead class="bg-primary text-white">
+                                        <tr>
+                                            <th rowspan="2"
+                                                class="px-3 py-3.5 text-center font-bold uppercase tracking-wider border-r border-white/10">
+                                                No</th>
+                                            <th rowspan="2"
+                                                class="px-4 py-3.5 text-left font-bold uppercase tracking-wider border-r border-white/10 min-w-[200px]">
+                                                Unit Kerja</th>
+                                            <th colspan="7"
+                                                class="px-3 py-2 text-center font-bold uppercase tracking-wider border-b border-white/10 border-r border-white/10">
+                                                Pengungkit ({{ number_format($bobotMeta['pengungkit_total'], 2) }}%)</th>
+                                            <th colspan="4"
+                                                class="px-3 py-2 text-center font-bold uppercase tracking-wider border-b border-white/10 border-r border-white/10">
+                                                Hasil ({{ number_format($bobotMeta['hasil_total'], 2) }}%)</th>
+                                            <th rowspan="2"
+                                                class="px-3 py-3.5 text-center font-bold uppercase tracking-wider border-r border-white/10">
+                                                Total (100%)</th>
+                                            <th rowspan="2"
+                                                class="px-3 py-3.5 text-center font-bold uppercase tracking-wider">
+                                                Simpulan</th>
+                                        </tr>
+                                        <tr class="bg-primary-dark text-white/95">
+                                            @foreach ($areaOrder as $areaName)
+                                                <th
+                                                    class="px-2 py-2 text-center text-[9px] font-bold uppercase border-r border-white/5 max-w-[90px] whitespace-normal">
+                                                    <div class="leading-tight">{{ $areaName }}</div>
+                                                    <div class="text-[8px] text-white/70 mt-0.5">
+                                                        ({{ number_format($bobotMeta['area'][$areaName], 2) }}%)
+                                                    </div>
+                                                </th>
+                                            @endforeach
+                                            <th
+                                                class="px-2 py-2 text-center text-[9px] font-bold uppercase border-r border-white/10">
+                                                Jumlah Pengungkit
+                                                <div class="text-[8px] text-white/70 mt-0.5">
+                                                    ({{ number_format($bobotMeta['pengungkit_total'], 2) }}%)</div>
+                                            </th>
+                                            <th
+                                                class="px-2 py-2 text-center text-[9px] font-bold uppercase border-r border-white/5">
+                                                SPAK
+                                                <div class="text-[8px] text-white/70 mt-0.5">
+                                                    ({{ number_format($bobotMeta['hasil']['spak'], 2) }}%)</div>
+                                            </th>
+                                            <th
+                                                class="px-2 py-2 text-center text-[9px] font-bold uppercase border-r border-white/5">
+                                                Capaian Kinerja
+                                                <div class="text-[8px] text-white/70 mt-0.5">
+                                                    ({{ number_format($bobotMeta['hasil']['capaian'], 2) }}%)</div>
+                                            </th>
+                                            <th
+                                                class="px-2 py-2 text-center text-[9px] font-bold uppercase border-r border-white/5 bg-primary-dark/80">
+                                                Birokrasi Bersih
+                                                <div class="text-[8px] text-white/70 mt-0.5">
+                                                    ({{ number_format($bobotMeta['hasil']['birokrasi'], 2) }}%)</div>
+                                            </th>
+                                            <th
+                                                class="px-2 py-2 text-center text-[9px] font-bold uppercase border-r border-white/10">
+                                                SPP / Pelayanan
+                                                <div class="text-[8px] text-white/70 mt-0.5">
+                                                    ({{ number_format($bobotMeta['hasil']['pelayanan'], 2) }}%)</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-100">
+                                        <!-- Threshold Header Indicator row -->
+                                        <tr class="bg-amber-50/70 text-[10px] font-bold text-amber-900">
+                                            <td colspan="2" class="px-4 py-2 border-r border-gray-200">Ambang Batas WBK
                                             </td>
+                                            @foreach ($areaOrder as $areaName)
+                                                <td class="px-2 py-2 text-center border-r border-gray-100">&ge;
+                                                    {{ number_format($thresholds['area'][$areaName], 2) }}</td>
+                                            @endforeach
+                                            <td class="px-2 py-2 text-center border-r border-gray-200">&ge;
+                                                {{ number_format($thresholds['pengungkit_total'], 2) }}</td>
+                                            <td class="px-2 py-2 text-center border-r border-gray-100">&ge;
+                                                {{ number_format($thresholds['spak'], 2) }}</td>
+                                            <td class="px-2 py-2 text-center border-r border-gray-100">&ge;
+                                                {{ number_format($thresholds['capaian'], 2) }}</td>
+                                            <td class="px-2 py-2 text-center border-r border-gray-100 bg-amber-100/40">&ge;
+                                                18.25
+                                            </td>
+                                            <td class="px-2 py-2 text-center border-r border-gray-200">&ge;
+                                                {{ number_format($thresholds['pelayanan'], 2) }}</td>
+                                            <td class="px-2 py-2 text-center border-r border-gray-200">&ge;
+                                                {{ number_format($thresholds['total'], 2) }}</td>
+                                            <td class="px-2 py-2 text-center">-</td>
+                                        </tr>
+
+                                        @foreach ($rekapRows as $index => $row)
+                                            <tr
+                                                class="hover:bg-gray-50/50 transition-colors {{ $row['meets_wbk'] ? 'bg-green-50/30' : '' }}">
+                                                <td
+                                                    class="px-3 py-3.5 text-center text-gray-400 font-medium border-r border-gray-100">
+                                                    {{ $index + 1 }}</td>
+                                                <td
+                                                    class="px-4 py-3.5 font-semibold text-gray-900 border-r border-gray-100">
+                                                    <div class="line-clamp-2" title="{{ $row['opd'] }}">
+                                                        {{ $row['opd'] }}
+                                                    </div>
+                                                </td>
+
+                                                <!-- Areas -->
+                                                @foreach ($row['areas'] as $area)
+                                                    @php
+                                                        $areaName = $area['nama'];
+                                                        $complianceArea =
+                                                            $row['compliance']['areas'][$areaName] ?? null;
+                                                        $isAreaPassed = $complianceArea
+                                                            ? $complianceArea['is_passed']
+                                                            : true;
+                                                    @endphp
+                                                    <td
+                                                        class="px-2 py-3.5 text-center border-r border-gray-100 transition-colors {{ !$isAreaPassed ? 'bg-red-50/50 text-red-700' : '' }}">
+                                                        <div
+                                                            class="font-bold {{ !$isAreaPassed ? 'text-red-700' : 'text-gray-800' }}">
+                                                            {{ number_format($area['nilai'], 2) }}
+                                                        </div>
+                                                        <div
+                                                            class="text-[9px] {{ !$isAreaPassed ? 'text-red-500 font-semibold' : 'text-gray-400' }}">
+                                                            {{ number_format($area['persen'], 1) }}%
+                                                        </div>
+                                                    </td>
+                                                @endforeach
+
+                                                <!-- Jumlah Pengungkit -->
+                                                @php
+                                                    $isPengungkitPassed =
+                                                        $row['compliance']['total_pengungkit']['is_passed'];
+                                                @endphp
+                                                <td
+                                                    class="px-2 py-3.5 text-center border-r border-gray-200 transition-colors {{ !$isPengungkitPassed ? 'bg-red-50/50 text-red-700' : '' }}">
+                                                    <div
+                                                        class="font-extrabold {{ !$isPengungkitPassed ? 'text-red-700' : 'text-gray-950' }}">
+                                                        {{ number_format($row['pengungkit']['nilai'], 2) }}
+                                                    </div>
+                                                    <div
+                                                        class="text-[9px] {{ !$isPengungkitPassed ? 'text-red-500 font-semibold' : 'text-gray-400' }}">
+                                                        {{ number_format($row['pengungkit']['persen'], 1) }}%
+                                                    </div>
+                                                </td>
+
+                                                <!-- SPAK -->
+                                                @php
+                                                    $isSpakPassed = $row['compliance']['spak']['is_passed'];
+                                                @endphp
+                                                <td
+                                                    class="px-2 py-3.5 text-center border-r border-gray-100 transition-colors {{ !$isSpakPassed ? 'bg-red-50/50 text-red-700' : '' }}">
+                                                    <div
+                                                        class="font-bold {{ !$isSpakPassed ? 'text-red-700' : 'text-gray-850' }}">
+                                                        {{ number_format($row['spak']['nilai'], 2) }}
+                                                    </div>
+                                                    <div
+                                                        class="text-[9px] {{ !$isSpakPassed ? 'text-red-500 font-semibold' : 'text-gray-400' }}">
+                                                        {{ number_format($row['spak']['persen'], 1) }}%
+                                                    </div>
+                                                </td>
+
+                                                <!-- Capaian Kinerja -->
+                                                @php
+                                                    $isCapaianPassed = $row['compliance']['capaian']['is_passed'];
+                                                @endphp
+                                                <td
+                                                    class="px-2 py-3.5 text-center border-r border-gray-100 transition-colors {{ !$isCapaianPassed ? 'bg-red-50/50 text-red-700' : '' }}">
+                                                    <div
+                                                        class="font-bold {{ !$isCapaianPassed ? 'text-red-700' : 'text-gray-850' }}">
+                                                        {{ number_format($row['capaian']['nilai'], 2) }}
+                                                    </div>
+                                                    <div
+                                                        class="text-[9px] {{ !$isCapaianPassed ? 'text-red-500 font-semibold' : 'text-gray-400' }}">
+                                                        {{ number_format($row['capaian']['persen'], 1) }}%
+                                                    </div>
+                                                </td>
+
+                                                <!-- Birokrasi Bersih Total -->
+                                                @php
+                                                    $isBirokrasiPassed =
+                                                        $row['compliance']['birokrasi_total']['is_passed'];
+                                                @endphp
+                                                <td
+                                                    class="px-2 py-3.5 text-center border-r border-gray-100 bg-gray-50/40 transition-colors {{ !$isBirokrasiPassed ? 'bg-red-50/50 text-red-700 font-bold' : '' }}">
+                                                    <div
+                                                        class="font-extrabold {{ !$isBirokrasiPassed ? 'text-red-700' : 'text-gray-900' }}">
+                                                        {{ number_format($row['birokrasi']['nilai'], 2) }}
+                                                    </div>
+                                                    <div
+                                                        class="text-[9px] {{ !$isBirokrasiPassed ? 'text-red-500 font-semibold' : 'text-gray-400' }}">
+                                                        {{ number_format($row['birokrasi']['persen'], 1) }}%
+                                                    </div>
+                                                </td>
+
+                                                <!-- SPP / Pelayanan Publik Prima -->
+                                                @php
+                                                    $isPelayananPassed = $row['compliance']['pelayanan']['is_passed'];
+                                                @endphp
+                                                <td
+                                                    class="px-2 py-3.5 text-center border-r border-gray-200 transition-colors {{ !$isPelayananPassed ? 'bg-red-50/50 text-red-700' : '' }}">
+                                                    <div
+                                                        class="font-bold {{ !$isPelayananPassed ? 'text-red-700' : 'text-gray-850' }}">
+                                                        {{ number_format($row['pelayanan']['nilai'], 2) }}
+                                                    </div>
+                                                    <div
+                                                        class="text-[9px] {{ !$isPelayananPassed ? 'text-red-500 font-semibold' : 'text-gray-400' }}">
+                                                        {{ number_format($row['pelayanan']['persen'], 1) }}%
+                                                    </div>
+                                                </td>
+
+                                                <!-- Total ZI -->
+                                                @php
+                                                    $isTotalPassed = $row['compliance']['total_zi']['is_passed'];
+                                                @endphp
+                                                <td
+                                                    class="px-2 py-3.5 text-center border-r border-gray-200 transition-colors {{ !$isTotalPassed ? 'bg-red-50/50 text-red-700' : '' }}">
+                                                    <div
+                                                        class="font-extrabold text-xs {{ !$isTotalPassed ? 'text-red-700' : 'text-gray-900' }}">
+                                                        {{ number_format($row['total']['nilai'], 2) }}
+                                                    </div>
+                                                    <div
+                                                        class="text-[9px] {{ !$isTotalPassed ? 'text-red-500 font-semibold' : 'text-gray-400' }}">
+                                                        {{ number_format($row['total']['persen'], 1) }}%
+                                                    </div>
+                                                </td>
+
+                                                <!-- Simpulan & Aksi -->
+                                                <td class="px-3 py-3.5 text-center">
+                                                    <div class="flex flex-col items-center justify-center gap-1.5">
+                                                        @if ($row['meets_wbk'])
+                                                            <span
+                                                                class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-green-100 text-green-700">
+                                                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                                                Memenuhi
+                                                            </span>
+                                                        @else
+                                                            <span
+                                                                class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-red-100 text-red-700">
+                                                                <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+                                                                Belum
+                                                            </span>
+                                                        @endif
+                                                        <button type="button" data-opd="{{ $row['opd'] }}"
+                                                            data-compliance="{!! htmlspecialchars(json_encode($row['compliance']), ENT_QUOTES, 'UTF-8') !!}"
+                                                            onclick="openWbkModal(this)"
+                                                            class="inline-flex items-center text-[9px] font-bold text-primary hover:text-primary-dark transition-colors underline cursor-pointer focus:outline-none">
+                                                            Detail Syarat
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         @endforeach
-
-                                        <!-- Jumlah Pengungkit -->
-                                        @php
-                                            $isPengungkitPassed = $row['compliance']['total_pengungkit']['is_passed'];
-                                        @endphp
-                                        <td
-                                            class="px-2 py-3.5 text-center border-r border-gray-200 transition-colors {{ !$isPengungkitPassed ? 'bg-red-50/50 text-red-700' : '' }}">
-                                            <div
-                                                class="font-extrabold {{ !$isPengungkitPassed ? 'text-red-700' : 'text-gray-950' }}">
-                                                {{ number_format($row['pengungkit']['nilai'], 2) }}
-                                            </div>
-                                            <div
-                                                class="text-[9px] {{ !$isPengungkitPassed ? 'text-red-500 font-semibold' : 'text-gray-400' }}">
-                                                {{ number_format($row['pengungkit']['persen'], 1) }}%
-                                            </div>
-                                        </td>
-
-                                        <!-- SPAK -->
-                                        @php
-                                            $isSpakPassed = $row['compliance']['spak']['is_passed'];
-                                        @endphp
-                                        <td
-                                            class="px-2 py-3.5 text-center border-r border-gray-100 transition-colors {{ !$isSpakPassed ? 'bg-red-50/50 text-red-700' : '' }}">
-                                            <div
-                                                class="font-bold {{ !$isSpakPassed ? 'text-red-700' : 'text-gray-850' }}">
-                                                {{ number_format($row['spak']['nilai'], 2) }}
-                                            </div>
-                                            <div
-                                                class="text-[9px] {{ !$isSpakPassed ? 'text-red-500 font-semibold' : 'text-gray-400' }}">
-                                                {{ number_format($row['spak']['persen'], 1) }}%
-                                            </div>
-                                        </td>
-
-                                        <!-- Capaian Kinerja -->
-                                        @php
-                                            $isCapaianPassed = $row['compliance']['capaian']['is_passed'];
-                                        @endphp
-                                        <td
-                                            class="px-2 py-3.5 text-center border-r border-gray-100 transition-colors {{ !$isCapaianPassed ? 'bg-red-50/50 text-red-700' : '' }}">
-                                            <div
-                                                class="font-bold {{ !$isCapaianPassed ? 'text-red-700' : 'text-gray-850' }}">
-                                                {{ number_format($row['capaian']['nilai'], 2) }}
-                                            </div>
-                                            <div
-                                                class="text-[9px] {{ !$isCapaianPassed ? 'text-red-500 font-semibold' : 'text-gray-400' }}">
-                                                {{ number_format($row['capaian']['persen'], 1) }}%
-                                            </div>
-                                        </td>
-
-                                        <!-- Birokrasi Bersih Total -->
-                                        @php
-                                            $isBirokrasiPassed = $row['compliance']['birokrasi_total']['is_passed'];
-                                        @endphp
-                                        <td
-                                            class="px-2 py-3.5 text-center border-r border-gray-100 bg-gray-50/40 transition-colors {{ !$isBirokrasiPassed ? 'bg-red-50/50 text-red-700 font-bold' : '' }}">
-                                            <div
-                                                class="font-extrabold {{ !$isBirokrasiPassed ? 'text-red-700' : 'text-gray-900' }}">
-                                                {{ number_format($row['birokrasi']['nilai'], 2) }}
-                                            </div>
-                                            <div
-                                                class="text-[9px] {{ !$isBirokrasiPassed ? 'text-red-500 font-semibold' : 'text-gray-400' }}">
-                                                {{ number_format($row['birokrasi']['persen'], 1) }}%
-                                            </div>
-                                        </td>
-
-                                        <!-- SPP / Pelayanan Publik Prima -->
-                                        @php
-                                            $isPelayananPassed = $row['compliance']['pelayanan']['is_passed'];
-                                        @endphp
-                                        <td
-                                            class="px-2 py-3.5 text-center border-r border-gray-200 transition-colors {{ !$isPelayananPassed ? 'bg-red-50/50 text-red-700' : '' }}">
-                                            <div
-                                                class="font-bold {{ !$isPelayananPassed ? 'text-red-700' : 'text-gray-850' }}">
-                                                {{ number_format($row['pelayanan']['nilai'], 2) }}
-                                            </div>
-                                            <div
-                                                class="text-[9px] {{ !$isPelayananPassed ? 'text-red-500 font-semibold' : 'text-gray-400' }}">
-                                                {{ number_format($row['pelayanan']['persen'], 1) }}%
-                                            </div>
-                                        </td>
-
-                                        <!-- Total ZI -->
-                                        @php
-                                            $isTotalPassed = $row['compliance']['total_zi']['is_passed'];
-                                        @endphp
-                                        <td
-                                            class="px-2 py-3.5 text-center border-r border-gray-200 transition-colors {{ !$isTotalPassed ? 'bg-red-50/50 text-red-700' : '' }}">
-                                            <div
-                                                class="font-extrabold text-xs {{ !$isTotalPassed ? 'text-red-700' : 'text-gray-900' }}">
-                                                {{ number_format($row['total']['nilai'], 2) }}
-                                            </div>
-                                            <div
-                                                class="text-[9px] {{ !$isTotalPassed ? 'text-red-500 font-semibold' : 'text-gray-400' }}">
-                                                {{ number_format($row['total']['persen'], 1) }}%
-                                            </div>
-                                        </td>
-
-                                        <!-- Simpulan & Aksi -->
-                                        <td class="px-3 py-3.5 text-center">
-                                            <div class="flex flex-col items-center justify-center gap-1.5">
-                                                @if ($row['meets_wbk'])
-                                                    <span
-                                                        class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-green-100 text-green-700">
-                                                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                                                        Memenuhi
-                                                    </span>
-                                                @else
-                                                    <span
-                                                        class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-red-100 text-red-700">
-                                                        <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-                                                        Belum
-                                                    </span>
-                                                @endif
-                                                <button type="button" data-opd="{{ $row['opd'] }}"
-                                                    data-compliance="{!! htmlspecialchars(json_encode($row['compliance']), ENT_QUOTES, 'UTF-8') !!}" onclick="openWbkModal(this)"
-                                                    class="inline-flex items-center text-[9px] font-bold text-primary hover:text-primary-dark transition-colors underline cursor-pointer focus:outline-none">
-                                                    Detail Syarat
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    @endif
                 </div>
-            @endif
+            @endforeach
         @else
             <div class="bg-amber-50/70 border border-amber-200/50 rounded-xl p-10 text-center">
                 <h3 class="text-base font-semibold text-amber-950">Pilih Periode Terlebih Dahulu</h3>
@@ -455,6 +505,37 @@
 
 @push('scripts')
     <script>
+        function switchTab(role) {
+            const roles = ['operator', 'verifikator', 'menpan'];
+            roles.forEach(r => {
+                const contentDiv = document.getElementById('content-' + r);
+                if (contentDiv) {
+                    contentDiv.classList.add('hidden');
+                    contentDiv.classList.remove('block');
+                }
+
+                let tab = document.getElementById('tab-' + r);
+                if (tab) {
+                    tab.classList.remove('border-primary', 'text-primary', 'font-semibold');
+                    tab.classList.add('border-transparent', 'text-gray-500', 'font-medium', 'hover:text-gray-800',
+                        'hover:border-gray-300');
+                }
+            });
+
+            const contentDiv = document.getElementById('content-' + role);
+            if (contentDiv) {
+                contentDiv.classList.remove('hidden');
+                contentDiv.classList.add('block');
+            }
+
+            let activeTab = document.getElementById('tab-' + role);
+            if (activeTab) {
+                activeTab.classList.remove('border-transparent', 'text-gray-500', 'font-medium', 'hover:text-gray-800',
+                    'hover:border-gray-300');
+                activeTab.classList.add('border-primary', 'text-primary', 'font-semibold');
+            }
+        }
+
         function openWbkModal(btn) {
             const opdName = btn.getAttribute('data-opd');
             const compliance = JSON.parse(btn.getAttribute('data-compliance'));
