@@ -50,7 +50,7 @@
 
         @if ($activePeriode)
             <!-- Rules Summary Cards Section -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 <!-- Card 1: Total Evaluasi ZI -->
                 <div class="bg-white rounded-xl p-5 flex flex-col justify-between">
                     <div class="flex items-center justify-between">
@@ -196,7 +196,8 @@
                                 diverifikasi pada periode ini.</p>
                         </div>
                     @else
-                        <div class="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-250/20">
+                        <!-- Desktop View (Table) -->
+                        <div class="hidden lg:block bg-white rounded-xl overflow-hidden shadow-sm border border-gray-250/20">
                             <div class="overflow-x-auto">
                                 <table class="min-w-full text-[11px] text-gray-700 divide-y divide-gray-200">
                                     <thead class="bg-primary text-white">
@@ -451,6 +452,157 @@
                                 </table>
                             </div>
                         </div>
+
+                        <!-- Mobile/Tablet View (Cards) -->
+                        <div class="block lg:hidden space-y-4">
+                            @foreach ($rekapRows as $index => $row)
+                                <div class="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md">
+                                    <!-- Card Header -->
+                                    <div class="p-4 border-b border-gray-100 bg-gray-50/50">
+                                        <div class="flex items-start justify-between gap-3">
+                                            <div class="min-w-0">
+                                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wide">#{{ $index + 1 }}</span>
+                                                <h4 class="text-sm font-bold text-gray-900 leading-snug line-clamp-2 mt-0.5" title="{{ $row['opd'] }}">
+                                                    {{ $row['opd'] }}
+                                                </h4>
+                                            </div>
+                                            <div class="shrink-0">
+                                                @if ($row['meets_wbk'])
+                                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700">
+                                                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                                        Memenuhi
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700">
+                                                        <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+                                                        Belum
+                                                    </span>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <!-- Summary Metrics Grid -->
+                                        <div class="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-gray-150/60 text-center">
+                                            <div>
+                                                <span class="block text-[9px] font-semibold text-gray-400 uppercase tracking-wider">Total (100%)</span>
+                                                <span class="inline-block mt-0.5 text-sm font-extrabold {{ $row['compliance']['total_zi']['is_passed'] ? 'text-green-600' : 'text-red-650' }}">
+                                                    {{ number_format($row['total']['nilai'], 2) }}
+                                                </span>
+                                                <span class="block text-[8px] text-gray-400 font-medium mt-0.5">Lolos &ge; 75.00</span>
+                                            </div>
+                                            <div>
+                                                <span class="block text-[9px] font-semibold text-gray-400 uppercase tracking-wider">Pengungkit</span>
+                                                <span class="inline-block mt-0.5 text-sm font-extrabold {{ $row['compliance']['total_pengungkit']['is_passed'] ? 'text-gray-800' : 'text-red-650' }}">
+                                                    {{ number_format($row['pengungkit']['nilai'], 2) }}
+                                                </span>
+                                                <span class="block text-[8px] text-gray-400 font-medium mt-0.5">Lolos &ge; 40.00</span>
+                                            </div>
+                                            <div>
+                                                <span class="block text-[9px] font-semibold text-gray-400 uppercase tracking-wider">Birokrasi Bersih</span>
+                                                <span class="inline-block mt-0.5 text-sm font-extrabold {{ $row['compliance']['birokrasi_total']['is_passed'] ? 'text-gray-800' : 'text-red-650' }}">
+                                                    {{ number_format($row['birokrasi']['nilai'], 2) }}
+                                                </span>
+                                                <span class="block text-[8px] text-gray-400 font-medium mt-0.5">Lolos &ge; 18.25</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Collapsible Breakdown -->
+                                    <div>
+                                        <!-- Toggle Button -->
+                                        <button onclick="toggleBreakdown('{{ $role }}', {{ $index }}, this)" type="button" class="w-full px-4 py-3 bg-gray-50/20 hover:bg-gray-50 flex items-center justify-between text-xs font-semibold text-gray-600 transition-colors border-b border-gray-100 cursor-pointer">
+                                            <span>Rincian Nilai Komponen</span>
+                                            <svg class="w-4 h-4 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                                            </svg>
+                                        </button>
+
+                                        <!-- Breakdown Content (Hidden by default) -->
+                                        <div id="breakdown-{{ $role }}-{{ $index }}" class="hidden p-4 bg-gray-50/30 space-y-4 text-[11px] border-b border-gray-100">
+                                            <!-- Areas Pengungkit -->
+                                            <div>
+                                                <h5 class="font-bold text-gray-700 uppercase tracking-wider text-[9px] mb-2 flex items-center gap-1.5">
+                                                    <span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+                                                    6 Area Pengungkit (Min. 60% per Area)
+                                                </h5>
+                                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-white p-3 rounded-lg border border-gray-100">
+                                                    @foreach ($row['areas'] as $area)
+                                                        @php
+                                                            $areaName = $area['nama'];
+                                                            $isAreaPassed = $row['compliance']['areas'][$areaName]['is_passed'] ?? true;
+                                                        @endphp
+                                                        <div class="flex flex-col border-b border-gray-50 sm:border-0 pb-1.5 sm:pb-0 last:border-0">
+                                                            <span class="text-gray-400 font-medium leading-tight truncate" title="{{ $area['nama'] }}">{{ $area['nama'] }}</span>
+                                                            <div class="flex items-baseline justify-between mt-1">
+                                                                <span class="font-bold {{ !$isAreaPassed ? 'text-red-650' : 'text-gray-800' }}">
+                                                                    {{ number_format($area['nilai'], 2) }}
+                                                                </span>
+                                                                <span class="text-[9px] {{ !$isAreaPassed ? 'text-red-500 font-semibold' : 'text-gray-400' }}">
+                                                                    {{ number_format($area['persen'], 1) }}%
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+
+                                            <!-- Hasil Breakdown -->
+                                            <div>
+                                                <h5 class="font-bold text-gray-700 uppercase tracking-wider text-[9px] mb-2 flex items-center gap-1.5">
+                                                    <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
+                                                    Komponen Hasil & Sub-Komponen
+                                                </h5>
+                                                <div class="space-y-2.5 bg-white p-3 rounded-lg border border-gray-100">
+                                                    <!-- SPAK -->
+                                                    <div class="flex items-center justify-between border-b border-gray-50 pb-1.5">
+                                                        <span class="text-gray-500 font-medium">Survei Persepsi Korupsi (SPAK &ge; 15.75)</span>
+                                                        <div class="text-right">
+                                                            <span class="font-bold {{ !$row['compliance']['spak']['is_passed'] ? 'text-red-650' : 'text-gray-800' }}">
+                                                                {{ number_format($row['spak']['nilai'], 2) }}
+                                                            </span>
+                                                            <span class="text-[9px] text-gray-450 ml-1">({{ number_format($row['spak']['persen'], 1) }}%)</span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Capaian -->
+                                                    <div class="flex items-center justify-between border-b border-gray-50 pb-1.5">
+                                                        <span class="text-gray-500 font-medium">Capaian Kinerja (&ge; 2.50)</span>
+                                                        <div class="text-right">
+                                                            <span class="font-bold {{ !$row['compliance']['capaian']['is_passed'] ? 'text-red-650' : 'text-gray-800' }}">
+                                                                {{ number_format($row['capaian']['nilai'], 2) }}
+                                                            </span>
+                                                            <span class="text-[9px] text-gray-450 ml-1">({{ number_format($row['capaian']['persen'], 1) }}%)</span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- SPP / Pelayanan -->
+                                                    <div class="flex items-center justify-between">
+                                                        <span class="text-gray-500 font-medium">SPP / Pelayanan Publik Prima (&ge; 14.00)</span>
+                                                        <div class="text-right">
+                                                            <span class="font-bold {{ !$row['compliance']['pelayanan']['is_passed'] ? 'text-red-650' : 'text-gray-800' }}">
+                                                                {{ number_format($row['pelayanan']['nilai'], 2) }}
+                                                            </span>
+                                                            <span class="text-[9px] text-gray-450 ml-1">({{ number_format($row['pelayanan']['persen'], 1) }}%)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Card Actions -->
+                                    <div class="px-4 py-3 bg-gray-50/50 flex items-center justify-between gap-3 text-xs">
+                                        <button type="button" data-opd="{{ $row['opd'] }}"
+                                            data-compliance="{!! htmlspecialchars(json_encode($row['compliance']), ENT_QUOTES, 'UTF-8') !!}"
+                                            onclick="openWbkModal(this)"
+                                            class="inline-flex items-center gap-1.5 font-bold text-primary hover:text-primary-dark transition-colors cursor-pointer focus:outline-none">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            Detail Syarat Kelayakan
+                                        </button>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     @endif
                 </div>
             @endforeach
@@ -508,6 +660,20 @@
 
 @push('scripts')
     <script>
+        function toggleBreakdown(role, index, btn) {
+            const el = document.getElementById(`breakdown-${role}-${index}`);
+            const svg = btn.querySelector('svg');
+            if (el) {
+                if (el.classList.contains('hidden')) {
+                    el.classList.remove('hidden');
+                    if (svg) svg.classList.add('rotate-180');
+                } else {
+                    el.classList.add('hidden');
+                    if (svg) svg.classList.remove('rotate-180');
+                }
+            }
+        }
+
         function switchTab(role) {
             const roles = ['operator', 'verifikator', 'menpan'];
             roles.forEach(r => {
