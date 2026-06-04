@@ -346,15 +346,17 @@
                             </svg>
                         </div>
                         <div>
-                            <p class="text-sm font-bold text-gray-800">Ringkasan Pengisian OPD</p>
-                            <p class="text-xs text-gray-600 mt-0.5">Pantau progress pengisian Kuesioner oleh seluruh OPD.
+                            <p class="text-sm font-bold text-gray-800">Ringkasan Pengisian Unit Kerja</p>
+                            <p class="text-xs text-gray-600 mt-0.5">Pantau progress pengisian Kuesioner oleh seluruh Unit
+                                Kerja.
                             </p>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 flex-shrink-0">
                         <span
                             class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200">
-                            <span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span> Total {{ $totalOpd }} OPD
+                            <span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span> Total {{ $totalOpd }} Unit
+                            Kerja
                         </span>
                     </div>
                 </div>
@@ -362,7 +364,7 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="bg-white rounded-xl p-5">
                         <div class="flex items-center justify-between mb-3">
-                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Total OPD</p>
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Total Unit Kerja</p>
                             <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
