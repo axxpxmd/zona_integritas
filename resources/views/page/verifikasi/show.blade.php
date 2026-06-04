@@ -12,7 +12,7 @@
     @endphp
     <div class="space-y-6">
         {{-- Header --}}
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
                 <a href="{{ route('verifikasi.index') }}"
                     class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
@@ -25,7 +25,7 @@
                     <p class="text-sm text-gray-500 mt-0.5">{{ $opd->n_opd }}</p>
                 </div>
             </div>
-            <div class="flex flex-col items-end gap-1">
+            <div class="flex flex-col items-start sm:items-end gap-1">
                 <div class="text-sm text-gray-600">
                     <span class="font-medium">Waktu Verifikasi:</span> {{ $start->format('d M Y') }} -
                     {{ $end->format('d M Y') }}
@@ -58,7 +58,7 @@
         @endif
 
         {{-- Stats Dashboard --}}
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
 
             {{-- Card 1: Total Pertanyaan --}}
             <div class="bg-white rounded-xl p-6">
@@ -551,26 +551,26 @@
             <div class="bg-white rounded-xl overflow-hidden">
                 {{-- Komponen Header --}}
                 <div class="bg-[#0E7C7B] px-6 py-4">
-                    <div class="flex items-center justify-between">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                         <div>
                             <h3 class="text-lg font-bold text-white">{{ $komponen->kode }}. {{ $komponen->nama }}</h3>
                             @if ($komponen->deskripsi)
                                 <p class="text-sm text-white/80 mt-1">{{ $komponen->deskripsi }}</p>
                             @endif
                         </div>
-                        <div class="flex items-center gap-4">
-                            <div class="text-right">
-                                <div class="text-white/80 text-xs uppercase font-semibold tracking-wider">Bobot</div>
+                        <div class="flex flex-wrap items-center gap-3 sm:gap-4 lg:justify-end">
+                            <div class="text-left lg:text-right">
+                                <div class="text-white/80 text-[10px] uppercase font-semibold tracking-wider">Bobot</div>
                                 <div class="text-white font-bold text-sm">{{ number_format($komponen->bobot, 2) }}</div>
                             </div>
                             <div class="w-px h-8 bg-white/20"></div>
-                            <div class="text-right">
-                                <div class="text-white/80 text-xs uppercase font-semibold tracking-wider">Nilai</div>
+                            <div class="text-left lg:text-right">
+                                <div class="text-white/80 text-[10px] uppercase font-semibold tracking-wider">Nilai</div>
                                 <div class="text-white font-bold text-sm">{{ number_format($komponenNilai, 2) }}</div>
                             </div>
                             <div class="w-px h-8 bg-white/20"></div>
-                            <div class="text-right">
-                                <div class="text-white/80 text-xs uppercase font-semibold tracking-wider">Capaian</div>
+                            <div class="text-left lg:text-right">
+                                <div class="text-white/80 text-[10px] uppercase font-semibold tracking-wider">Capaian</div>
                                 <div class="text-white font-bold text-sm">{{ number_format($komponenCapaian, 2) }}%</div>
                             </div>
                         </div>
@@ -591,13 +591,13 @@
                         @endphp
                         <div class="p-6">
                             {{-- Kategori Header --}}
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
                                         <span class="text-sm font-bold text-gray-700">{{ $kategori->kode }}</span>
                                     </div>
                                     <div class="flex-1">
-                                        <div class="flex items-center gap-2">
+                                        <div class="flex flex-wrap items-center gap-2">
                                             <h4 class="text-base font-semibold text-gray-900">{{ $kategori->nama }}</h4>
                                             <span
                                                 class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-medium">
@@ -616,7 +616,7 @@
                                 </div>
 
                                 {{-- Nilai & Capaian Kategori --}}
-                                <div class="flex items-center gap-3 ml-4">
+                                <div class="flex items-center gap-3 ml-0 sm:ml-4">
                                     <div
                                         class="bg-gray-50 rounded-lg px-3 py-2 border border-gray-100 flex flex-col justify-center items-end min-w-[70px]">
                                         <span
@@ -635,7 +635,7 @@
                             </div>
 
                             {{-- Sub Kategori Grid --}}
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ml-13">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ml-0 sm:ml-12">
                                 @foreach ($kategori->subKategoris as $subKategori)
                                     @php
                                         $prog = $progress[$subKategori->id] ?? [

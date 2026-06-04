@@ -101,8 +101,8 @@
                     $bc = $bannerColorMap[$s['statusColor']] ?? $bannerColorMap['gray'];
                 @endphp
                 <div
-                    class="rounded-xl border px-5 py-4 flex items-center justify-between gap-4 {{ $bc['bg'] }} {{ $bc['border'] }}">
-                    <div class="flex items-center gap-3">
+                    class="rounded-xl border px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 {{ $bc['bg'] }} {{ $bc['border'] }}">
+                    <div class="flex items-start sm:items-center gap-3">
                         <div class="flex-shrink-0">
                             @if ($s['statusColor'] === 'green')
                                 <svg class="w-6 h-6 {{ $bc['icon'] }}" fill="none" stroke="currentColor"
@@ -138,7 +138,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2 flex-shrink-0">
+                    <div class="flex flex-wrap items-center gap-2 flex-shrink-0 w-full sm:w-auto justify-between sm:justify-start">
                         @if ($s['isCanFill'])
                             <span
                                 class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200">
@@ -337,8 +337,8 @@
             {{-- ========== ADMIN OVERVIEW STATS (PENGISIAN) ========== --}}
             @if (auth()->user()->role === 'admin')
                 <div
-                    class="rounded-xl border px-5 py-4 flex items-center justify-between gap-4 bg-gray-50 border-gray-200">
-                    <div class="flex items-center gap-3">
+                    class="rounded-xl border px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gray-50 border-gray-200">
+                    <div class="flex items-start sm:items-center gap-3">
                         <div class="flex-shrink-0">
                             <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -352,7 +352,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2 flex-shrink-0">
+                    <div class="flex items-center gap-2 flex-shrink-0 w-full sm:w-auto justify-end">
                         <span
                             class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200">
                             <span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span> Total {{ $totalOpd }} Unit
@@ -420,8 +420,8 @@
 
                 {{-- Status Banner --}}
                 <div
-                    class="rounded-xl border px-5 py-4 flex items-center justify-between gap-4 {{ $v['isVerifActive'] ? 'bg-teal-50 border-teal-200' : 'bg-gray-50 border-gray-200' }}">
-                    <div class="flex items-center gap-3">
+                    class="rounded-xl border px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 {{ $v['isVerifActive'] ? 'bg-teal-50 border-teal-200' : 'bg-gray-50 border-gray-200' }}">
+                    <div class="flex items-start sm:items-center gap-3">
                         <div class="flex-shrink-0">
                             <svg class="w-6 h-6 {{ $v['isVerifActive'] ? 'text-teal-500' : 'text-gray-400' }}"
                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -443,7 +443,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2 flex-shrink-0">
+                    <div class="flex flex-wrap items-center gap-2 flex-shrink-0 w-full sm:w-auto justify-between sm:justify-start">
                         @if ($v['isVerifActive'])
                             <span
                                 class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-teal-100 text-teal-800 border border-teal-200">
@@ -562,7 +562,8 @@
                             <h3 class="text-sm font-semibold text-gray-900">Progress Verifikasi per Unit Kerja</h3>
                             <span class="text-xs text-gray-400">{{ $activePeriode->nama_periode }}</span>
                         </div>
-                        <div class="overflow-x-auto">
+                        <!-- Desktop View (Table) -->
+                        <div class="hidden lg:block overflow-x-auto">
                             <table class="w-full text-sm text-left text-gray-600">
                                 <thead class="bg-gray-50 border-b border-gray-100">
                                     <tr>
@@ -660,6 +661,74 @@
                                 </tbody>
                             </table>
                         </div>
+                        <!-- Mobile/Tablet View (Cards) -->
+                        <div class="block lg:hidden divide-y divide-gray-150 bg-gray-50/20">
+                            @foreach ($v['opdProgressVerif'] as $row)
+                                <div class="p-4 space-y-3">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <div>
+                                            <h4 class="text-sm font-bold text-gray-900 leading-snug">
+                                                {{ $row->opd->n_opd }}
+                                            </h4>
+                                            <div class="mt-1 flex items-center gap-1.5">
+                                                @if ($row->isFinal)
+                                                    <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700 uppercase tracking-wider">
+                                                        Terkirim
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded text-[10px] font-bold bg-gray-200 text-gray-600 uppercase tracking-wider">
+                                                        Proses
+                                                    </span>
+                                                @endif
+                                                <span class="text-xs text-gray-500 font-medium">
+                                                    {{ $row->totalDiisi }} / {{ $row->totalRequired }} jawaban
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-white p-3 rounded-lg border border-gray-150/60 text-xs">
+                                        <div>
+                                            <span class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Terverifikasi</span>
+                                            <span class="inline-block mt-0.5 font-bold text-green-700">{{ $row->disetujui }}</span>
+                                        </div>
+                                        <div>
+                                            <span class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Direvisi</span>
+                                            <span class="inline-block mt-0.5 font-bold {{ $row->direvisi > 0 ? 'text-red-650' : 'text-gray-400' }}">{{ $row->direvisi }}</span>
+                                        </div>
+                                        <div>
+                                            <span class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Belum</span>
+                                            <span class="inline-block mt-0.5 font-bold text-gray-500">{{ $row->belum }}</span>
+                                        </div>
+                                        <div>
+                                            <span class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Menunggu</span>
+                                            @if ($row->menunggu > 0)
+                                                <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-orange-100 text-orange-700 text-xs font-bold">{{ $row->menunggu }}</span>
+                                            @else
+                                                <span class="inline-block mt-0.5 text-gray-300">—</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-4 pt-2">
+                                        <div class="flex items-center gap-2 flex-grow">
+                                            <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                                <div class="h-1.5 rounded-full {{ $row->persen >= 100 ? 'bg-green-500' : 'bg-teal-500' }}"
+                                                    style="width: {{ $row->persen }}%"></div>
+                                            </div>
+                                            <span class="text-xs font-semibold text-gray-600 shrink-0">{{ $row->persen }}%</span>
+                                        </div>
+                                        @if ($row->isFinal)
+                                            <a href="{{ route('verifikasi.show', ['periode' => $activePeriode->id, 'opd' => $row->opd->id]) }}"
+                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-semibold shrink-0 transition-colors">
+                                                Verifikasi
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 @endif
             @endif
@@ -670,8 +739,8 @@
                 @php $m = $menpanStats; @endphp
 
                 <div
-                    class="rounded-xl border px-5 py-4 flex items-center justify-between gap-4 {{ $m['isVerifActive'] ? 'bg-teal-50 border-teal-200' : 'bg-gray-50 border-gray-200' }}">
-                    <div class="flex items-center gap-3">
+                    class="rounded-xl border px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 {{ $m['isVerifActive'] ? 'bg-teal-50 border-teal-200' : 'bg-gray-50 border-gray-200' }}">
+                    <div class="flex items-start sm:items-center gap-3">
                         <div class="flex-shrink-0">
                             <svg class="w-6 h-6 {{ $m['isVerifActive'] ? 'text-teal-500' : 'text-gray-400' }}"
                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -693,7 +762,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2 flex-shrink-0">
+                    <div class="flex flex-wrap items-center gap-2 flex-shrink-0 w-full sm:w-auto justify-between sm:justify-start">
                         @if ($m['isVerifActive'])
                             <span
                                 class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-teal-100 text-teal-800 border border-teal-200">
@@ -715,7 +784,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                     <div class="bg-white rounded-xl p-5">
                         <div class="flex items-center justify-between mb-3">
                             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Unit Kerja Ditangani</p>
@@ -783,7 +852,8 @@
                             <h3 class="text-sm font-semibold text-gray-900">Progress Verifikasi Menpan per Unit Kerja</h3>
                             <span class="text-xs text-gray-400">{{ $activePeriode->nama_periode }}</span>
                         </div>
-                        <div class="overflow-x-auto">
+                        <!-- Desktop View (Table) -->
+                        <div class="hidden lg:block overflow-x-auto">
                             <table class="w-full text-sm text-left text-gray-600">
                                 <thead class="bg-gray-50 border-b border-gray-100">
                                     <tr>
@@ -846,6 +916,59 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                        </div>
+                        <!-- Mobile/Tablet View (Cards) -->
+                        <div class="block lg:hidden divide-y divide-gray-150 bg-gray-50/20">
+                            @foreach ($m['opdProgressMenpan'] as $row)
+                                <div class="p-4 space-y-3">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <div>
+                                            <h4 class="text-sm font-bold text-gray-900 leading-snug">
+                                                {{ $row->opd->n_opd }}
+                                            </h4>
+                                            <div class="mt-1">
+                                                @if ($row->isSiap)
+                                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-green-100 text-green-700">
+                                                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span> Siap
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-500">
+                                                        Belum Siap
+                                                    </span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2 bg-white p-3 rounded-lg border border-gray-150/60 text-xs">
+                                        <div>
+                                            <span class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Disetujui</span>
+                                            <span class="inline-block mt-0.5 font-bold text-green-700">{{ $row->disetujui }}</span>
+                                        </div>
+                                        <div>
+                                            <span class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Belum</span>
+                                            <span class="inline-block mt-0.5 font-bold text-gray-500">{{ $row->belum }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between gap-4 pt-2">
+                                        <div class="flex items-center gap-2 flex-grow">
+                                            <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                                <div class="h-1.5 rounded-full {{ $row->persen >= 100 ? 'bg-green-500' : 'bg-teal-500' }}"
+                                                    style="width: {{ $row->persen }}%"></div>
+                                            </div>
+                                            <span class="text-xs font-semibold text-gray-600 shrink-0">{{ $row->persen }}%</span>
+                                        </div>
+                                        @if ($row->isSiap)
+                                            <a href="{{ route('verifikasi-menpan.show', ['periode' => $activePeriode->id, 'opd' => $row->opd->id]) }}"
+                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-semibold shrink-0 transition-colors">
+                                                Verifikasi Menpan
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 @endif

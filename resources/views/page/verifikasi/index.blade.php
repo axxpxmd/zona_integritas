@@ -9,7 +9,8 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
                 <h2 class="text-xl font-bold text-gray-900">Daftar Unit Kerja yang Sudah Mengisi</h2>
-                <p class="text-sm text-gray-500 mt-1">Hanya Unit Kerja yang telah menekan tombol "Kirim ke Verifikator" (final)
+                <p class="text-sm text-gray-500 mt-1">Hanya Unit Kerja yang telah menekan tombol "Kirim ke Verifikator"
+                    (final)
                     yang muncul di sini.</p>
             </div>
         </div>
@@ -22,11 +23,12 @@
                     <select name="periode_id" id="periode_id"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm"
                         onchange="this.form.submit()">
-                        @if($periodes->isEmpty())
+                        @if ($periodes->isEmpty())
                             <option value="">Tidak ada periode aktif</option>
                         @else
-                            @foreach($periodes as $p)
-                                <option value="{{ $p->id }}" {{ $activePeriode && $activePeriode->id == $p->id ? 'selected' : '' }}>
+                            @foreach ($periodes as $p)
+                                <option value="{{ $p->id }}"
+                                    {{ $activePeriode && $activePeriode->id == $p->id ? 'selected' : '' }}>
                                     {{ $p->nama_periode }} ({{ $p->tahun }})
                                 </option>
                             @endforeach
@@ -34,18 +36,19 @@
                     </select>
                 </div>
 
-                @if($activePeriode)
+                @if ($activePeriode)
                     <div
                         class="w-full sm:w-auto text-sm text-gray-600 bg-gray-50 px-4 py-2 rounded-lg border border-gray-200 mb-0">
-                        <span class="font-medium text-gray-900">Total Terkirim:</span> {{ $submittedOpds->count() }} Unit Kerja
+                        <span class="font-medium text-gray-900">Total Terkirim:</span> {{ $submittedOpds->count() }} Unit
+                        Kerja
                     </div>
                 @endif
             </form>
         </div>
 
         {{-- Daftar OPD --}}
-        @if($activePeriode)
-            @if($submittedOpds->isEmpty())
+        @if ($activePeriode)
+            @if ($submittedOpds->isEmpty())
                 <div class="bg-white border rounded-xl p-8 text-center border-gray-200">
                     <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 mb-4">
                         <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,64 +61,98 @@
                 </div>
             @else
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="overflow-x-auto">
+                    <!-- Desktop View (Table) -->
+                    <div class="hidden lg:block overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50 border-b border-gray-100">
                                 <tr>
-                                    <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">No</th>
-                                    <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Kerja</th>
-                                    <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Pengisian Operator</th>
-                                    <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Terverifikasi</th>
-                                    <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Terkirim</th>
-                                    <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Direvisi</th>
-                                    <th scope="col" class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Belum</th>
-                                    <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
-                                    <th scope="col" class="px-5 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                    <th scope="col"
+                                        class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">
+                                        No</th>
+                                    <th scope="col"
+                                        class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Unit Kerja</th>
+                                    <th scope="col"
+                                        class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Pengisian Operator</th>
+                                    <th scope="col"
+                                        class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Terverifikasi</th>
+                                    <th scope="col"
+                                        class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Terkirim</th>
+                                    <th scope="col"
+                                        class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Direvisi</th>
+                                    <th scope="col"
+                                        class="px-5 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Belum</th>
+                                    <th scope="col"
+                                        class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Progress</th>
+                                    <th scope="col"
+                                        class="px-5 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach($submittedOpds as $index => $opd)
+                                @foreach ($submittedOpds as $index => $opd)
                                     <tr class="hover:bg-gray-50/50 transition-colors">
-                                        <td class="px-5 py-3 whitespace-nowrap text-sm text-gray-500">{{ $index + 1 }}</td>
+                                        <td class="px-5 py-3 whitespace-nowrap text-sm text-gray-500">{{ $index + 1 }}
+                                        </td>
                                         <td class="px-5 py-3">
                                             <div class="text-sm font-medium text-gray-900">{{ $opd->n_opd }}</div>
-                                            <div class="text-xs text-gray-500 mt-0.5">Dikirim: {{ \Carbon\Carbon::parse($opd->submitted_at)->format('d M Y, H:i') }} WIB</div>
+                                            <div class="text-xs text-gray-500 mt-0.5">Dikirim:
+                                                {{ \Carbon\Carbon::parse($opd->submitted_at)->format('d M Y, H:i') }} WIB
+                                            </div>
                                         </td>
                                         <td class="px-5 py-3 text-center">
                                             <div class="flex flex-col items-center justify-center gap-1.5">
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-green-100 text-green-800">
+                                                <span
+                                                    class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-green-100 text-green-800">
                                                     Final
                                                 </span>
-                                                <span class="text-[10px] text-gray-500 font-medium">Terisi: {{ $opd->total_jawaban }}/{{ $opd->total_pertanyaan }}</span>
+                                                <span class="text-[10px] text-gray-500 font-medium">Terisi:
+                                                    {{ $opd->total_jawaban }}/{{ $opd->total_pertanyaan }}</span>
                                             </div>
                                         </td>
-                                        <td class="px-5 py-3 text-center"><span class="font-semibold text-green-700">{{ $opd->terverifikasi }}</span></td>
+                                        <td class="px-5 py-3 text-center"><span
+                                                class="font-semibold text-green-700">{{ $opd->terverifikasi }}</span></td>
                                         <td class="px-5 py-3 text-center">
-                                            @if($opd->terkirim === $opd->total_jawaban && $opd->total_jawaban > 0)
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-800">
+                                            @if ($opd->terkirim === $opd->total_jawaban && $opd->total_jawaban > 0)
+                                                <span
+                                                    class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-blue-800">
                                                     Sudah Terkirim
                                                 </span>
                                             @else
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-800">
+                                                <span
+                                                    class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-100 text-gray-800">
                                                     Belum Terkirim
                                                 </span>
                                             @endif
                                         </td>
-                                        <td class="px-5 py-3 text-center"><span class="font-semibold {{ $opd->direvisi > 0 ? 'text-red-600' : 'text-gray-400' }}">{{ $opd->direvisi }}</span></td>
+                                        <td class="px-5 py-3 text-center"><span
+                                                class="font-semibold {{ $opd->direvisi > 0 ? 'text-red-600' : 'text-gray-400' }}">{{ $opd->direvisi }}</span>
+                                        </td>
                                         <td class="px-5 py-3 text-center">
                                             <div class="flex flex-col items-center justify-center gap-1">
-                                                <span class="font-semibold text-gray-500">{{ $opd->belum_terverifikasi }}</span>
-                                                @if($opd->menunggu_dicek_ulang > 0)
-                                                    <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold" title="{{ $opd->menunggu_dicek_ulang }} jawaban menunggu dicek ulang">{{ $opd->menunggu_dicek_ulang }}</span>
+                                                <span
+                                                    class="font-semibold text-gray-500">{{ $opd->belum_terverifikasi }}</span>
+                                                @if ($opd->menunggu_dicek_ulang > 0)
+                                                    <span
+                                                        class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold"
+                                                        title="{{ $opd->menunggu_dicek_ulang }} jawaban menunggu dicek ulang">{{ $opd->menunggu_dicek_ulang }}</span>
                                                 @endif
                                             </div>
                                         </td>
                                         <td class="px-5 py-3">
                                             <div class="flex items-center gap-2">
                                                 <div class="w-24 bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                                                    <div class="h-1.5 rounded-full {{ $opd->persen >= 100 ? 'bg-green-500' : 'bg-teal-500' }}" style="width: {{ $opd->persen }}%"></div>
+                                                    <div class="h-1.5 rounded-full {{ $opd->persen >= 100 ? 'bg-green-500' : 'bg-teal-500' }}"
+                                                        style="width: {{ $opd->persen }}%"></div>
                                                 </div>
-                                                <span class="text-xs font-semibold text-gray-600">{{ $opd->persen }}%</span>
+                                                <span
+                                                    class="text-xs font-semibold text-gray-600">{{ $opd->persen }}%</span>
                                             </div>
                                         </td>
                                         <td class="px-5 py-3 whitespace-nowrap text-right text-sm font-medium">
@@ -135,6 +172,93 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+
+                    <!-- Mobile/Tablet View (Cards) -->
+                    <div class="block lg:hidden divide-y divide-gray-150 bg-gray-50/20">
+                        @foreach ($submittedOpds as $index => $opd)
+                            <div class="p-4 space-y-3">
+                                <div class="flex items-start justify-between gap-3">
+                                    <div>
+                                        <h4 class="text-sm font-bold text-gray-900 leading-snug">
+                                            {{ $opd->n_opd }}
+                                        </h4>
+                                        <div class="mt-1 flex items-center flex-wrap gap-1.5">
+                                            <span
+                                                class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800 uppercase tracking-wider">
+                                                Final
+                                            </span>
+                                            <span class="text-xs text-gray-500 font-medium">
+                                                Terisi: {{ $opd->total_jawaban }}/{{ $opd->total_pertanyaan }}
+                                            </span>
+                                        </div>
+                                        <div class="text-[11px] text-gray-400 mt-1">
+                                            Dikirim: {{ \Carbon\Carbon::parse($opd->submitted_at)->format('d M Y, H:i') }}
+                                            WIB
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-white p-3 rounded-lg border border-gray-150/60 text-xs">
+                                    <div>
+                                        <span
+                                            class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Terverifikasi</span>
+                                        <span
+                                            class="inline-block mt-0.5 font-bold text-green-700">{{ $opd->terverifikasi }}</span>
+                                    </div>
+                                    <div>
+                                        <span
+                                            class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Terkirim</span>
+                                        @if ($opd->terkirim === $opd->total_jawaban && $opd->total_jawaban > 0)
+                                            <span
+                                                class="inline-flex items-center mt-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-100 text-blue-800">Sudah</span>
+                                        @else
+                                            <span
+                                                class="inline-flex items-center mt-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold bg-gray-100 text-gray-800">Belum</span>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <span
+                                            class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Direvisi</span>
+                                        <span
+                                            class="inline-block mt-0.5 font-bold {{ $opd->direvisi > 0 ? 'text-red-650' : 'text-gray-400' }}">{{ $opd->direvisi }}</span>
+                                    </div>
+                                    <div>
+                                        <span
+                                            class="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Belum</span>
+                                        <div class="flex items-center gap-1 mt-0.5">
+                                            <span class="font-bold text-gray-500">{{ $opd->belum_terverifikasi }}</span>
+                                            @if ($opd->menunggu_dicek_ulang > 0)
+                                                <span
+                                                    class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-orange-100 text-orange-700 text-[9px] font-bold"
+                                                    title="Menunggu dicek ulang">{{ $opd->menunggu_dicek_ulang }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between gap-4 pt-2">
+                                    <div class="flex items-center gap-2 flex-grow">
+                                        <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                            <div class="h-1.5 rounded-full {{ $opd->persen >= 100 ? 'bg-green-500' : 'bg-teal-500' }}"
+                                                style="width: {{ $opd->persen }}%"></div>
+                                        </div>
+                                        <span
+                                            class="text-xs font-semibold text-gray-600 shrink-0">{{ $opd->persen }}%</span>
+                                    </div>
+                                    <a href="{{ route('verifikasi.show', [$activePeriode->id, $opd->id]) }}"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 border border-blue-200 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-semibold shrink-0 transition-colors">
+                                        <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        Verifikasi
+                                    </a>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             @endif
