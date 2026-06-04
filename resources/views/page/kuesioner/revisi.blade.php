@@ -374,6 +374,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     listEl.innerHTML = '';
                     return;
                 }
+
+                // Validate PDF files
+                const nonPdfFiles = files.filter(file => {
+                    const isPdfType = file.type === 'application/pdf';
+                    const isPdfExt = file.name.toLowerCase().endsWith('.pdf');
+                    return !isPdfType && !isPdfExt;
+                });
+
+                if (nonPdfFiles.length > 0) {
+                    alert('File yang wajib diupload hanya PDF!');
+                    this.value = ''; // Reset file input
+                    listEl.classList.add('hidden');
+                    listEl.innerHTML = '';
+                    return;
+                }
+
                 const items = files.map((f, i) => `<div class="truncate">${i + 1}. ${f.name}</div>`).join('');
                 listEl.innerHTML = `<div class="text-orange-600 ml-4 space-y-0.5">${items}</div>`;
                 listEl.classList.remove('hidden');
