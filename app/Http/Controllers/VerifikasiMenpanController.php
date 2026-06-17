@@ -491,7 +491,7 @@ class VerifikasiMenpanController extends Controller
         }
 
         $idAcuan = $subPertanyaans->first()->id;
-        $idRealisasi = $subPertanyaans->get(1)->id;
+        $idRealisasi = $subPertanyaans->last()->id;
 
         if (str_contains($pertanyaan->pertanyaan, 'Penurunan pelanggaran disiplin pegawai')) {
             $idRealisasi = $subPertanyaans->get(1)->id;
