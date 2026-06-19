@@ -9,7 +9,7 @@
     $start = \Carbon\Carbon::parse($periode->tanggal_mulai)->startOfDay();
     $end = \Carbon\Carbon::parse($periode->tanggal_selesai)->endOfDay();
     $isCanFill = $now->between($start, $end);
-    $isLocked = !$isCanFill || ($isSent ?? false);
+    $isLocked = !$isCanFill;
 @endphp
 <div class="space-y-6">
     {{-- Alert Waktu Pengisian --}}
@@ -213,6 +213,7 @@
                                 }
                             }
                             $isDisetujui = $jawabanItem && in_array($jawabanItem->status_verifikasi, ['disetujui', 'terkirim']);
+                            $isQuestionLocked = !$isCanFill || ($jawabanItem && $jawabanItem->status === 'final');
                         @endphp
                         <div class="bg-[#FFFFF] rounded-lg p-4 border border-gray-200 {{ $nilaiTampil !== null ? 'border-l-4 border-l-green-500' : '' }}">
                             {{-- Pertanyaan --}}
@@ -250,26 +251,30 @@
                                 @include('page.kuesioner.partials.input-ya-tidak', [
                                     'pertanyaan' => $pertanyaan,
                                     'jawaban' => $jawabans[$pertanyaan->id] ?? null,
-                                    'periode' => $periode
+                                    'periode' => $periode,
+                                    'isReadonly' => $isQuestionLocked
                                 ])
                             @elseif($pertanyaan->tipe_jawaban === 'pilihan_ganda')
                                 @include('page.kuesioner.partials.input-pilihan-ganda', [
                                     'pertanyaan' => $pertanyaan,
                                     'jawaban' => $jawabans[$pertanyaan->id] ?? null,
-                                    'periode' => $periode
+                                    'periode' => $periode,
+                                    'isReadonly' => $isQuestionLocked
                                 ])
                             @elseif($pertanyaan->tipe_jawaban === 'angka')
                                 @if($pertanyaan->has_sub_pertanyaan)
                                     @include('page.kuesioner.partials.input-sub-pertanyaan', [
                                         'pertanyaan' => $pertanyaan,
                                         'jawabans' => $jawabans,
-                                        'periode' => $periode
+                                        'periode' => $periode,
+                                        'isReadonly' => $isQuestionLocked
                                     ])
                                 @else
                                     @include('page.kuesioner.partials.input-angka', [
                                         'pertanyaan' => $pertanyaan,
                                         'jawaban' => $jawabans[$pertanyaan->id] ?? null,
-                                        'periode' => $periode
+                                        'periode' => $periode,
+                                        'isReadonly' => $isQuestionLocked
                                     ])
                                 @endif
                             @endif
@@ -282,6 +287,7 @@
                                 <textarea name="keterangan[{{ $pertanyaan->id }}]"
                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-[14px] focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none resize-none"
                                             rows="4"
+                                            @if($isQuestionLocked) disabled @endif
                                             placeholder="Tambahkan catatan atau keterangan jika diperlukan...">{{ $jawabans[$pertanyaan->id]->keterangan ?? '' }}</textarea>
                             </div>
 
@@ -313,7 +319,7 @@
                                                     <span class="ml-1 text-[11px] font-semibold text-orange-600">Revisi ke-{{ $file->revisi_ke }}</span>
                                                     @endif
                                                 </div>
-                                                @if(!$isLocked)
+                                                @if(!$isQuestionLocked)
                                                 <button type="button" onclick="deleteFile({{ $file->id }}, this)" class="flex-shrink-0 p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Hapus File">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -334,7 +340,7 @@
                                                         {{ basename($jawabanItem->file_path) }}
                                                     </a>
                                                 </div>
-                                                @if(!$isLocked)
+                                                @if(!$isQuestionLocked)
                                                 <button type="button" onclick="deleteLegacyFile({{ $jawabanItem->id }}, this)" class="flex-shrink-0 p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Hapus File Legacy">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -349,6 +355,7 @@
                                         </div>
                                     @endif
 
+                                    @if(!$isQuestionLocked)
                                     <label for="file-{{ $pertanyaan->id }}" class="flex items-center justify-between gap-4 p-2 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:bg-white hover:border-primary/60 transition-colors cursor-pointer">
                                         <div class="flex items-center gap-3">
                                             <div class="w-10 h-10 bg-primary/10 text-primary rounded-lg flex items-center justify-center">
@@ -370,6 +377,7 @@
                                            multiple>
                                      <p class="text-xs text-gray-500">Format: PDF. Maksimal 5MB per file.</p>
                                     <div id="selected-files-{{ $pertanyaan->id }}" class="hidden text-xs text-gray-600"></div>
+                                    @endif
                                 </div>
                             </div>
 
