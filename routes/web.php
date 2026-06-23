@@ -6,16 +6,16 @@ use App\Http\Controllers\IndikatorController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\KomponenController;
 use App\Http\Controllers\KuesionerController;
+use App\Http\Controllers\LogViewerController;
 use App\Http\Controllers\OpdController;
 use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\PertanyaanController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubKategoriController;
 use App\Http\Controllers\SubPertanyaanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerifikasiController;
 use App\Http\Controllers\VerifikasiMenpanController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\LogViewerController;
 use Illuminate\Support\Facades\Route;
 
 // Auth Routes

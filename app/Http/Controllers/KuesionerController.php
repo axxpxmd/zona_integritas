@@ -647,7 +647,12 @@ class KuesionerController extends Controller
         }
 
         $isAllAnswered = ($totalSemuaPertanyaan > 0 && $totalSemuaPertanyaan === $totalPertanyaanTerjawab);
-        $statusFinal = Jawaban::where('periode_id', $periode_id)->where('opd_id', $opd->id)->where('status', 'final')->exists();
+        $totalSubmitted = Jawaban::where('periode_id', $periode_id)
+            ->where('opd_id', $opd->id)
+            ->where('status', 'final')
+            ->whereNull('sub_pertanyaan_id')
+            ->count();
+        $statusFinal = ($totalSemuaPertanyaan > 0 && $totalSubmitted >= $totalSemuaPertanyaan);
 
         $totalDisetujui = Jawaban::where('periode_id', $periode_id)
             ->where('opd_id', $opd->id)
