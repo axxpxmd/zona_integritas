@@ -26,6 +26,10 @@ Route::middleware('guest')->group(function () {
 
 Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
+// Public file routes
+Route::get('kuesioner/file/{id}', [KuesionerController::class, 'viewFile'])->name('kuesioner.file.view');
+Route::get('kuesioner/file-item/{id}', [KuesionerController::class, 'viewFileItem'])->name('kuesioner.file.item.view');
+
 // Protected Routes
 Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -72,8 +76,6 @@ Route::middleware('auth')->group(function () {
     // Kuesioner
     Route::prefix('kuesioner')->name('kuesioner.')->group(function () {
         Route::get('/', [KuesionerController::class, 'index'])->name('index');
-        Route::get('/file/{id}', [KuesionerController::class, 'viewFile'])->name('file.view');
-        Route::get('/file-item/{id}', [KuesionerController::class, 'viewFileItem'])->name('file.item.view');
         Route::post('/file-item/delete/{id}', [KuesionerController::class, 'deleteFile'])->name('file.item.delete');
         Route::post('/file/delete-legacy/{id}', [KuesionerController::class, 'deleteLegacyFile'])->name('file.delete.legacy');
         Route::get('/{periode}/rekap', [KuesionerController::class, 'rekap'])->name('rekap');

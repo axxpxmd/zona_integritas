@@ -1544,7 +1544,7 @@ class KuesionerController extends Controller
 
         $user = Auth::user();
         // Hanya verifikator, admin, atau OPD yang memiliki jawaban ini yang boleh mengakses
-        if ($user->role === 'operator' && $jawaban->opd_id !== $user->opd_id) {
+        if ($user && $user->role === 'operator' && $jawaban->opd_id !== $user->opd_id) {
             abort(403, 'Akses ditolak.');
         }
 
@@ -1571,7 +1571,7 @@ class KuesionerController extends Controller
 
         $user = Auth::user();
         // Hanya verifikator, admin, atau OPD yang memiliki jawaban ini yang boleh mengakses
-        if ($user->role === 'operator' && $jawaban->opd_id !== $user->opd_id) {
+        if ($user && $user->role === 'operator' && $jawaban->opd_id !== $user->opd_id) {
             abort(403, 'Akses ditolak.');
         }
 
