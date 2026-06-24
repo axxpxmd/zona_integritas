@@ -21,7 +21,9 @@ class ApiKeyMiddleware
 
         if ($apiKey !== $expectedKey) {
             return response()->json([
-                'message' => 'Unauthorized. Invalid API Key.'
+                'error' => true,
+                'code' => 'UNAUTHORIZED',
+                'message' => 'API Key tidak valid atau tidak dikirimkan'
             ], 401);
         }
 

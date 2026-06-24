@@ -870,7 +870,9 @@ class PengusulanController extends Controller
         $opd = Opd::find($unit_id);
         if (!$opd) {
             return response()->json([
-                'message' => 'OPD not found.'
+                'error' => true,
+                'code' => 'DATA_NOT_FOUND',
+                'message' => 'Data yang diminta tidak ditemukan'
             ], 404);
         }
 
@@ -878,14 +880,18 @@ class PengusulanController extends Controller
         $periode = Periode::where('tahun', $tahun)->first();
         if (!$periode) {
             return response()->json([
-                'message' => "Periode untuk tahun $tahun tidak ditemukan."
+                'error' => true,
+                'code' => 'DATA_NOT_FOUND',
+                'message' => 'Data yang diminta tidak ditemukan'
             ], 404);
         }
 
         $listSoalPath = base_path('list_soal.json');
         if (!file_exists($listSoalPath)) {
             return response()->json([
-                'message' => 'list_soal.json not found.'
+                'error' => true,
+                'code' => 'INTERNAL_SERVER_ERROR',
+                'message' => 'Error di sisi instansi'
             ], 500);
         }
 
