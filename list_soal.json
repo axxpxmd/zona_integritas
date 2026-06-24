@@ -1,0 +1,776 @@
+[
+    {
+        "soal_id": 1,
+        "n_pertanyaan": "Unit kerja telah membentuk tim untuk melakukan pembangunan Zona Integritas",
+        "pertanyaan_id": 1,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 2,
+        "n_pertanyaan": "Penentuan anggota Tim dipilih melalui prosedur/mekanisme yang jelas",
+        "pertanyaan_id": 2,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 3,
+        "n_pertanyaan": "Terdapat dokumen rencana kerja pembangunan Zona Integritas menuju WBK/WBBM",
+        "pertanyaan_id": 3,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 4,
+        "n_pertanyaan": "Dalam dokumen pembangunan terdapat target-target prioritas yang relevan dengan tujuan pembangunan WBK/WBBM",
+        "pertanyaan_id": 4,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 5,
+        "n_pertanyaan": "Terdapat mekanisme atau media untuk mensosialisasikan pembangunan WBK/WBBM",
+        "pertanyaan_id": 5,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 6,
+        "n_pertanyaan": "Seluruh kegiatan pembangunan sudah dilaksanakan sesuai dengan rencana",
+        "pertanyaan_id": 6,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 7,
+        "n_pertanyaan": "Terdapat monitoring dan evaluasi terhadap pembangunan Zona Integritas",
+        "pertanyaan_id": 7,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 8,
+        "n_pertanyaan": "Hasil Monitoring dan Evaluasi telah ditindaklanjuti",
+        "pertanyaan_id": 8,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 9,
+        "n_pertanyaan": "Pimpinan berperan sebagai role model dalam pelaksanaan Pembangunan WBK/WBBM",
+        "pertanyaan_id": 9,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 10,
+        "n_pertanyaan": "Sudah ditetapkan agen perubahan",
+        "pertanyaan_id": 10,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 11,
+        "n_pertanyaan": "Telah dibangun budaya kerja dan pola pikir di lingkungan organisasi",
+        "pertanyaan_id": 11,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 12,
+        "n_pertanyaan": "Anggota organisasi terlibat dalam pembangunan Zona Integritas menuju WBK/WBBM",
+        "pertanyaan_id": 12,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 13,
+        "n_pertanyaan": "SOP mengacu pada peta proses bisnis instansi",
+        "pertanyaan_id": 13,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 14,
+        "n_pertanyaan": "Prosedur operasional tetap (SOP) telah diterapkan",
+        "pertanyaan_id": 14,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 15,
+        "n_pertanyaan": "Prosedur operasional tetap (SOP) telah dievaluasi",
+        "pertanyaan_id": 15,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 16,
+        "n_pertanyaan": "Sistem pengukuran kinerja unit sudah menggunakan teknologi informasi",
+        "pertanyaan_id": 16,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 17,
+        "n_pertanyaan": "Operasionalisasi manajemen SDM sudah menggunakan teknologi informasi",
+        "pertanyaan_id": 17,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 18,
+        "n_pertanyaan": "Pemberian pelayanan kepada publik sudah menggunakan teknologi informasi",
+        "pertanyaan_id": 18,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 19,
+        "n_pertanyaan": "Telah dilakukan monitoring dan dan evaluasi terhadap pemanfaatan teknologi informasi dalam pengukuran kinerja unit, operasionalisasi SDM, dan pemberian layanan kepada publik",
+        "pertanyaan_id": 19,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 20,
+        "n_pertanyaan": "Kebijakan tentang keterbukaan informasi publik telah diterapkan",
+        "pertanyaan_id": 20,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 21,
+        "n_pertanyaan": "Telah dilakukan monitoring dan evaluasi pelaksanaan kebijakan keterbukaan informasi publik",
+        "pertanyaan_id": 21,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 22,
+        "n_pertanyaan": "Kebutuhan pegawai yang disusun oleh unit kerja mengacu kepada peta jabatan dan hasil analisis beban kerja",
+        "pertanyaan_id": 22,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 23,
+        "n_pertanyaan": "Penempatan pegawai hasil rekrutmen murni mengacu kepada kebutuhan pegawai yang telah disusun per jabatan",
+        "pertanyaan_id": 23,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 24,
+        "n_pertanyaan": "Telah dilakukan monitoring dan dan evaluasi terhadap penempatan pegawai rekrutmen untuk memenuhi kebutuhan jabatan",
+        "pertanyaan_id": 24,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 25,
+        "n_pertanyaan": "Dalam melakukan pengembangan karier pegawai, telah dilakukan mutasi pegawai antar jabatan",
+        "pertanyaan_id": 25,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 26,
+        "n_pertanyaan": "Dalam melakukan mutasi pegawai antar jabatan telah memperhatikan kompetensi jabatan dan mengikuti pola mutasi yang telah ditetapkan",
+        "pertanyaan_id": 26,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 27,
+        "n_pertanyaan": "Telah dilakukan monitoring dan evaluasi terhadap kegiatan mutasi yang telah dilakukan dalam kaitannya dengan perbaikan kinerja",
+        "pertanyaan_id": 27,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 28,
+        "n_pertanyaan": "Unit Kerja melakukan Training Need Analysis Untuk pengembangan kompetensi",
+        "pertanyaan_id": 28,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 29,
+        "n_pertanyaan": "Dalam menyusun rencana pengembangan kompetensi pegawai, telah mempertimbangkan hasil pengelolaan kinerja pegawai",
+        "pertanyaan_id": 29,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 30,
+        "n_pertanyaan": "Tingkat kesenjangan kompetensi pegawai yang ada dengan standar kompetensi yang ditetapkan untuk masing-masing jabatan",
+        "pertanyaan_id": 30,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 31,
+        "n_pertanyaan": "Pegawai di Unit Kerja telah memperoleh kesempatan/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya",
+        "pertanyaan_id": 31,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 32,
+        "n_pertanyaan": "Dalam pelaksanaan pengembangan kompetensi, unit kerja melakukan upaya pengembangan kompetensi kepada pegawai (seperti pengikutsertaan pada lembaga pelatihan, in-house training, coaching, atau mentoring)",
+        "pertanyaan_id": 32,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 33,
+        "n_pertanyaan": "Telah dilakukan monitoring dan evaluasi terhadap hasil pengembangan kompetensi dalam kaitannya dengan perbaikan kinerja",
+        "pertanyaan_id": 33,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 34,
+        "n_pertanyaan": "Terdapat penetapan kinerja individu yang terkait dengan perjanjian kinerja organisasi",
+        "pertanyaan_id": 34,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 35,
+        "n_pertanyaan": "Ukuran kinerja individu telah memiliki kesesuaian dengan indikator kinerja individu level diatasnya",
+        "pertanyaan_id": 35,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 36,
+        "n_pertanyaan": "Pengukuran kinerja individu dilakukan secara periodik",
+        "pertanyaan_id": 36,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 37,
+        "n_pertanyaan": "Hasil penilaian kinerja individu telah dijadikan dasar untuk pemberian reward",
+        "pertanyaan_id": 37,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 38,
+        "n_pertanyaan": "Aturan disiplin/kode etik/kode perilaku telah dilaksanakan/diimplementasikan",
+        "pertanyaan_id": 38,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 39,
+        "n_pertanyaan": "Data informasi kepegawaian unit kerja telah dimutakhirkan secara berkala",
+        "pertanyaan_id": 39,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 40,
+        "n_pertanyaan": "Unit kerja telah melibatkan pimpinan secara langsung pada saat penyusunan perencanaan",
+        "pertanyaan_id": 40,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 41,
+        "n_pertanyaan": "Unit kerja telah melibatkan secara langsung pimpinan saat penyusunan penetapan kinerja",
+        "pertanyaan_id": 41,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 42,
+        "n_pertanyaan": "Pimpinan memantau pencapaian kinerja secara berkala",
+        "pertanyaan_id": 42,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 43,
+        "n_pertanyaan": "Dokumen perencanaan kinerja sudah ada",
+        "pertanyaan_id": 43,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 44,
+        "n_pertanyaan": "Perencanaan kinerja telah berorientasi hasil",
+        "pertanyaan_id": 44,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 45,
+        "n_pertanyaan": "Terdapat penetapan Indikator Kinerja Utama (IKU)",
+        "pertanyaan_id": 45,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 46,
+        "n_pertanyaan": "Indikator kinerja telah telah memenuhi kriteria SMART",
+        "pertanyaan_id": 46,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 47,
+        "n_pertanyaan": "Laporan kinerja telah disusun tepat waktu",
+        "pertanyaan_id": 47,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 48,
+        "n_pertanyaan": "Laporan kinerja telah memberikan informasi tentang kinerja",
+        "pertanyaan_id": 48,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 49,
+        "n_pertanyaan": "Terdapat sistem informasi/mekanisme informasi kinerja",
+        "pertanyaan_id": 49,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 50,
+        "n_pertanyaan": "Unit kerja telah berupaya meningkatkan kapasitas SDM yang menangangi akuntabilitas kinerja",
+        "pertanyaan_id": 50,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 51,
+        "n_pertanyaan": "Telah dilakukan public campaign tentang pengendalian gratifikasi",
+        "pertanyaan_id": 51,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 52,
+        "n_pertanyaan": "Pengendalian gratifikasi telah diimplementasikan",
+        "pertanyaan_id": 52,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 53,
+        "n_pertanyaan": "Telah dibangun lingkungan pengendalian",
+        "pertanyaan_id": 53,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 54,
+        "n_pertanyaan": "Telah dilakukan penilaian risiko atas pelaksanaan kebijakan",
+        "pertanyaan_id": 54,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 55,
+        "n_pertanyaan": "Telah dilakukan kegiatan pengendalian untuk meminimalisir risiko yang telah diidentifikasi",
+        "pertanyaan_id": 55,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 56,
+        "n_pertanyaan": "SPI telah diinformasikan dan dikomunikasikan kepada seluruh pihak terkait",
+        "pertanyaan_id": 56,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 57,
+        "n_pertanyaan": "Kebijakan Pengaduan masyarakat telah diimplementasikan",
+        "pertanyaan_id": 57,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 58,
+        "n_pertanyaan": "pengaduan masyarakat dtindaklanjuti",
+        "pertanyaan_id": 58,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 59,
+        "n_pertanyaan": "Telah dilakukan monitoring dan evaluasi atas penanganan pengaduan masyarakat",
+        "pertanyaan_id": 59,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 60,
+        "n_pertanyaan": "Hasil evaluasi atas penanganan pengaduan masyarakat telah ditindaklanjuti",
+        "pertanyaan_id": 60,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 61,
+        "n_pertanyaan": "Whistle Blowing System telah diterapkan",
+        "pertanyaan_id": 61,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 62,
+        "n_pertanyaan": "Telah dilakukan evaluasi atas penerapan Whistle Blowing System",
+        "pertanyaan_id": 62,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 63,
+        "n_pertanyaan": "Hasil evaluasi atas penerapan Whistle Blowing System telah ditindaklanjuti",
+        "pertanyaan_id": 63,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 64,
+        "n_pertanyaan": "Telah terdapat identifikasi/pemetaan benturan kepentingan dalam tugas fungsi utama",
+        "pertanyaan_id": 64,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 65,
+        "n_pertanyaan": "Penanganan Benturan Kepentingan telah disosialisasikan/internalisasi",
+        "pertanyaan_id": 65,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 66,
+        "n_pertanyaan": "Penanganan Benturan Kepentingan telah diimplementasikan",
+        "pertanyaan_id": 66,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 67,
+        "n_pertanyaan": "Telah dilakukan evaluasi atas Penanganan Benturan Kepentingan",
+        "pertanyaan_id": 67,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 68,
+        "n_pertanyaan": "Hasil evaluasi atas Penanganan Benturan Kepentingan telah ditindaklanjuti",
+        "pertanyaan_id": 68,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 69,
+        "n_pertanyaan": "Terdapat kebijakan standar pelayanan",
+        "pertanyaan_id": 69,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 70,
+        "n_pertanyaan": "Standar pelayanan telah dimaklumatkan",
+        "pertanyaan_id": 70,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 71,
+        "n_pertanyaan": "Dilakukan reviu dan perbaikan atas standar pelayanan",
+        "pertanyaan_id": 71,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 72,
+        "n_pertanyaan": "telah melakukan publikasi atas standar pelayanan dan maklumat pelayanan",
+        "pertanyaan_id": 72,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 73,
+        "n_pertanyaan": "Telah dilakukan berbagai upaya peningkatan kemampuan dan/atau kompetensi tentang penerapan budaya pelayanan prima",
+        "pertanyaan_id": 73,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 74,
+        "n_pertanyaan": "Informasi tentang pelayanan mudah diakses melalui berbagai media",
+        "pertanyaan_id": 74,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 75,
+        "n_pertanyaan": "Telah terdapat sistem pemberian penghargaan dan sanksi bagi petugas pemberi pelayanan",
+        "pertanyaan_id": 75,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 76,
+        "n_pertanyaan": "Telah terdapat sistem pemberian kompensasi kepada penerima layanan bila layanan tidak sesuai standar",
+        "pertanyaan_id": 76,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 77,
+        "n_pertanyaan": "Terdapat sarana layanan terpadu/terintegrasi",
+        "pertanyaan_id": 77,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 78,
+        "n_pertanyaan": "Terdapat inovasi pelayanan",
+        "pertanyaan_id": 78,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 79,
+        "n_pertanyaan": "Terdapat media pengaduan dan konsultasi pelayanan yang terintegrasi dengan SP4N-Lapor!",
+        "pertanyaan_id": 79,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 80,
+        "n_pertanyaan": "Terdapat unit yang mengelola pengaduan dan konsultasi pelayanan",
+        "pertanyaan_id": 80,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 81,
+        "n_pertanyaan": "Telah dilakukan evaluasi atas penanganan keluhan/masukan dan konsultasi",
+        "pertanyaan_id": 81,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 82,
+        "n_pertanyaan": "Telah dilakukan survey kepuasan masyarakat terhadap pelayanan",
+        "pertanyaan_id": 82,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 83,
+        "n_pertanyaan": "Hasil survei kepuasan masyarakat dapat diakses secara terbuka",
+        "pertanyaan_id": 83,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 84,
+        "n_pertanyaan": "Dilakukan tindak lanjut atas hasil survei kepuasan masyarakat",
+        "pertanyaan_id": 84,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 85,
+        "n_pertanyaan": "Telah menerapkan teknologi informasi dalam memberikan pelayanan",
+        "pertanyaan_id": 85,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 86,
+        "n_pertanyaan": "Telah dilakukan perbaikan secara terus menerus",
+        "pertanyaan_id": 86,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 87,
+        "n_pertanyaan": "Telah membangun database pelayanan yang terintegrasi",
+        "pertanyaan_id": 87,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 88,
+        "n_pertanyaan": "Jumlah Agen Perubahan",
+        "pertanyaan_id": 88,
+        "sub_pertanyaan_id": 1
+    },
+    {
+        "soal_id": 89,
+        "n_pertanyaan": "Jumlah Perubahan yang dibuat",
+        "pertanyaan_id": 88,
+        "sub_pertanyaan_id": 2
+    },
+    {
+        "soal_id": 90,
+        "n_pertanyaan": "Jumlah Perubahan yang dibuat",
+        "pertanyaan_id": 89,
+        "sub_pertanyaan_id": 3
+    },
+    {
+        "soal_id": 91,
+        "n_pertanyaan": "Jumlah Perubahan yang telah diintegrasikan dalam sistem manajemen",
+        "pertanyaan_id": 89,
+        "sub_pertanyaan_id": 4
+    },
+    {
+        "soal_id": 92,
+        "n_pertanyaan": "Pimpinan memiliki komitmen terhadap pelaksanaan reformasi birokrasi, dengan adanya target capaian reformasi yang jelas di dokumen perencanaan",
+        "pertanyaan_id": 90,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 93,
+        "n_pertanyaan": "Instansi membangun budaya kerja positif dan menerapkan nilai-nilai organisasi dalam pelaksanaan tugas sehari-hari",
+        "pertanyaan_id": 91,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 94,
+        "n_pertanyaan": "Telah disusun peta proses bisnis dengan adanya penyederhanaan jabatan",
+        "pertanyaan_id": 92,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 95,
+        "n_pertanyaan": "Implementasi SPBE telah terintegrasi dan mampu mendorong pelaksanaan pelayanan publik yang lebih cepat dan efisien",
+        "pertanyaan_id": 93,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 96,
+        "n_pertanyaan": "Implementasi SPBE telah terintegrasi dan mampu mendorong pelaksanaan pelayanan internal organisasi yang lebih cepat dan efisien",
+        "pertanyaan_id": 94,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 97,
+        "n_pertanyaan": "Transformasi digital pada bidang proses bisnis utama telah mampu memberikan nilai manfaat bagi unit kerja secara optimal",
+        "pertanyaan_id": 95,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 98,
+        "n_pertanyaan": "Transformasi digital pada bidang administrasi pemerintahan telah mampu memberikan nilai manfaat bagi unit kerja secara optimal",
+        "pertanyaan_id": 96,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 99,
+        "n_pertanyaan": "Transformasi digital pada bidang pelayanan publik telah mampu memberikan nilai manfaat bagi unit kerja secara optimal",
+        "pertanyaan_id": 97,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 100,
+        "n_pertanyaan": "Ukuran kinerja individu telah berorientasi hasil (outcome) sesuai pada levelnya",
+        "pertanyaan_id": 98,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 101,
+        "n_pertanyaan": "Hasil assement telah dijadikan pertimbangan untuk mutasi dan pengembangan karir pegawai",
+        "pertanyaan_id": 99,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 102,
+        "n_pertanyaan": "Jumlah pelanggaran tahun sebelumnya",
+        "pertanyaan_id": 100,
+        "sub_pertanyaan_id": 5
+    },
+    {
+        "soal_id": 103,
+        "n_pertanyaan": "Jumlah pelanggaran tahun ini",
+        "pertanyaan_id": 100,
+        "sub_pertanyaan_id": 6
+    },
+    {
+        "soal_id": 104,
+        "n_pertanyaan": "Jumlah pelanggaran yang telah diberikan sanksi/hukuman",
+        "pertanyaan_id": 100,
+        "sub_pertanyaan_id": 7
+    },
+    {
+        "soal_id": 105,
+        "n_pertanyaan": "Jumlah Sasaran Kinerja",
+        "pertanyaan_id": 101,
+        "sub_pertanyaan_id": 8
+    },
+    {
+        "soal_id": 106,
+        "n_pertanyaan": "Jumlah Sasaran Kinerja yang tercapai 100% atau lebih",
+        "pertanyaan_id": 101,
+        "sub_pertanyaan_id": 9
+    },
+    {
+        "soal_id": 107,
+        "n_pertanyaan": "Hasil Capaian/Monitoring Perjanjian Kinerja telah dijadikan dasar sebagai pemberian reward and punishment bagi organisasi",
+        "pertanyaan_id": 102,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 108,
+        "n_pertanyaan": "Apakah terdapat penjenjangan kinerja ((Kerangka Logis Kinerja) yang mengacu pada kinerja utama organisasi dan dijadikan dalam penentuan kinerja seluruh pegawai?",
+        "pertanyaan_id": 103,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 109,
+        "n_pertanyaan": "Telah dilakukan mekanisme pengendalian aktivitas secara berjenjang",
+        "pertanyaan_id": 104,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 110,
+        "n_pertanyaan": "Jumlah pengaduan masyarakat yang harus ditindaklanjuti",
+        "pertanyaan_id": 105,
+        "sub_pertanyaan_id": 10
+    },
+    {
+        "soal_id": 111,
+        "n_pertanyaan": "Jumlah pengaduan masyarakat yang sedang diproses",
+        "pertanyaan_id": 105,
+        "sub_pertanyaan_id": 11
+    },
+    {
+        "soal_id": 112,
+        "n_pertanyaan": "Jumlah pengaduan masyarakat yang selesai ditindaklanjuti",
+        "pertanyaan_id": 105,
+        "sub_pertanyaan_id": 12
+    },
+    {
+        "soal_id": 113,
+        "n_pertanyaan": "Jumlah yang harus melaporkan",
+        "pertanyaan_id": 106,
+        "sub_pertanyaan_id": 13
+    },
+    {
+        "soal_id": 114,
+        "n_pertanyaan": "Kepala satuan kerja",
+        "pertanyaan_id": 106,
+        "sub_pertanyaan_id": 14
+    },
+    {
+        "soal_id": 115,
+        "n_pertanyaan": "Pejabat yang diwajibkan menyampaikan LHKPN",
+        "pertanyaan_id": 106,
+        "sub_pertanyaan_id": 15
+    },
+    {
+        "soal_id": 116,
+        "n_pertanyaan": "Lainnya",
+        "pertanyaan_id": 106,
+        "sub_pertanyaan_id": 16
+    },
+    {
+        "soal_id": 117,
+        "n_pertanyaan": "Jumlah yang sudah melaporkan",
+        "pertanyaan_id": 106,
+        "sub_pertanyaan_id": 17
+    },
+    {
+        "soal_id": 118,
+        "n_pertanyaan": "Upaya dan/atau inovasi telah mendorong perbaikan pelayanan publik pada: 1. Kesesuaian Persyaratan 2. Kemudahan Sistem, Mekanisme, dan Prosedur 3. Kecepatan Waktu Penyelesaian 4. Kejelasan Biaya/Tarif, Gratis 5. Kualitas Produk Spesifikasi Jenis Pelayanan 6. Kompetensi Pelaksana/Web 7. Perilaku Pelaksana/Web 8. Kualitas Sarana dan prasarana 9. Penanganan Pengaduan, Saran dan Masukan",
+        "pertanyaan_id": 107,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 119,
+        "n_pertanyaan": "Jumlah perijinan/pelayanan yang terdata/terdaftar",
+        "pertanyaan_id": 108,
+        "sub_pertanyaan_id": 18
+    },
+    {
+        "soal_id": 120,
+        "n_pertanyaan": "Jumlah perijinan/pelayanan yang telah dipermudah",
+        "pertanyaan_id": 108,
+        "sub_pertanyaan_id": 19
+    },
+    {
+        "soal_id": 121,
+        "n_pertanyaan": "Penanganan pengaduan pelayanan dilakukan melalui berbagai kanal/media secara responsive dan bertanggung jawab",
+        "pertanyaan_id": 109,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 122,
+        "n_pertanyaan": "Nilai Survey Persepsi Korupsi (Survei Eksternal)",
+        "pertanyaan_id": 110,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 123,
+        "n_pertanyaan": "Capaian Kinerja Lebih Baik dari pada Capaian Kinerja Sebelumnya",
+        "pertanyaan_id": 111,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 124,
+        "n_pertanyaan": "Nilai Persepsi Kualitas Pelayanan (Survei Eksternal)",
+        "pertanyaan_id": 112,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 125,
+        "n_pertanyaan": "Jumlah yang harus melaporkan",
+        "pertanyaan_id": 113,
+        "sub_pertanyaan_id": 20
+    },
+    {
+        "soal_id": 126,
+        "n_pertanyaan": "Kepala satuan kerja",
+        "pertanyaan_id": 113,
+        "sub_pertanyaan_id": 21
+    },
+    {
+        "soal_id": 127,
+        "n_pertanyaan": "Pejabat yang diwajibkan menyampaikan LHKPN",
+        "pertanyaan_id": 113,
+        "sub_pertanyaan_id": 22
+    },
+    {
+        "soal_id": 128,
+        "n_pertanyaan": "Lainnya",
+        "pertanyaan_id": 113,
+        "sub_pertanyaan_id": 23
+    },
+    {
+        "soal_id": 129,
+        "n_pertanyaan": "Jumlah yang sudah melaporkan",
+        "pertanyaan_id": 113,
+        "sub_pertanyaan_id": 24
+    }
+]

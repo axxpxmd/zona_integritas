@@ -60,14 +60,14 @@
                                         },
                                         {
                                             "id": 2,
-                                            "teks_pertanyaan": "Penentuan anggota Tim dipilih melalui prosedur\/mekanisme yang jelas",
-                                            "kriteria_nilai": "a. Jika dengan prosedur\/mekanisme yang jelas dan mewakili seluruh unsur dalam unit kerja\nb. Jika sebagian menggunakan prosedur yang mewakili sebagian besar unsur dalam unit kerja\nc. Jika tidak di seleksi.",
+                                            "teks_pertanyaan": "Penentuan anggota Tim dipilih melalui prosedur/mekanisme yang jelas",
+                                            "kriteria_nilai": "a. Jika dengan prosedur/mekanisme yang jelas dan mewakili seluruh unsur dalam unit kerja\nb. Jika sebagian menggunakan prosedur yang mewakili sebagian besar unsur dalam unit kerja\nc. Jika tidak di seleksi.",
                                             "jenis_jawaban": "ABC",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Jika dengan prosedur\/mekanisme yang jelas dan mewakili seluruh unsur dalam unit kerja",
+                                                    "label": "Jika dengan prosedur/mekanisme yang jelas dan mewakili seluruh unsur dalam unit kerja",
                                                     "multiplier": 1
                                                 },
                                                 {
@@ -101,7 +101,7 @@
                                     "soals": [
                                         {
                                             "id": 3,
-                                            "teks_pertanyaan": "Terdapat dokumen rencana kerja pembangunan Zona Integritas menuju WBK\/WBBM",
+                                            "teks_pertanyaan": "Terdapat dokumen rencana kerja pembangunan Zona Integritas menuju WBK/WBBM",
                                             "kriteria_nilai": "Ya, jika memiliki  rencana kerja pembangunan Zona Integritas.",
                                             "jenis_jawaban": "YA_TIDAK",
                                             "bobot_maksimal": 0,
@@ -127,24 +127,24 @@
                                         },
                                         {
                                             "id": 4,
-                                            "teks_pertanyaan": "Dalam dokumen pembangunan terdapat target-target prioritas yang relevan dengan tujuan pembangunan WBK\/WBBM",
-                                            "kriteria_nilai": "a. Jika semua target-target prioritas relevan dengan tujuanpembangunan WBK\/WBBM\nb. Jika sebagian target-target prioritas relevan dengan tujuan pembangunan WBK\/WBBM\nc. Jika tidak ada target-target prioritas yang relevan dengan tujuan pembangunan WBK\/WBBM",
+                                            "teks_pertanyaan": "Dalam dokumen pembangunan terdapat target-target prioritas yang relevan dengan tujuan pembangunan WBK/WBBM",
+                                            "kriteria_nilai": "a. Jika semua target-target prioritas relevan dengan tujuanpembangunan WBK/WBBM\nb. Jika sebagian target-target prioritas relevan dengan tujuan pembangunan WBK/WBBM\nc. Jika tidak ada target-target prioritas yang relevan dengan tujuan pembangunan WBK/WBBM",
                                             "jenis_jawaban": "ABC",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Jika semua target-target prioritas relevan dengan tujuanpembangunan WBK\/WBBM",
+                                                    "label": "Jika semua target-target prioritas relevan dengan tujuanpembangunan WBK/WBBM",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Jika sebagian target-target prioritas relevan dengan tujuan pembangunan WBK\/WBBM",
+                                                    "label": "Jika sebagian target-target prioritas relevan dengan tujuan pembangunan WBK/WBBM",
                                                     "multiplier": 0.5
                                                 },
                                                 {
                                                     "key": "C",
-                                                    "label": "Jika tidak ada target-target prioritas yang relevan dengan tujuan pembangunan WBK\/WBBM",
+                                                    "label": "Jika tidak ada target-target prioritas yang relevan dengan tujuan pembangunan WBK/WBBM",
                                                     "multiplier": 0
                                                 }
                                             ],
@@ -158,24 +158,24 @@
                                         },
                                         {
                                             "id": 5,
-                                            "teks_pertanyaan": "Terdapat mekanisme atau media untuk mensosialisasikan pembangunan WBK\/WBBM",
-                                            "kriteria_nilai": "a. Jika telah dilakukan pengelolaan media\/aktivitas interaktif yang efektif untuk menginformasikan pembangunan ZI kepada internal dan stakeholder secara berkala\nb. Jika pengelolaan media\/aktivitas interaktif dilakukan secara terbatas dan tidak secara berkala\nc. Jika pengelolaan media\/aktivitas interaktif belum dilakukan",
+                                            "teks_pertanyaan": "Terdapat mekanisme atau media untuk mensosialisasikan pembangunan WBK/WBBM",
+                                            "kriteria_nilai": "a. Jika telah dilakukan pengelolaan media/aktivitas interaktif yang efektif untuk menginformasikan pembangunan ZI kepada internal dan stakeholder secara berkala\nb. Jika pengelolaan media/aktivitas interaktif dilakukan secara terbatas dan tidak secara berkala\nc. Jika pengelolaan media/aktivitas interaktif belum dilakukan",
                                             "jenis_jawaban": "ABC",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Jika telah dilakukan pengelolaan media\/aktivitas interaktif yang efektif untuk menginformasikan pembangunan ZI kepada internal dan stakeholder secara berkala",
+                                                    "label": "Jika telah dilakukan pengelolaan media/aktivitas interaktif yang efektif untuk menginformasikan pembangunan ZI kepada internal dan stakeholder secara berkala",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Jika pengelolaan media\/aktivitas interaktif dilakukan secara terbatas dan tidak secara berkala",
+                                                    "label": "Jika pengelolaan media/aktivitas interaktif dilakukan secara terbatas dan tidak secara berkala",
                                                     "multiplier": 0.5
                                                 },
                                                 {
                                                     "key": "C",
-                                                    "label": "Jika pengelolaan media\/aktivitas interaktif belum dilakukan",
+                                                    "label": "Jika pengelolaan media/aktivitas interaktif belum dilakukan",
                                                     "multiplier": 0
                                                 }
                                             ],
@@ -191,7 +191,7 @@
                                 },
                                 {
                                     "id": 6,
-                                    "nama": "iii. Pemantauan dan Evaluasi Pembangunan WBK\/WBBM",
+                                    "nama": "iii. Pemantauan dan Evaluasi Pembangunan WBK/WBBM",
                                     "level": "sub_area",
                                     "bobot_maksimal": 1,
                                     "order_index": 3,
@@ -272,28 +272,28 @@
                                         {
                                             "id": 8,
                                             "teks_pertanyaan": "Hasil Monitoring dan Evaluasi telah ditindaklanjuti",
-                                            "kriteria_nilai": "a. Jika semua catatan\/rekomendasi hasil  monitoring dan evaluasi tim internal atas persiapan dan pelaksanaan kegiatan Unit WBK\/WBBM telah ditindaklanjuti\nb. Jika sebagian besar catatan\/rekomendasi hasil monitoring danevaluasi tim internal atas persiapan dan pelaksanaan kegiatanUnit WBK\/WBBM telah ditindaklanjuti\nc. Jika sebagian kecil catatan\/rekomendasi hasil monitoring dan evaluasi tim internal atas persiapan dan pelaksanaan kegiatan Unit WBK\/WBBM telah ditindaklanjuti\nd. Jika catatan\/rekomendasi hasil monitoring dan evaluasi tim internal atas persiapan dan pelaksanaan kegiatan Unit WBK\/WBBM belum ditindaklanjuti",
+                                            "kriteria_nilai": "a. Jika semua catatan/rekomendasi hasil  monitoring dan evaluasi tim internal atas persiapan dan pelaksanaan kegiatan Unit WBK/WBBM telah ditindaklanjuti\nb. Jika sebagian besar catatan/rekomendasi hasil monitoring danevaluasi tim internal atas persiapan dan pelaksanaan kegiatanUnit WBK/WBBM telah ditindaklanjuti\nc. Jika sebagian kecil catatan/rekomendasi hasil monitoring dan evaluasi tim internal atas persiapan dan pelaksanaan kegiatan Unit WBK/WBBM telah ditindaklanjuti\nd. Jika catatan/rekomendasi hasil monitoring dan evaluasi tim internal atas persiapan dan pelaksanaan kegiatan Unit WBK/WBBM belum ditindaklanjuti",
                                             "jenis_jawaban": "ABCD",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Jika semua catatan\/rekomendasi hasil  monitoring dan evaluasi tim internal atas persiapan dan pelaksanaan kegiatan Unit WBK\/WBBM telah ditindaklanjuti",
+                                                    "label": "Jika semua catatan/rekomendasi hasil  monitoring dan evaluasi tim internal atas persiapan dan pelaksanaan kegiatan Unit WBK/WBBM telah ditindaklanjuti",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Jika sebagian besar catatan\/rekomendasi hasil monitoring danevaluasi tim internal atas persiapan dan pelaksanaan kegiatanUnit WBK\/WBBM telah ditindaklanjuti",
+                                                    "label": "Jika sebagian besar catatan/rekomendasi hasil monitoring danevaluasi tim internal atas persiapan dan pelaksanaan kegiatanUnit WBK/WBBM telah ditindaklanjuti",
                                                     "multiplier": 0.67
                                                 },
                                                 {
                                                     "key": "C",
-                                                    "label": "Jika sebagian kecil catatan\/rekomendasi hasil monitoring dan evaluasi tim internal atas persiapan dan pelaksanaan kegiatan Unit WBK\/WBBM telah ditindaklanjuti",
+                                                    "label": "Jika sebagian kecil catatan/rekomendasi hasil monitoring dan evaluasi tim internal atas persiapan dan pelaksanaan kegiatan Unit WBK/WBBM telah ditindaklanjuti",
                                                     "multiplier": 0.33
                                                 },
                                                 {
                                                     "key": "D",
-                                                    "label": "Jika catatan\/rekomendasi hasil monitoring dan evaluasi tim internal atas persiapan dan pelaksanaan kegiatan Unit WBK\/WBBM belum ditindaklanjuti",
+                                                    "label": "Jika catatan/rekomendasi hasil monitoring dan evaluasi tim internal atas persiapan dan pelaksanaan kegiatan Unit WBK/WBBM belum ditindaklanjuti",
                                                     "multiplier": 0
                                                 }
                                             ],
@@ -317,7 +317,7 @@
                                     "soals": [
                                         {
                                             "id": 9,
-                                            "teks_pertanyaan": "Pimpinan berperan sebagai role model dalam pelaksanaan Pembangunan WBK\/WBBM",
+                                            "teks_pertanyaan": "Pimpinan berperan sebagai role model dalam pelaksanaan Pembangunan WBK/WBBM",
                                             "kriteria_nilai": "ya, jika pimpinan menjadi contoh pelaksanaan nilai-nilai organisasi.",
                                             "jenis_jawaban": "YA_TIDAK",
                                             "bobot_maksimal": 0,
@@ -405,29 +405,29 @@
                                         },
                                         {
                                             "id": 12,
-                                            "teks_pertanyaan": "Anggota organisasi terlibat dalam pembangunan Zona Integritas menuju WBK\/WBBM",
-                                            "kriteria_nilai": "a. Jika semua anggota terlibat dalam pembangunan Zona Integritas menuju WBK\/WBBM dan usulan-usulan dari anggota diakomodasikan dalam keputusan\nb. Jika sebagian besar anggota terlibat dalam pembangunan Zona Integritas menuju WBK\/WBBM\nc. Jika sebagian kecil anggota terlibat dalam pembangunan Zona Integritas menuju WBK\/WBBM\nd. Jika belum ada anggota terlibat dalam pembangunan Zona Integritas menuju WBK\/WBBM",
+                                            "teks_pertanyaan": "Anggota organisasi terlibat dalam pembangunan Zona Integritas menuju WBK/WBBM",
+                                            "kriteria_nilai": "a. Jika semua anggota terlibat dalam pembangunan Zona Integritas menuju WBK/WBBM dan usulan-usulan dari anggota diakomodasikan dalam keputusan\nb. Jika sebagian besar anggota terlibat dalam pembangunan Zona Integritas menuju WBK/WBBM\nc. Jika sebagian kecil anggota terlibat dalam pembangunan Zona Integritas menuju WBK/WBBM\nd. Jika belum ada anggota terlibat dalam pembangunan Zona Integritas menuju WBK/WBBM",
                                             "jenis_jawaban": "ABCD",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Jika semua anggota terlibat dalam pembangunan Zona Integritas menuju WBK\/WBBM dan usulan-usulan dari anggota diakomodasikan dalam keputusan",
+                                                    "label": "Jika semua anggota terlibat dalam pembangunan Zona Integritas menuju WBK/WBBM dan usulan-usulan dari anggota diakomodasikan dalam keputusan",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Jika sebagian besar anggota terlibat dalam pembangunan Zona Integritas menuju WBK\/WBBM",
+                                                    "label": "Jika sebagian besar anggota terlibat dalam pembangunan Zona Integritas menuju WBK/WBBM",
                                                     "multiplier": 0.67
                                                 },
                                                 {
                                                     "key": "C",
-                                                    "label": "Jika sebagian kecil anggota terlibat dalam pembangunan Zona Integritas menuju WBK\/WBBM",
+                                                    "label": "Jika sebagian kecil anggota terlibat dalam pembangunan Zona Integritas menuju WBK/WBBM",
                                                     "multiplier": 0.33
                                                 },
                                                 {
                                                     "key": "D",
-                                                    "label": "Jika belum ada anggota terlibat dalam pembangunan Zona Integritas menuju WBK\/WBBM",
+                                                    "label": "Jika belum ada anggota terlibat dalam pembangunan Zona Integritas menuju WBK/WBBM",
                                                     "multiplier": 0
                                                 }
                                             ],
@@ -590,23 +590,23 @@
                                         {
                                             "id": 16,
                                             "teks_pertanyaan": "Sistem pengukuran kinerja unit sudah menggunakan teknologi informasi",
-                                            "kriteria_nilai": "a. Jika unit memiliki sistem pengukuran kinerja (e-performance\/e-sakip) yang menggunakan teknologi informasi dan juga melakukan inovasi\nb. Jika unit memiliki sistem pengukuran kinerja (e-performance\/e-sakip) yang menggunakan teknologi informasi\nc. Jika belum memiliki sistem pengukuran kinerja (e-performance\/e-sakip) yang menggunakan teknologi informasi",
+                                            "kriteria_nilai": "a. Jika unit memiliki sistem pengukuran kinerja (e-performance/e-sakip) yang menggunakan teknologi informasi dan juga melakukan inovasi\nb. Jika unit memiliki sistem pengukuran kinerja (e-performance/e-sakip) yang menggunakan teknologi informasi\nc. Jika belum memiliki sistem pengukuran kinerja (e-performance/e-sakip) yang menggunakan teknologi informasi",
                                             "jenis_jawaban": "ABC",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Jika unit memiliki sistem pengukuran kinerja (e-performance\/e-sakip) yang menggunakan teknologi informasi dan juga melakukan inovasi",
+                                                    "label": "Jika unit memiliki sistem pengukuran kinerja (e-performance/e-sakip) yang menggunakan teknologi informasi dan juga melakukan inovasi",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Jika unit memiliki sistem pengukuran kinerja (e-performance\/e-sakip) yang menggunakan teknologi informasi",
+                                                    "label": "Jika unit memiliki sistem pengukuran kinerja (e-performance/e-sakip) yang menggunakan teknologi informasi",
                                                     "multiplier": 0.5
                                                 },
                                                 {
                                                     "key": "C",
-                                                    "label": "Jika belum memiliki sistem pengukuran kinerja (e-performance\/e-sakip) yang menggunakan teknologi informasi",
+                                                    "label": "Jika belum memiliki sistem pengukuran kinerja (e-performance/e-sakip) yang menggunakan teknologi informasi",
                                                     "multiplier": 0
                                                 }
                                             ],
@@ -652,13 +652,13 @@
                                         {
                                             "id": 18,
                                             "teks_pertanyaan": "Pemberian pelayanan kepada publik sudah menggunakan teknologi informasi",
-                                            "kriteria_nilai": "a. Jika unit memberikan pelayanan kepada publik dengan menggunakan teknologi informasi terpusat\/unit sendiri dan terdapat inovasi\nb. Jika unit memberikan pelayanan kepada publik dengan menggunakan teknologi informasi secara terpusat\nc. Jika belum memberikan pelayanan kepada publik dengan menggunakan teknologi informasi",
+                                            "kriteria_nilai": "a. Jika unit memberikan pelayanan kepada publik dengan menggunakan teknologi informasi terpusat/unit sendiri dan terdapat inovasi\nb. Jika unit memberikan pelayanan kepada publik dengan menggunakan teknologi informasi secara terpusat\nc. Jika belum memberikan pelayanan kepada publik dengan menggunakan teknologi informasi",
                                             "jenis_jawaban": "ABC",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Jika unit memberikan pelayanan kepada publik dengan menggunakan teknologi informasi terpusat\/unit sendiri dan terdapat inovasi",
+                                                    "label": "Jika unit memberikan pelayanan kepada publik dengan menggunakan teknologi informasi terpusat/unit sendiri dan terdapat inovasi",
                                                     "multiplier": 1
                                                 },
                                                 {
@@ -723,7 +723,7 @@
                                     "soals": [
                                         {
                                             "id": 20,
-                                            "teks_pertanyaan": "Kebijakan tentang  keterbukaan informasi publik telah diterapkan",
+                                            "teks_pertanyaan": "Kebijakan tentang keterbukaan informasi publik telah diterapkan",
                                             "kriteria_nilai": "a. Jika sudah terdapat Pejabat Pengelola Informasi Publik (PPID) yang menyebarkan seluruh informasi yang dapat diakses secara mutakhir dan lengkap\nb. Jika sudah terdapat PPID yang menyebarkan sebagian informasi yang dapat diakses secara mutakhir dan lengkap\nc. Jika belum ada PPID dan belum melakukan penyebaran informasi publik",
                                             "jenis_jawaban": "ABC",
                                             "bobot_maksimal": 0,
@@ -1104,29 +1104,29 @@
                                         },
                                         {
                                             "id": 31,
-                                            "teks_pertanyaan": "Pegawai di Unit Kerja telah memperoleh kesempatan\/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya",
-                                            "kriteria_nilai": "a. Jika seluruh pegawai di Unit Kerja telah memperoleh kesempatan\/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya\nb. Jika sebagian besar pegawai di Unit Kerja telah memperoleh kesempatan\/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya\nc. Jika sebagian kecil pegawai di Unit Kerja telah memperoleh kesempatan\/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya\nd. Jika belum ada pegawai di Unit Kerja telah memperoleh kesempatan\/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya",
+                                            "teks_pertanyaan": "Pegawai di Unit Kerja telah memperoleh kesempatan/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya",
+                                            "kriteria_nilai": "a. Jika seluruh pegawai di Unit Kerja telah memperoleh kesempatan/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya\nb. Jika sebagian besar pegawai di Unit Kerja telah memperoleh kesempatan/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya\nc. Jika sebagian kecil pegawai di Unit Kerja telah memperoleh kesempatan/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya\nd. Jika belum ada pegawai di Unit Kerja telah memperoleh kesempatan/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya",
                                             "jenis_jawaban": "ABCD",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Jika seluruh pegawai di Unit Kerja telah memperoleh kesempatan\/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya",
+                                                    "label": "Jika seluruh pegawai di Unit Kerja telah memperoleh kesempatan/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Jika sebagian besar pegawai di Unit Kerja telah memperoleh kesempatan\/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya",
+                                                    "label": "Jika sebagian besar pegawai di Unit Kerja telah memperoleh kesempatan/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya",
                                                     "multiplier": 0.67
                                                 },
                                                 {
                                                     "key": "C",
-                                                    "label": "Jika sebagian kecil pegawai di Unit Kerja telah memperoleh kesempatan\/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya",
+                                                    "label": "Jika sebagian kecil pegawai di Unit Kerja telah memperoleh kesempatan/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya",
                                                     "multiplier": 0.33
                                                 },
                                                 {
                                                     "key": "D",
-                                                    "label": "Jika belum ada pegawai di Unit Kerja telah memperoleh kesempatan\/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya",
+                                                    "label": "Jika belum ada pegawai di Unit Kerja telah memperoleh kesempatan/hak untuk mengikuti diklat maupun pengembangan kompetensi lainnya",
                                                     "multiplier": 0
                                                 }
                                             ],
@@ -1358,7 +1358,7 @@
                                 },
                                 {
                                     "id": 17,
-                                    "nama": "v. Penegakan Aturan Disiplin\/Kode Etik\/Kode Perilaku Pegawai",
+                                    "nama": "v. Penegakan Aturan Disiplin/Kode Etik/Kode Perilaku Pegawai",
                                     "level": "sub_area",
                                     "bobot_maksimal": 0.75,
                                     "order_index": 5,
@@ -1366,29 +1366,29 @@
                                     "soals": [
                                         {
                                             "id": 38,
-                                            "teks_pertanyaan": "Aturan disiplin\/kode etik\/kode perilaku telah dilaksanakan\/diimplementasikan",
-                                            "kriteria_nilai": "a. Jika unit kerja telah mengimplementasikan seluruh aturan disiplin\/kode etik\/kode perilaku yang ditetapkan organisasi dan juga membuat inovasi terkait aturan disiplin\/kode etik\/kode perilaku yang sesuai dengan karakteristik unit kerja\nb. Jika unit kerja telah mengimplementasikan seluruh aturan disiplin\/kode etik\/kode perilaku yang ditetapkan organisasi\nc. Jika unit kerja telah mengimplementasikan sebagian aturan disiplin\/kode etik\/kode perilaku yang ditetapkan organisasi\nd. Jika unit kerja belum mengimplementasikan aturan disiplin\/kode etik\/kode perilaku yang ditetapkan organisasi",
+                                            "teks_pertanyaan": "Aturan disiplin/kode etik/kode perilaku telah dilaksanakan/diimplementasikan",
+                                            "kriteria_nilai": "a. Jika unit kerja telah mengimplementasikan seluruh aturan disiplin/kode etik/kode perilaku yang ditetapkan organisasi dan juga membuat inovasi terkait aturan disiplin/kode etik/kode perilaku yang sesuai dengan karakteristik unit kerja\nb. Jika unit kerja telah mengimplementasikan seluruh aturan disiplin/kode etik/kode perilaku yang ditetapkan organisasi\nc. Jika unit kerja telah mengimplementasikan sebagian aturan disiplin/kode etik/kode perilaku yang ditetapkan organisasi\nd. Jika unit kerja belum mengimplementasikan aturan disiplin/kode etik/kode perilaku yang ditetapkan organisasi",
                                             "jenis_jawaban": "ABCD",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Jika unit kerja telah mengimplementasikan seluruh aturan disiplin\/kode etik\/kode perilaku yang ditetapkan organisasi dan juga membuat inovasi terkait aturan disiplin\/kode etik\/kode perilaku yang sesuai dengan karakteristik unit kerja",
+                                                    "label": "Jika unit kerja telah mengimplementasikan seluruh aturan disiplin/kode etik/kode perilaku yang ditetapkan organisasi dan juga membuat inovasi terkait aturan disiplin/kode etik/kode perilaku yang sesuai dengan karakteristik unit kerja",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Jika unit kerja telah mengimplementasikan seluruh aturan disiplin\/kode etik\/kode perilaku yang ditetapkan organisasi",
+                                                    "label": "Jika unit kerja telah mengimplementasikan seluruh aturan disiplin/kode etik/kode perilaku yang ditetapkan organisasi",
                                                     "multiplier": 0.67
                                                 },
                                                 {
                                                     "key": "C",
-                                                    "label": "Jika unit kerja telah mengimplementasikan sebagian aturan disiplin\/kode etik\/kode perilaku yang ditetapkan organisasi",
+                                                    "label": "Jika unit kerja telah mengimplementasikan sebagian aturan disiplin/kode etik/kode perilaku yang ditetapkan organisasi",
                                                     "multiplier": 0.33
                                                 },
                                                 {
                                                     "key": "D",
-                                                    "label": "Jika unit kerja belum mengimplementasikan aturan disiplin\/kode etik\/kode perilaku yang ditetapkan organisasi",
+                                                    "label": "Jika unit kerja belum mengimplementasikan aturan disiplin/kode etik/kode perilaku yang ditetapkan organisasi",
                                                     "multiplier": 0
                                                 }
                                             ],
@@ -1742,8 +1742,8 @@
                                         },
                                         {
                                             "id": 49,
-                                            "teks_pertanyaan": "Terdapat sistem informasi\/mekanisme informasi kinerja",
-                                            "kriteria_nilai": "ya, jika terdapat sistem informasi\/mekanisme informasi kinerja",
+                                            "teks_pertanyaan": "Terdapat sistem informasi/mekanisme informasi kinerja",
+                                            "kriteria_nilai": "ya, jika terdapat sistem informasi/mekanisme informasi kinerja",
                                             "jenis_jawaban": "YA_TIDAK",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
@@ -2179,7 +2179,7 @@
                                     "soals": [
                                         {
                                             "id": 61,
-                                            "teks_pertanyaan": "Whistle-Blowing System telah diterapkan",
+                                            "teks_pertanyaan": "Whistle Blowing System telah diterapkan",
                                             "kriteria_nilai": "a. Jika unit kerja menerapkan seluruh kebijakan Whistle Blowing System sesuai dengan yang ditetapkan organisasi dan juga membuat inovasi terkait pelaksanaan Whistle Blowing System yang sesuai dengan karakteristik unit kerja\nb. Jika unit kerja menerapkan kebijakan Whistle Blowing System sesuai dengan yang ditetapkan organisasi\nc. Jika unit kerja belum menerapkan kebijakan Whistle Blowing System",
                                             "jenis_jawaban": "ABC",
                                             "bobot_maksimal": 0,
@@ -2282,29 +2282,29 @@
                                     "soals": [
                                         {
                                             "id": 64,
-                                            "teks_pertanyaan": "Telah terdapat identifikasi\/pemetaan benturan kepentingan dalam tugas fungsi utama",
-                                            "kriteria_nilai": "a. Jika terdapat  identifikasi\/pemetaan benturan kepentingan pada seluruh tugas fungsi utama\nb. Jika terdapat  identifikasi\/pemetaan benturan kepentingan tetapi pada sebagian besar tugas fungsi utama\nc. Jika terdapat  identifikasi\/pemetaan benturan kepentingan tetapi pada sebagian kecil tugas fungsi utama\nd. Jika belum terdapat  identifikasi\/pemetaan benturan kepentingan dalam tugas fungsi utama",
+                                            "teks_pertanyaan": "Telah terdapat identifikasi/pemetaan benturan kepentingan dalam tugas fungsi utama",
+                                            "kriteria_nilai": "a. Jika terdapat  identifikasi/pemetaan benturan kepentingan pada seluruh tugas fungsi utama\nb. Jika terdapat  identifikasi/pemetaan benturan kepentingan tetapi pada sebagian besar tugas fungsi utama\nc. Jika terdapat  identifikasi/pemetaan benturan kepentingan tetapi pada sebagian kecil tugas fungsi utama\nd. Jika belum terdapat  identifikasi/pemetaan benturan kepentingan dalam tugas fungsi utama",
                                             "jenis_jawaban": "ABCD",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Jika terdapat  identifikasi\/pemetaan benturan kepentingan pada seluruh tugas fungsi utama",
+                                                    "label": "Jika terdapat  identifikasi/pemetaan benturan kepentingan pada seluruh tugas fungsi utama",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Jika terdapat  identifikasi\/pemetaan benturan kepentingan tetapi pada sebagian besar tugas fungsi utama",
+                                                    "label": "Jika terdapat  identifikasi/pemetaan benturan kepentingan tetapi pada sebagian besar tugas fungsi utama",
                                                     "multiplier": 0.67
                                                 },
                                                 {
                                                     "key": "C",
-                                                    "label": "Jika terdapat  identifikasi\/pemetaan benturan kepentingan tetapi pada sebagian kecil tugas fungsi utama",
+                                                    "label": "Jika terdapat  identifikasi/pemetaan benturan kepentingan tetapi pada sebagian kecil tugas fungsi utama",
                                                     "multiplier": 0.33
                                                 },
                                                 {
                                                     "key": "D",
-                                                    "label": "Jika belum terdapat  identifikasi\/pemetaan benturan kepentingan dalam tugas fungsi utama",
+                                                    "label": "Jika belum terdapat  identifikasi/pemetaan benturan kepentingan dalam tugas fungsi utama",
                                                     "multiplier": 0
                                                 }
                                             ],
@@ -2318,29 +2318,29 @@
                                         },
                                         {
                                             "id": 65,
-                                            "teks_pertanyaan": "Penanganan Benturan Kepentingan telah disosialisasikan\/internalisasi",
-                                            "kriteria_nilai": "a. Jika penanganan Benturan Kepentingan disosialiasikan\/diinternalisasikan ke seluruh layanan\nb. Jika penanganan Benturan Kepentingan disosialiasikan\/diinternalisasikan ke sebagian besar layanan\nc.  Jika penanganan Benturan Kepentingan disosialiasikan\/diinternalisasikan ke sebagian kecil layanan\nd.  Jika penanganan Benturan Kepentingan belum disosialiasikan\/diinternalisasikan ke seluruh layanan",
+                                            "teks_pertanyaan": "Penanganan Benturan Kepentingan telah disosialisasikan/internalisasi",
+                                            "kriteria_nilai": "a. Jika penanganan Benturan Kepentingan disosialiasikan/diinternalisasikan ke seluruh layanan\nb. Jika penanganan Benturan Kepentingan disosialiasikan/diinternalisasikan ke sebagian besar layanan\nc.  Jika penanganan Benturan Kepentingan disosialiasikan/diinternalisasikan ke sebagian kecil layanan\nd.  Jika penanganan Benturan Kepentingan belum disosialiasikan/diinternalisasikan ke seluruh layanan",
                                             "jenis_jawaban": "ABCD",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Jika penanganan Benturan Kepentingan disosialiasikan\/diinternalisasikan ke seluruh layanan",
+                                                    "label": "Jika penanganan Benturan Kepentingan disosialiasikan/diinternalisasikan ke seluruh layanan",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Jika penanganan Benturan Kepentingan disosialiasikan\/diinternalisasikan ke sebagian besar layanan",
+                                                    "label": "Jika penanganan Benturan Kepentingan disosialiasikan/diinternalisasikan ke sebagian besar layanan",
                                                     "multiplier": 0.67
                                                 },
                                                 {
                                                     "key": "C",
-                                                    "label": "Jika penanganan Benturan Kepentingan disosialiasikan\/diinternalisasikan ke sebagian kecil layanan",
+                                                    "label": "Jika penanganan Benturan Kepentingan disosialiasikan/diinternalisasikan ke sebagian kecil layanan",
                                                     "multiplier": 0.33
                                                 },
                                                 {
                                                     "key": "D",
-                                                    "label": "Jika penanganan Benturan Kepentingan belum disosialiasikan\/diinternalisasikan ke seluruh layanan",
+                                                    "label": "Jika penanganan Benturan Kepentingan belum disosialiasikan/diinternalisasikan ke seluruh layanan",
                                                     "multiplier": 0
                                                 }
                                             ],
@@ -2621,34 +2621,34 @@
                                     "soals": [
                                         {
                                             "id": 73,
-                                            "teks_pertanyaan": "Telah dilakukan berbagai upaya peningkatan kemampuan dan\/atau kompetensi tentang penerapan budaya pelayanan prima",
-                                            "kriteria_nilai": "a. Telah dilakukan pelatihan\/sosialisasi pelayanan prima secara berkelanjutan dan terjadwal, sehingga seluruh petugas\/pelaksana layanan memiliki kompetensi sesuai kebutuhan jenis layanan serta telah dan terdapat monev yang melihat kemampuan\/kecakapan petugas\/pelaksana layanan\nb. Telah dilakukan pelatihan\/sosialisasi pelayanan prima, dan  seluruh petugas\/pelaksana layanan memiliki kompetensi sesuai kebutuhan jenis layanan\nc. Telah dilakukan pelatihan\/sosialisasi pelayanan prima, akan tetapi baru sebagian besar petugas\/pelaksana layanan memiliki kompetensi sesuai kebutuhan jenis layanan\nd. Telah dilakukan pelatihan\/sosialisasi pelayanan prima namun secara terbatas, sehingga hanya sebagian kecil petugas\/pelaksana layanan yang memiliki kompetensi sesuai kebutuhan jenis layanan\ne. Belum dilakukan pelatihan\/sosialisasi pelayanan prima, dan seluruh petugas\/pelaksana layanan belum memiliki kompetensi sesuai kebutuhan jenis layanan",
+                                            "teks_pertanyaan": "Telah dilakukan berbagai upaya peningkatan kemampuan dan/atau kompetensi tentang penerapan budaya pelayanan prima",
+                                            "kriteria_nilai": "a. Telah dilakukan pelatihan/sosialisasi pelayanan prima secara berkelanjutan dan terjadwal, sehingga seluruh petugas/pelaksana layanan memiliki kompetensi sesuai kebutuhan jenis layanan serta telah dan terdapat monev yang melihat kemampuan/kecakapan petugas/pelaksana layanan\nb. Telah dilakukan pelatihan/sosialisasi pelayanan prima, dan  seluruh petugas/pelaksana layanan memiliki kompetensi sesuai kebutuhan jenis layanan\nc. Telah dilakukan pelatihan/sosialisasi pelayanan prima, akan tetapi baru sebagian besar petugas/pelaksana layanan memiliki kompetensi sesuai kebutuhan jenis layanan\nd. Telah dilakukan pelatihan/sosialisasi pelayanan prima namun secara terbatas, sehingga hanya sebagian kecil petugas/pelaksana layanan yang memiliki kompetensi sesuai kebutuhan jenis layanan\ne. Belum dilakukan pelatihan/sosialisasi pelayanan prima, dan seluruh petugas/pelaksana layanan belum memiliki kompetensi sesuai kebutuhan jenis layanan",
                                             "jenis_jawaban": "ABCDE",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Telah dilakukan pelatihan\/sosialisasi pelayanan prima secara berkelanjutan dan terjadwal, sehingga seluruh petugas\/pelaksana layanan memiliki kompetensi sesuai kebutuhan jenis layanan serta telah dan terdapat monev yang melihat kemampuan\/kecakapan petugas\/pelaksana layanan",
+                                                    "label": "Telah dilakukan pelatihan/sosialisasi pelayanan prima secara berkelanjutan dan terjadwal, sehingga seluruh petugas/pelaksana layanan memiliki kompetensi sesuai kebutuhan jenis layanan serta telah dan terdapat monev yang melihat kemampuan/kecakapan petugas/pelaksana layanan",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Telah dilakukan pelatihan\/sosialisasi pelayanan prima, dan  seluruh petugas\/pelaksana layanan memiliki kompetensi sesuai kebutuhan jenis layanan",
+                                                    "label": "Telah dilakukan pelatihan/sosialisasi pelayanan prima, dan  seluruh petugas/pelaksana layanan memiliki kompetensi sesuai kebutuhan jenis layanan",
                                                     "multiplier": 0.75
                                                 },
                                                 {
                                                     "key": "C",
-                                                    "label": "Telah dilakukan pelatihan\/sosialisasi pelayanan prima, akan tetapi baru sebagian besar petugas\/pelaksana layanan memiliki kompetensi sesuai kebutuhan jenis layanan",
+                                                    "label": "Telah dilakukan pelatihan/sosialisasi pelayanan prima, akan tetapi baru sebagian besar petugas/pelaksana layanan memiliki kompetensi sesuai kebutuhan jenis layanan",
                                                     "multiplier": 0.5
                                                 },
                                                 {
                                                     "key": "D",
-                                                    "label": "Telah dilakukan pelatihan\/sosialisasi pelayanan prima namun secara terbatas, sehingga hanya sebagian kecil petugas\/pelaksana layanan yang memiliki kompetensi sesuai kebutuhan jenis layanan",
+                                                    "label": "Telah dilakukan pelatihan/sosialisasi pelayanan prima namun secara terbatas, sehingga hanya sebagian kecil petugas/pelaksana layanan yang memiliki kompetensi sesuai kebutuhan jenis layanan",
                                                     "multiplier": 0.25
                                                 },
                                                 {
                                                     "key": "E",
-                                                    "label": "Belum dilakukan pelatihan\/sosialisasi pelayanan prima, dan seluruh petugas\/pelaksana layanan belum memiliki kompetensi sesuai kebutuhan jenis layanan",
+                                                    "label": "Belum dilakukan pelatihan/sosialisasi pelayanan prima, dan seluruh petugas/pelaksana layanan belum memiliki kompetensi sesuai kebutuhan jenis layanan",
                                                     "multiplier": 0
                                                 }
                                             ],
@@ -2663,18 +2663,18 @@
                                         {
                                             "id": 74,
                                             "teks_pertanyaan": "Informasi tentang pelayanan mudah diakses melalui berbagai media",
-                                            "kriteria_nilai": "a. Seluruh Informasi tentang pelayanan dapat diakses secara online (website\/media sosial) dan terhubung dengan sistem informasi pelayanan publik nasional\nb. Seluruh Informasi tentang pelayanan dapat diakses secara online (website\/media sosial), namun belum terhubung dengan sistem informasi pelayanan publik nasional\nc. Seluruh Informasi tentang pelayanan belum online, hanya dapat diakses di tempat layanan (intranet dan non elektronik)\nd. Informasi tentang pelayanan sulit diakses",
+                                            "kriteria_nilai": "a. Seluruh Informasi tentang pelayanan dapat diakses secara online (website/media sosial) dan terhubung dengan sistem informasi pelayanan publik nasional\nb. Seluruh Informasi tentang pelayanan dapat diakses secara online (website/media sosial), namun belum terhubung dengan sistem informasi pelayanan publik nasional\nc. Seluruh Informasi tentang pelayanan belum online, hanya dapat diakses di tempat layanan (intranet dan non elektronik)\nd. Informasi tentang pelayanan sulit diakses",
                                             "jenis_jawaban": "ABCD",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Seluruh Informasi tentang pelayanan dapat diakses secara online (website\/media sosial) dan terhubung dengan sistem informasi pelayanan publik nasional",
+                                                    "label": "Seluruh Informasi tentang pelayanan dapat diakses secara online (website/media sosial) dan terhubung dengan sistem informasi pelayanan publik nasional",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Seluruh Informasi tentang pelayanan dapat diakses secara online (website\/media sosial), namun belum terhubung dengan sistem informasi pelayanan publik nasional",
+                                                    "label": "Seluruh Informasi tentang pelayanan dapat diakses secara online (website/media sosial), namun belum terhubung dengan sistem informasi pelayanan publik nasional",
                                                     "multiplier": 0.67
                                                 },
                                                 {
@@ -2699,18 +2699,18 @@
                                         {
                                             "id": 75,
                                             "teks_pertanyaan": "Telah terdapat sistem pemberian penghargaan dan sanksi bagi petugas pemberi pelayanan",
-                                            "kriteria_nilai": "a. Telah terdapat kebijakan pemberian penghargaan dan sanksi yang minimal memenuhi unsur penilaian: disiplin, kinerja, dan hasil penilaian pengguna layanan, dan telah diterapkan secara rutin\/berkelanjutan\nb. Telah terdapat kebijakan pemberian penghargaan dan sanksi yang minimal memenuhi unsur penilaian: disiplin, kinerja, dan hasil penilaian pengguna layanan, namun belum diterapkan secara rutin\/berkelanjutan\nc. Telah terdapat kebijakan pemberian penghargaan dan sanksi, namun belum memenuhi unsur penilaian minimal : disiplin, kinerja, dan hasil penilaian pengguna layanan\nd. Belum terdapat kebijakan pemberian penghargaan dan sanksi",
+                                            "kriteria_nilai": "a. Telah terdapat kebijakan pemberian penghargaan dan sanksi yang minimal memenuhi unsur penilaian: disiplin, kinerja, dan hasil penilaian pengguna layanan, dan telah diterapkan secara rutin/berkelanjutan\nb. Telah terdapat kebijakan pemberian penghargaan dan sanksi yang minimal memenuhi unsur penilaian: disiplin, kinerja, dan hasil penilaian pengguna layanan, namun belum diterapkan secara rutin/berkelanjutan\nc. Telah terdapat kebijakan pemberian penghargaan dan sanksi, namun belum memenuhi unsur penilaian minimal : disiplin, kinerja, dan hasil penilaian pengguna layanan\nd. Belum terdapat kebijakan pemberian penghargaan dan sanksi",
                                             "jenis_jawaban": "ABCD",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Telah terdapat kebijakan pemberian penghargaan dan sanksi yang minimal memenuhi unsur penilaian: disiplin, kinerja, dan hasil penilaian pengguna layanan, dan telah diterapkan secara rutin\/berkelanjutan",
+                                                    "label": "Telah terdapat kebijakan pemberian penghargaan dan sanksi yang minimal memenuhi unsur penilaian: disiplin, kinerja, dan hasil penilaian pengguna layanan, dan telah diterapkan secara rutin/berkelanjutan",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Telah terdapat kebijakan pemberian penghargaan dan sanksi yang minimal memenuhi unsur penilaian: disiplin, kinerja, dan hasil penilaian pengguna layanan, namun belum diterapkan secara rutin\/berkelanjutan",
+                                                    "label": "Telah terdapat kebijakan pemberian penghargaan dan sanksi yang minimal memenuhi unsur penilaian: disiplin, kinerja, dan hasil penilaian pengguna layanan, namun belum diterapkan secara rutin/berkelanjutan",
                                                     "multiplier": 0.67
                                                 },
                                                 {
@@ -2770,29 +2770,29 @@
                                         },
                                         {
                                             "id": 77,
-                                            "teks_pertanyaan": "Terdapat sarana layanan terpadu\/terintegrasi",
-                                            "kriteria_nilai": "a. Jika seluruh pelayanan sudah dilakukan secara terpadu\/terintegrasi\nb. Jika sebagian besar pelayanan sudah dilakukan secara terpadu\/terintegrasi\nc. Jika sebagian kecil pelayanan sudah dilakukan secara terpadu\/terintegrasi\nd. Jika tidak ada pelayanan yang dilakukan secara terpadu\/terintegrasi",
+                                            "teks_pertanyaan": "Terdapat sarana layanan terpadu/terintegrasi",
+                                            "kriteria_nilai": "a. Jika seluruh pelayanan sudah dilakukan secara terpadu/terintegrasi\nb. Jika sebagian besar pelayanan sudah dilakukan secara terpadu/terintegrasi\nc. Jika sebagian kecil pelayanan sudah dilakukan secara terpadu/terintegrasi\nd. Jika tidak ada pelayanan yang dilakukan secara terpadu/terintegrasi",
                                             "jenis_jawaban": "ABCD",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Jika seluruh pelayanan sudah dilakukan secara terpadu\/terintegrasi",
+                                                    "label": "Jika seluruh pelayanan sudah dilakukan secara terpadu/terintegrasi",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Jika sebagian besar pelayanan sudah dilakukan secara terpadu\/terintegrasi",
+                                                    "label": "Jika sebagian besar pelayanan sudah dilakukan secara terpadu/terintegrasi",
                                                     "multiplier": 0.67
                                                 },
                                                 {
                                                     "key": "C",
-                                                    "label": "Jika sebagian kecil pelayanan sudah dilakukan secara terpadu\/terintegrasi",
+                                                    "label": "Jika sebagian kecil pelayanan sudah dilakukan secara terpadu/terintegrasi",
                                                     "multiplier": 0.33
                                                 },
                                                 {
                                                     "key": "D",
-                                                    "label": "Jika tidak ada pelayanan yang dilakukan secara terpadu\/terintegrasi",
+                                                    "label": "Jika tidak ada pelayanan yang dilakukan secara terpadu/terintegrasi",
                                                     "multiplier": 0
                                                 }
                                             ],
@@ -2899,7 +2899,7 @@
                                         {
                                             "id": 80,
                                             "teks_pertanyaan": "Terdapat unit yang mengelola pengaduan dan konsultasi pelayanan",
-                                            "kriteria_nilai": "a. Terdapat unit pengelola khusus untuk konsultasi dan pengaduan, serta surat penugasan pengelola SP4N-LAPOR! di level unit kerja\nb. Terdapat SK pengelola SP4N-LAPOR! di level instansi dan\/atau surat penugasan pengelola SP4N-LAPOR! di level unit kerja, namun unit pengelola khusus untuk konsultasi dan pengaduan belum ada\nc. Belum terdapat unit pengelola khusus untuk konsultasi dan pengaduan, serta belum terdapat SK pengelola SP4N-LAPOR! di level instansi dan\/atau surat penugasan pengelola SP4N-LAPOR! di level unit kerja",
+                                            "kriteria_nilai": "a. Terdapat unit pengelola khusus untuk konsultasi dan pengaduan, serta surat penugasan pengelola SP4N-LAPOR! di level unit kerja\nb. Terdapat SK pengelola SP4N-LAPOR! di level instansi dan/atau surat penugasan pengelola SP4N-LAPOR! di level unit kerja, namun unit pengelola khusus untuk konsultasi dan pengaduan belum ada\nc. Belum terdapat unit pengelola khusus untuk konsultasi dan pengaduan, serta belum terdapat SK pengelola SP4N-LAPOR! di level instansi dan/atau surat penugasan pengelola SP4N-LAPOR! di level unit kerja",
                                             "jenis_jawaban": "ABC",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
@@ -2910,12 +2910,12 @@
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Terdapat SK pengelola SP4N-LAPOR! di level instansi dan\/atau surat penugasan pengelola SP4N-LAPOR! di level unit kerja, namun unit pengelola khusus untuk konsultasi dan pengaduan belum ada",
+                                                    "label": "Terdapat SK pengelola SP4N-LAPOR! di level instansi dan/atau surat penugasan pengelola SP4N-LAPOR! di level unit kerja, namun unit pengelola khusus untuk konsultasi dan pengaduan belum ada",
                                                     "multiplier": 0.5
                                                 },
                                                 {
                                                     "key": "C",
-                                                    "label": "Belum terdapat unit pengelola khusus untuk konsultasi dan pengaduan, serta belum terdapat SK pengelola SP4N-LAPOR! di level instansi dan\/atau surat penugasan pengelola SP4N-LAPOR! di level unit kerja",
+                                                    "label": "Belum terdapat unit pengelola khusus untuk konsultasi dan pengaduan, serta belum terdapat SK pengelola SP4N-LAPOR! di level instansi dan/atau surat penugasan pengelola SP4N-LAPOR! di level unit kerja",
                                                     "multiplier": 0
                                                 }
                                             ],
@@ -2929,24 +2929,24 @@
                                         },
                                         {
                                             "id": 81,
-                                            "teks_pertanyaan": "Telah dilakukan evaluasi atas penanganan keluhan\/masukan dan konsultasi",
-                                            "kriteria_nilai": "a. Evaluasi atas penanganan keluhan\/masukan dan konsultasi dilakukan secara berkala\nb. Evaluasi  atas penanganan keluhan\/masukan dan konsultasi dilakukan  tidak berkala\nc. Belum dilakukan evaluasi penanganan keluhan\/masukan dan konsultasi",
+                                            "teks_pertanyaan": "Telah dilakukan evaluasi atas penanganan keluhan/masukan dan konsultasi",
+                                            "kriteria_nilai": "a. Evaluasi atas penanganan keluhan/masukan dan konsultasi dilakukan secara berkala\nb. Evaluasi  atas penanganan keluhan/masukan dan konsultasi dilakukan  tidak berkala\nc. Belum dilakukan evaluasi penanganan keluhan/masukan dan konsultasi",
                                             "jenis_jawaban": "ABC",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Evaluasi atas penanganan keluhan\/masukan dan konsultasi dilakukan secara berkala",
+                                                    "label": "Evaluasi atas penanganan keluhan/masukan dan konsultasi dilakukan secara berkala",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Evaluasi  atas penanganan keluhan\/masukan dan konsultasi dilakukan  tidak berkala",
+                                                    "label": "Evaluasi  atas penanganan keluhan/masukan dan konsultasi dilakukan  tidak berkala",
                                                     "multiplier": 0.5
                                                 },
                                                 {
                                                     "key": "C",
-                                                    "label": "Belum dilakukan evaluasi penanganan keluhan\/masukan dan konsultasi",
+                                                    "label": "Belum dilakukan evaluasi penanganan keluhan/masukan dan konsultasi",
                                                     "multiplier": 0
                                                 }
                                             ],
@@ -3333,18 +3333,18 @@
                                         {
                                             "id": 93,
                                             "teks_pertanyaan": "Instansi membangun budaya kerja positif dan menerapkan nilai-nilai organisasi dalam pelaksanaan tugas sehari-hari",
-                                            "kriteria_nilai": "a. Budaya kerja dan nilai-nilai organisasi telah dinternalisasi ke seluruh anggota organisasi, dan penerapannya dituangkan dalam standar operasional pelaksanaan kegiatan\/tugas\nb. Budaya kerja dan nilai-nilai organisasi telah dinternalisasi ke seluruh anggota organisasi, namun belum dituangkan dalam standar operasional pelaksanaan kegiatan\/tugas\nc. Budaya kerja dan nilai-nilai organisasi telah disusun, namun belum dinternalisasi ke seluruh anggota organisasi\nd. Belum menyusun budaya kerja dan nilai-nilai organisasi",
+                                            "kriteria_nilai": "a. Budaya kerja dan nilai-nilai organisasi telah dinternalisasi ke seluruh anggota organisasi, dan penerapannya dituangkan dalam standar operasional pelaksanaan kegiatan/tugas\nb. Budaya kerja dan nilai-nilai organisasi telah dinternalisasi ke seluruh anggota organisasi, namun belum dituangkan dalam standar operasional pelaksanaan kegiatan/tugas\nc. Budaya kerja dan nilai-nilai organisasi telah disusun, namun belum dinternalisasi ke seluruh anggota organisasi\nd. Belum menyusun budaya kerja dan nilai-nilai organisasi",
                                             "jenis_jawaban": "ABCD",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Budaya kerja dan nilai-nilai organisasi telah dinternalisasi ke seluruh anggota organisasi, dan penerapannya dituangkan dalam standar operasional pelaksanaan kegiatan\/tugas",
+                                                    "label": "Budaya kerja dan nilai-nilai organisasi telah dinternalisasi ke seluruh anggota organisasi, dan penerapannya dituangkan dalam standar operasional pelaksanaan kegiatan/tugas",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Budaya kerja dan nilai-nilai organisasi telah dinternalisasi ke seluruh anggota organisasi, namun belum dituangkan dalam standar operasional pelaksanaan kegiatan\/tugas",
+                                                    "label": "Budaya kerja dan nilai-nilai organisasi telah dinternalisasi ke seluruh anggota organisasi, namun belum dituangkan dalam standar operasional pelaksanaan kegiatan/tugas",
                                                     "multiplier": 0.67
                                                 },
                                                 {
@@ -3507,33 +3507,33 @@
                                         {
                                             "id": 97,
                                             "teks_pertanyaan": "Transformasi digital pada bidang proses bisnis utama telah mampu memberikan nilai manfaat bagi unit kerja secara optimal",
-                                            "kriteria_nilai": "a. Kriteria huruf b telah terpenuhi dan penerapan atau penggunaan dari manfaat\/dampak dari transformasi digital pada bidang proses bisnis utama bagi unit kerja telah dilakukan validasi dan evaluasi serta ditindaklanjuti secara berkelanjutan\nb. Kriteria huruf c telah terpenuhi dan manfaat\/dampak dari transformasi digital pada bidang proses bisnis utama telah diterapkan\/digunakan oleh unit kerja sesuai dengan sasaran dan target manfaat\/dampak\nc. Kriteria huruf d telah terpenuhi dan manfaat\/dampak dari transformasi digital pada bidang proses bisnis utama telah mampu direalisasikan pada unit kerja sesuai dengan sasaran dan target manfaat\/dampak\nd. Kriteria huruf e telah terpenuhi dan kapabilitas prakiraan dan pelacakan terhadap sasaran dan target manfaat\/dampak dari transformasi digital pada bidang proses bisnis utama\ne. Sasaran dan target manfaat\/dampak dari transformasi digital pada bidang proses bisnis utama telah direncanakan, didefinisikan, dan ditetapkan",
+                                            "kriteria_nilai": "a. Kriteria huruf b telah terpenuhi dan penerapan atau penggunaan dari manfaat/dampak dari transformasi digital pada bidang proses bisnis utama bagi unit kerja telah dilakukan validasi dan evaluasi serta ditindaklanjuti secara berkelanjutan\nb. Kriteria huruf c telah terpenuhi dan manfaat/dampak dari transformasi digital pada bidang proses bisnis utama telah diterapkan/digunakan oleh unit kerja sesuai dengan sasaran dan target manfaat/dampak\nc. Kriteria huruf d telah terpenuhi dan manfaat/dampak dari transformasi digital pada bidang proses bisnis utama telah mampu direalisasikan pada unit kerja sesuai dengan sasaran dan target manfaat/dampak\nd. Kriteria huruf e telah terpenuhi dan kapabilitas prakiraan dan pelacakan terhadap sasaran dan target manfaat/dampak dari transformasi digital pada bidang proses bisnis utama\ne. Sasaran dan target manfaat/dampak dari transformasi digital pada bidang proses bisnis utama telah direncanakan, didefinisikan, dan ditetapkan",
                                             "jenis_jawaban": "ABCDE",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Kriteria huruf b telah terpenuhi dan penerapan atau penggunaan dari manfaat\/dampak dari transformasi digital pada bidang proses bisnis utama bagi unit kerja telah dilakukan validasi dan evaluasi serta ditindaklanjuti secara berkelanjutan",
+                                                    "label": "Kriteria huruf b telah terpenuhi dan penerapan atau penggunaan dari manfaat/dampak dari transformasi digital pada bidang proses bisnis utama bagi unit kerja telah dilakukan validasi dan evaluasi serta ditindaklanjuti secara berkelanjutan",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Kriteria huruf c telah terpenuhi dan manfaat\/dampak dari transformasi digital pada bidang proses bisnis utama telah diterapkan\/digunakan oleh unit kerja sesuai dengan sasaran dan target manfaat\/dampak",
+                                                    "label": "Kriteria huruf c telah terpenuhi dan manfaat/dampak dari transformasi digital pada bidang proses bisnis utama telah diterapkan/digunakan oleh unit kerja sesuai dengan sasaran dan target manfaat/dampak",
                                                     "multiplier": 0.75
                                                 },
                                                 {
                                                     "key": "C",
-                                                    "label": "Kriteria huruf d telah terpenuhi dan manfaat\/dampak dari transformasi digital pada bidang proses bisnis utama telah mampu direalisasikan pada unit kerja sesuai dengan sasaran dan target manfaat\/dampak",
+                                                    "label": "Kriteria huruf d telah terpenuhi dan manfaat/dampak dari transformasi digital pada bidang proses bisnis utama telah mampu direalisasikan pada unit kerja sesuai dengan sasaran dan target manfaat/dampak",
                                                     "multiplier": 0.5
                                                 },
                                                 {
                                                     "key": "D",
-                                                    "label": "Kriteria huruf e telah terpenuhi dan kapabilitas prakiraan dan pelacakan terhadap sasaran dan target manfaat\/dampak dari transformasi digital pada bidang proses bisnis utama",
+                                                    "label": "Kriteria huruf e telah terpenuhi dan kapabilitas prakiraan dan pelacakan terhadap sasaran dan target manfaat/dampak dari transformasi digital pada bidang proses bisnis utama",
                                                     "multiplier": 0.25
                                                 },
                                                 {
                                                     "key": "E",
-                                                    "label": "Sasaran dan target manfaat\/dampak dari transformasi digital pada bidang proses bisnis utama telah direncanakan, didefinisikan, dan ditetapkan",
+                                                    "label": "Sasaran dan target manfaat/dampak dari transformasi digital pada bidang proses bisnis utama telah direncanakan, didefinisikan, dan ditetapkan",
                                                     "multiplier": 0
                                                 }
                                             ],
@@ -3548,33 +3548,33 @@
                                         {
                                             "id": 98,
                                             "teks_pertanyaan": "Transformasi digital pada bidang administrasi pemerintahan telah mampu memberikan nilai manfaat bagi unit kerja secara optimal",
-                                            "kriteria_nilai": "a. Kriteria huruf b telah terpenuhi dan penerapan atau penggunaan dari manfaat\/dampak dari transformasi digital pada bidang administrasi pemerintahan bagi unit kerja telah dilakukan validasi dan evaluasi serta ditindaklanjuti secara berkelanjutan\nb. Kriteria huruf c telah terpenuhi dan manfaat\/dampak dari transformasi digital pada bidang administrasi pemerintahan telah diterapkan\/digunakan oleh unit kerja sesuai dengan sasaran dan target manfaat\/dampak\nc. Kriteria huruf d telah terpenuhi dan manfaat\/dampak dari transformasi digital pada bidang administrasi pemerintahan telah mampu direalisasikan pada unit kerja sesuai dengan sasaran dan target manfaat\/dampak\nd. Kriteria huruf e telah terpenuhi dan kapabilitas prakiraan dan pelacakan terhadap sasaran dan target manfaat\/dampak dari transformasi digital pada bidang administrasi pemerintahan\ne. Sasaran dan target manfaat\/dampak dari transformasi digital pada bidang administrasi pemerintahan telah direncanakan, didefinisikan, dan ditetapkan",
+                                            "kriteria_nilai": "a. Kriteria huruf b telah terpenuhi dan penerapan atau penggunaan dari manfaat/dampak dari transformasi digital pada bidang administrasi pemerintahan bagi unit kerja telah dilakukan validasi dan evaluasi serta ditindaklanjuti secara berkelanjutan\nb. Kriteria huruf c telah terpenuhi dan manfaat/dampak dari transformasi digital pada bidang administrasi pemerintahan telah diterapkan/digunakan oleh unit kerja sesuai dengan sasaran dan target manfaat/dampak\nc. Kriteria huruf d telah terpenuhi dan manfaat/dampak dari transformasi digital pada bidang administrasi pemerintahan telah mampu direalisasikan pada unit kerja sesuai dengan sasaran dan target manfaat/dampak\nd. Kriteria huruf e telah terpenuhi dan kapabilitas prakiraan dan pelacakan terhadap sasaran dan target manfaat/dampak dari transformasi digital pada bidang administrasi pemerintahan\ne. Sasaran dan target manfaat/dampak dari transformasi digital pada bidang administrasi pemerintahan telah direncanakan, didefinisikan, dan ditetapkan",
                                             "jenis_jawaban": "ABCDE",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Kriteria huruf b telah terpenuhi dan penerapan atau penggunaan dari manfaat\/dampak dari transformasi digital pada bidang administrasi pemerintahan bagi unit kerja telah dilakukan validasi dan evaluasi serta ditindaklanjuti secara berkelanjutan",
+                                                    "label": "Kriteria huruf b telah terpenuhi dan penerapan atau penggunaan dari manfaat/dampak dari transformasi digital pada bidang administrasi pemerintahan bagi unit kerja telah dilakukan validasi dan evaluasi serta ditindaklanjuti secara berkelanjutan",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Kriteria huruf c telah terpenuhi dan manfaat\/dampak dari transformasi digital pada bidang administrasi pemerintahan telah diterapkan\/digunakan oleh unit kerja sesuai dengan sasaran dan target manfaat\/dampak",
+                                                    "label": "Kriteria huruf c telah terpenuhi dan manfaat/dampak dari transformasi digital pada bidang administrasi pemerintahan telah diterapkan/digunakan oleh unit kerja sesuai dengan sasaran dan target manfaat/dampak",
                                                     "multiplier": 0.75
                                                 },
                                                 {
                                                     "key": "C",
-                                                    "label": "Kriteria huruf d telah terpenuhi dan manfaat\/dampak dari transformasi digital pada bidang administrasi pemerintahan telah mampu direalisasikan pada unit kerja sesuai dengan sasaran dan target manfaat\/dampak",
+                                                    "label": "Kriteria huruf d telah terpenuhi dan manfaat/dampak dari transformasi digital pada bidang administrasi pemerintahan telah mampu direalisasikan pada unit kerja sesuai dengan sasaran dan target manfaat/dampak",
                                                     "multiplier": 0.5
                                                 },
                                                 {
                                                     "key": "D",
-                                                    "label": "Kriteria huruf e telah terpenuhi dan kapabilitas prakiraan dan pelacakan terhadap sasaran dan target manfaat\/dampak dari transformasi digital pada bidang administrasi pemerintahan",
+                                                    "label": "Kriteria huruf e telah terpenuhi dan kapabilitas prakiraan dan pelacakan terhadap sasaran dan target manfaat/dampak dari transformasi digital pada bidang administrasi pemerintahan",
                                                     "multiplier": 0.25
                                                 },
                                                 {
                                                     "key": "E",
-                                                    "label": "Sasaran dan target manfaat\/dampak dari transformasi digital pada bidang administrasi pemerintahan telah direncanakan, didefinisikan, dan ditetapkan",
+                                                    "label": "Sasaran dan target manfaat/dampak dari transformasi digital pada bidang administrasi pemerintahan telah direncanakan, didefinisikan, dan ditetapkan",
                                                     "multiplier": 0
                                                 }
                                             ],
@@ -3589,33 +3589,33 @@
                                         {
                                             "id": 99,
                                             "teks_pertanyaan": "Transformasi digital pada bidang pelayanan publik telah mampu memberikan nilai manfaat bagi unit kerja secara optimal",
-                                            "kriteria_nilai": "a. Kriteria huruf b telah terpenuhi dan penerapan atau penggunaan dari manfaat\/dampak dari transformasi digital pada bidang pelayanan publik bagi unit kerja telah dilakukan validasi dan evaluasi serta ditindaklanjuti secara berkelanjutan\nb. Kriteria huruf c telah terpenuhi dan manfaat\/dampak dari transformasi digital pada bidang pelayanan publik telah diterapkan\/digunakan oleh unit kerja sesuai dengan sasaran dan target manfaat\/dampak\nc. Kriteria huruf d telah terpenuhi dan manfaat\/dampak dari transformasi digital pada bidang pelayanan publik telah mampu direalisasikan pada unit kerja sesuai dengan sasaran dan target manfaat\/dampak\nd. Kriteria huruf e telah terpenuhi dan kapabilitas prakiraan dan pelacakan terhadap sasaran dan target manfaat\/dampak dari transformasi digital pada bidang pelayanan publik\ne. Sasaran dan target manfaat\/dampak dari transformasi digital pada bidang pelayanan publik telah direncanakan, didefinisikan, dan ditetapkan",
+                                            "kriteria_nilai": "a. Kriteria huruf b telah terpenuhi dan penerapan atau penggunaan dari manfaat/dampak dari transformasi digital pada bidang pelayanan publik bagi unit kerja telah dilakukan validasi dan evaluasi serta ditindaklanjuti secara berkelanjutan\nb. Kriteria huruf c telah terpenuhi dan manfaat/dampak dari transformasi digital pada bidang pelayanan publik telah diterapkan/digunakan oleh unit kerja sesuai dengan sasaran dan target manfaat/dampak\nc. Kriteria huruf d telah terpenuhi dan manfaat/dampak dari transformasi digital pada bidang pelayanan publik telah mampu direalisasikan pada unit kerja sesuai dengan sasaran dan target manfaat/dampak\nd. Kriteria huruf e telah terpenuhi dan kapabilitas prakiraan dan pelacakan terhadap sasaran dan target manfaat/dampak dari transformasi digital pada bidang pelayanan publik\ne. Sasaran dan target manfaat/dampak dari transformasi digital pada bidang pelayanan publik telah direncanakan, didefinisikan, dan ditetapkan",
                                             "jenis_jawaban": "ABCDE",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Kriteria huruf b telah terpenuhi dan penerapan atau penggunaan dari manfaat\/dampak dari transformasi digital pada bidang pelayanan publik bagi unit kerja telah dilakukan validasi dan evaluasi serta ditindaklanjuti secara berkelanjutan",
+                                                    "label": "Kriteria huruf b telah terpenuhi dan penerapan atau penggunaan dari manfaat/dampak dari transformasi digital pada bidang pelayanan publik bagi unit kerja telah dilakukan validasi dan evaluasi serta ditindaklanjuti secara berkelanjutan",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Kriteria huruf c telah terpenuhi dan manfaat\/dampak dari transformasi digital pada bidang pelayanan publik telah diterapkan\/digunakan oleh unit kerja sesuai dengan sasaran dan target manfaat\/dampak",
+                                                    "label": "Kriteria huruf c telah terpenuhi dan manfaat/dampak dari transformasi digital pada bidang pelayanan publik telah diterapkan/digunakan oleh unit kerja sesuai dengan sasaran dan target manfaat/dampak",
                                                     "multiplier": 0.75
                                                 },
                                                 {
                                                     "key": "C",
-                                                    "label": "Kriteria huruf d telah terpenuhi dan manfaat\/dampak dari transformasi digital pada bidang pelayanan publik telah mampu direalisasikan pada unit kerja sesuai dengan sasaran dan target manfaat\/dampak",
+                                                    "label": "Kriteria huruf d telah terpenuhi dan manfaat/dampak dari transformasi digital pada bidang pelayanan publik telah mampu direalisasikan pada unit kerja sesuai dengan sasaran dan target manfaat/dampak",
                                                     "multiplier": 0.5
                                                 },
                                                 {
                                                     "key": "D",
-                                                    "label": "Kriteria huruf e telah terpenuhi dan kapabilitas prakiraan dan pelacakan terhadap sasaran dan target manfaat\/dampak dari transformasi digital pada bidang pelayanan publik",
+                                                    "label": "Kriteria huruf e telah terpenuhi dan kapabilitas prakiraan dan pelacakan terhadap sasaran dan target manfaat/dampak dari transformasi digital pada bidang pelayanan publik",
                                                     "multiplier": 0.25
                                                 },
                                                 {
                                                     "key": "E",
-                                                    "label": "Sasaran dan target manfaat\/dampak dari transformasi digital pada bidang pelayanan publik telah direncanakan, didefinisikan, dan ditetapkan",
+                                                    "label": "Sasaran dan target manfaat/dampak dari transformasi digital pada bidang pelayanan publik telah direncanakan, didefinisikan, dan ditetapkan",
                                                     "multiplier": 0
                                                 }
                                             ],
@@ -3761,7 +3761,7 @@
                                         },
                                         {
                                             "id": 104,
-                                            "teks_pertanyaan": "Jumlah pelanggaran yang telah diberikan sanksi\/hukuman",
+                                            "teks_pertanyaan": "Jumlah pelanggaran yang telah diberikan sanksi/hukuman",
                                             "kriteria_nilai": "Penurunan pelanggaran disiplin pegawai\nPersentase pernurunan pelanggaran disiplin pegawai diperoleh dari Jumlah pelanggaran tahun sebelumnya dikurangi Jumlah pelanggaran tahun ini kemudian dibagi dengan Jumlah pelanggaran tahun sebelumnya",
                                             "jenis_jawaban": "Jumlah",
                                             "bobot_maksimal": 0,
@@ -3836,7 +3836,7 @@
                                     "soals": [
                                         {
                                             "id": 107,
-                                            "teks_pertanyaan": "Hasil Capaian\/Monitoring Perjanjian Kinerja telah dijadikan dasar sebagai pemberian reward and punishment bagi organisasi",
+                                            "teks_pertanyaan": "Hasil Capaian/Monitoring Perjanjian Kinerja telah dijadikan dasar sebagai pemberian reward and punishment bagi organisasi",
                                             "kriteria_nilai": "a. Seluruh capaian kinerja (Perjanjian Kinerja) merupakan unsur dalam pemberian reward and punishment\nb. Sebagian besar Capaian Kinerja (lebih dari 50% Perjanjian kinerja) merupakan unsur dalam pemberian reward and punishment\nc. Sebagian kecil Capaian Kinerja (kurang dari 50% Perjanjian kinerja) merupakan unsur dalam pemberian reward and punishment\nd. Capaian Kinerja (Perjanjian kinerja) belum menjadi unsur dalam pemberian reward and punishment",
                                             "jenis_jawaban": "ABCD",
                                             "bobot_maksimal": 0,
@@ -4052,7 +4052,7 @@
                                                 {
                                                     "id": 113,
                                                     "teks_pertanyaan": "Jumlah Kepala satuan kerja yang harus melaporkan",
-                                                    "kriteria_nilai": "Kewajiban Penyelenggara Negara untuk melaporkan harta kekayaan diatur dalam:\r\n1. Undang-Undang No. 28 Tahun 1999\r\n2. Undang-Undang No. 30 Tahun 2002\r\n3. Undang-Undang No. 10 Tahun 2015\r\n4. Peraturan Komisi Pemberantasan Korupsi No. 07 Tahun 2016\r\n5. Instruksi Presiden No. 5 Tahun 2004\r\n6. SE Menteri PANRB No. SE\/03\/M.PAN\/01\/2005\r\n7. SE Menteri PANRB No. 2 Tahun 2023",
+                                                    "kriteria_nilai": "Kewajiban Penyelenggara Negara untuk melaporkan harta kekayaan diatur dalam:\r\n1. Undang-Undang No. 28 Tahun 1999\r\n2. Undang-Undang No. 30 Tahun 2002\r\n3. Undang-Undang No. 10 Tahun 2015\r\n4. Peraturan Komisi Pemberantasan Korupsi No. 07 Tahun 2016\r\n5. Instruksi Presiden No. 5 Tahun 2004\r\n6. SE Menteri PANRB No. SE/03/M.PAN/01/2005\r\n7. SE Menteri PANRB No. 2 Tahun 2023",
                                                     "jenis_jawaban": "Jumlah",
                                                     "bobot_maksimal": 0,
                                                     "skema_penilaian": [],
@@ -4067,7 +4067,7 @@
                                                 {
                                                     "id": 114,
                                                     "teks_pertanyaan": "Jumlah Pejabat yang diwajibkan menyampaikan LHKPN",
-                                                    "kriteria_nilai": "Kewajiban Penyelenggara Negara untuk melaporkan harta kekayaan diatur dalam:\r\n1. Undang-Undang No. 28 Tahun 1999\r\n2. Undang-Undang No. 30 Tahun 2002\r\n3. Undang-Undang No. 10 Tahun 2015\r\n4. Peraturan Komisi Pemberantasan Korupsi No. 07 Tahun 2016\r\n5. Instruksi Presiden No. 5 Tahun 2004\r\n6. SE Menteri PANRB No. SE\/03\/M.PAN\/01\/2005\r\n7. SE Menteri PANRB No. 2 Tahun 2023",
+                                                    "kriteria_nilai": "Kewajiban Penyelenggara Negara untuk melaporkan harta kekayaan diatur dalam:\r\n1. Undang-Undang No. 28 Tahun 1999\r\n2. Undang-Undang No. 30 Tahun 2002\r\n3. Undang-Undang No. 10 Tahun 2015\r\n4. Peraturan Komisi Pemberantasan Korupsi No. 07 Tahun 2016\r\n5. Instruksi Presiden No. 5 Tahun 2004\r\n6. SE Menteri PANRB No. SE/03/M.PAN/01/2005\r\n7. SE Menteri PANRB No. 2 Tahun 2023",
                                                     "jenis_jawaban": "Jumlah",
                                                     "bobot_maksimal": 0,
                                                     "skema_penilaian": [],
@@ -4082,7 +4082,7 @@
                                                 {
                                                     "id": 115,
                                                     "teks_pertanyaan": "Jumlah Lainnya",
-                                                    "kriteria_nilai": "Kewajiban Penyelenggara Negara untuk melaporkan harta kekayaan diatur dalam:\r\n1. Undang-Undang No. 28 Tahun 1999\r\n2. Undang-Undang No. 30 Tahun 2002\r\n3. Undang-Undang No. 10 Tahun 2015\r\n4. Peraturan Komisi Pemberantasan Korupsi No. 07 Tahun 2016\r\n5. Instruksi Presiden No. 5 Tahun 2004\r\n6. SE Menteri PANRB No. SE\/03\/M.PAN\/01\/2005\r\n7. SE Menteri PANRB No. 2 Tahun 2023",
+                                                    "kriteria_nilai": "Kewajiban Penyelenggara Negara untuk melaporkan harta kekayaan diatur dalam:\r\n1. Undang-Undang No. 28 Tahun 1999\r\n2. Undang-Undang No. 30 Tahun 2002\r\n3. Undang-Undang No. 10 Tahun 2015\r\n4. Peraturan Komisi Pemberantasan Korupsi No. 07 Tahun 2016\r\n5. Instruksi Presiden No. 5 Tahun 2004\r\n6. SE Menteri PANRB No. SE/03/M.PAN/01/2005\r\n7. SE Menteri PANRB No. 2 Tahun 2023",
                                                     "jenis_jawaban": "Jumlah",
                                                     "bobot_maksimal": 0,
                                                     "skema_penilaian": [],
@@ -4097,7 +4097,7 @@
                                                 {
                                                     "id": 116,
                                                     "teks_pertanyaan": "Jumlah Lainnya yang sudah melaporkan",
-                                                    "kriteria_nilai": "Kewajiban Penyelenggara Negara untuk melaporkan harta kekayaan diatur dalam:\r\n1. Undang-Undang No. 28 Tahun 1999\r\n2. Undang-Undang No. 30 Tahun 2002\r\n3. Undang-Undang No. 10 Tahun 2015\r\n4. Peraturan Komisi Pemberantasan Korupsi No. 07 Tahun 2016\r\n5. Instruksi Presiden No. 5 Tahun 2004\r\n6. SE Menteri PANRB No. SE\/03\/M.PAN\/01\/2005\r\n7. SE Menteri PANRB No. 2 Tahun 2023",
+                                                    "kriteria_nilai": "Kewajiban Penyelenggara Negara untuk melaporkan harta kekayaan diatur dalam:\r\n1. Undang-Undang No. 28 Tahun 1999\r\n2. Undang-Undang No. 30 Tahun 2002\r\n3. Undang-Undang No. 10 Tahun 2015\r\n4. Peraturan Komisi Pemberantasan Korupsi No. 07 Tahun 2016\r\n5. Instruksi Presiden No. 5 Tahun 2004\r\n6. SE Menteri PANRB No. SE/03/M.PAN/01/2005\r\n7. SE Menteri PANRB No. 2 Tahun 2023",
                                                     "jenis_jawaban": "Jumlah",
                                                     "bobot_maksimal": 0,
                                                     "skema_penilaian": [],
@@ -4122,7 +4122,7 @@
                                                 {
                                                     "id": 117,
                                                     "teks_pertanyaan": "Jumlah Pejabat administrator (eselon III) yang harus menyampaikan Non LHKPN",
-                                                    "kriteria_nilai": "Kewajiban Penyelenggara Negara untuk melaporkan harta kekayaan diatur dalam:\r\n1. Undang-Undang No. 28 Tahun 1999\r\n2. Undang-Undang No. 30 Tahun 2002\r\n3. Undang-Undang No. 10 Tahun 2015\r\n4. Peraturan Komisi Pemberantasan Korupsi No. 07 Tahun 2016\r\n5. Instruksi Presiden No. 5 Tahun 2004\r\n6. SE Menteri PANRB No. SE\/03\/M.PAN\/01\/2005\r\n7. SE Menteri PANRB No. 2 Tahun 2023",
+                                                    "kriteria_nilai": "Kewajiban Penyelenggara Negara untuk melaporkan harta kekayaan diatur dalam:\r\n1. Undang-Undang No. 28 Tahun 1999\r\n2. Undang-Undang No. 30 Tahun 2002\r\n3. Undang-Undang No. 10 Tahun 2015\r\n4. Peraturan Komisi Pemberantasan Korupsi No. 07 Tahun 2016\r\n5. Instruksi Presiden No. 5 Tahun 2004\r\n6. SE Menteri PANRB No. SE/03/M.PAN/01/2005\r\n7. SE Menteri PANRB No. 2 Tahun 2023",
                                                     "jenis_jawaban": "jumlah",
                                                     "bobot_maksimal": 0,
                                                     "skema_penilaian": [],
@@ -4137,7 +4137,7 @@
                                                 {
                                                     "id": 118,
                                                     "teks_pertanyaan": "Jumlah Pejabat Penawas (eselon IV) yang harus menyampaikan Non LHKPN",
-                                                    "kriteria_nilai": "Kewajiban Penyelenggara Negara untuk melaporkan harta kekayaan diatur dalam:\r\n1. Undang-Undang No. 28 Tahun 1999\r\n2. Undang-Undang No. 30 Tahun 2002\r\n3. Undang-Undang No. 10 Tahun 2015\r\n4. Peraturan Komisi Pemberantasan Korupsi No. 07 Tahun 2016\r\n5. Instruksi Presiden No. 5 Tahun 2004\r\n6. SE Menteri PANRB No. SE\/03\/M.PAN\/01\/2005\r\n7. SE Menteri PANRB No. 2 Tahun 2023",
+                                                    "kriteria_nilai": "Kewajiban Penyelenggara Negara untuk melaporkan harta kekayaan diatur dalam:\r\n1. Undang-Undang No. 28 Tahun 1999\r\n2. Undang-Undang No. 30 Tahun 2002\r\n3. Undang-Undang No. 10 Tahun 2015\r\n4. Peraturan Komisi Pemberantasan Korupsi No. 07 Tahun 2016\r\n5. Instruksi Presiden No. 5 Tahun 2004\r\n6. SE Menteri PANRB No. SE/03/M.PAN/01/2005\r\n7. SE Menteri PANRB No. 2 Tahun 2023",
                                                     "jenis_jawaban": "jumlah",
                                                     "bobot_maksimal": 0,
                                                     "skema_penilaian": [],
@@ -4152,7 +4152,7 @@
                                                 {
                                                     "id": 119,
                                                     "teks_pertanyaan": "Jumlah Fungsional dan Pelaksana yang harus menyampaikan Non LHKPN",
-                                                    "kriteria_nilai": "Kewajiban Penyelenggara Negara untuk melaporkan harta kekayaan diatur dalam:\r\n1. Undang-Undang No. 28 Tahun 1999\r\n2. Undang-Undang No. 30 Tahun 2002\r\n3. Undang-Undang No. 10 Tahun 2015\r\n4. Peraturan Komisi Pemberantasan Korupsi No. 07 Tahun 2016\r\n5. Instruksi Presiden No. 5 Tahun 2004\r\n6. SE Menteri PANRB No. SE\/03\/M.PAN\/01\/2005\r\n7. SE Menteri PANRB No. 2 Tahun 2023",
+                                                    "kriteria_nilai": "Kewajiban Penyelenggara Negara untuk melaporkan harta kekayaan diatur dalam:\r\n1. Undang-Undang No. 28 Tahun 1999\r\n2. Undang-Undang No. 30 Tahun 2002\r\n3. Undang-Undang No. 10 Tahun 2015\r\n4. Peraturan Komisi Pemberantasan Korupsi No. 07 Tahun 2016\r\n5. Instruksi Presiden No. 5 Tahun 2004\r\n6. SE Menteri PANRB No. SE/03/M.PAN/01/2005\r\n7. SE Menteri PANRB No. 2 Tahun 2023",
                                                     "jenis_jawaban": "jumlah",
                                                     "bobot_maksimal": 0,
                                                     "skema_penilaian": [],
@@ -4167,7 +4167,7 @@
                                                 {
                                                     "id": 120,
                                                     "teks_pertanyaan": "Jumlah Total yang sudah melaporkan Non LHKPN",
-                                                    "kriteria_nilai": "Kewajiban Penyelenggara Negara untuk melaporkan harta kekayaan diatur dalam:\r\n1. Undang-Undang No. 28 Tahun 1999\r\n2. Undang-Undang No. 30 Tahun 2002\r\n3. Undang-Undang No. 10 Tahun 2015\r\n4. Peraturan Komisi Pemberantasan Korupsi No. 07 Tahun 2016\r\n5. Instruksi Presiden No. 5 Tahun 2004\r\n6. SE Menteri PANRB No. SE\/03\/M.PAN\/01\/2005\r\n7. SE Menteri PANRB No. 2 Tahun 2023",
+                                                    "kriteria_nilai": "Kewajiban Penyelenggara Negara untuk melaporkan harta kekayaan diatur dalam:\r\n1. Undang-Undang No. 28 Tahun 1999\r\n2. Undang-Undang No. 30 Tahun 2002\r\n3. Undang-Undang No. 10 Tahun 2015\r\n4. Peraturan Komisi Pemberantasan Korupsi No. 07 Tahun 2016\r\n5. Instruksi Presiden No. 5 Tahun 2004\r\n6. SE Menteri PANRB No. SE/03/M.PAN/01/2005\r\n7. SE Menteri PANRB No. 2 Tahun 2023",
                                                     "jenis_jawaban": "jumlah",
                                                     "bobot_maksimal": 0,
                                                     "skema_penilaian": [],
@@ -4196,7 +4196,7 @@
                             "children": [
                                 {
                                     "id": 58,
-                                    "nama": "i. Upaya dan\/atau Inovasi Pelayanan Publik",
+                                    "nama": "i. Upaya dan/atau Inovasi Pelayanan Publik",
                                     "level": "sub_area",
                                     "bobot_maksimal": 2.5,
                                     "order_index": 1,
@@ -4204,24 +4204,24 @@
                                     "soals": [
                                         {
                                             "id": 121,
-                                            "teks_pertanyaan": "Upaya dan\/atau inovasi telah mendorong perbaikan pelayanan publik pada:\n1. Kesesuaian Persyaratan\n2. Kemudahan Sistem, Mekanisme, dan Prosedur\n3. Kecepatan Waktu Penyelesaian\n4. Kejelasan Biaya\/Tarif, Gratis\n5. Kualitas Produk Spesifikasi Jenis Pelayanan\n6. Kompetensi Pelaksana\/Web\n7. Perilaku Pelaksana\/Web\n8. Kualitas Sarana dan prasarana\n9. Penanganan Pengaduan, Saran dan Masukan",
-                                            "kriteria_nilai": "a. Upaya dan\/atau inovasi yang dilakukan telah mendorong perbaikan seluruh pelayanan publik yang prima (lebih Cepat dan mudah)\nb. Upaya dan\/atau inovasi yang dilakukan belum seluruhnya memberikan dampak pada perbaikan pelayanan public yang prima (Cepat dan mudah)\nc. Upaya dan\/atau inovasi yang dilakukan belum sesuai kebutuhan\nd. Belum ada inovasi",
+                                            "teks_pertanyaan": "Upaya dan/atau inovasi telah mendorong perbaikan pelayanan publik pada:\n1. Kesesuaian Persyaratan\n2. Kemudahan Sistem, Mekanisme, dan Prosedur\n3. Kecepatan Waktu Penyelesaian\n4. Kejelasan Biaya/Tarif, Gratis\n5. Kualitas Produk Spesifikasi Jenis Pelayanan\n6. Kompetensi Pelaksana/Web\n7. Perilaku Pelaksana/Web\n8. Kualitas Sarana dan prasarana\n9. Penanganan Pengaduan, Saran dan Masukan",
+                                            "kriteria_nilai": "a. Upaya dan/atau inovasi yang dilakukan telah mendorong perbaikan seluruh pelayanan publik yang prima (lebih Cepat dan mudah)\nb. Upaya dan/atau inovasi yang dilakukan belum seluruhnya memberikan dampak pada perbaikan pelayanan public yang prima (Cepat dan mudah)\nc. Upaya dan/atau inovasi yang dilakukan belum sesuai kebutuhan\nd. Belum ada inovasi",
                                             "jenis_jawaban": "ABCD",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Upaya dan\/atau inovasi yang dilakukan telah mendorong perbaikan seluruh pelayanan publik yang prima (lebih Cepat dan mudah)",
+                                                    "label": "Upaya dan/atau inovasi yang dilakukan telah mendorong perbaikan seluruh pelayanan publik yang prima (lebih Cepat dan mudah)",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Upaya dan\/atau inovasi yang dilakukan belum seluruhnya memberikan dampak pada perbaikan pelayanan public yang prima (Cepat dan mudah)",
+                                                    "label": "Upaya dan/atau inovasi yang dilakukan belum seluruhnya memberikan dampak pada perbaikan pelayanan public yang prima (Cepat dan mudah)",
                                                     "multiplier": 0.67
                                                 },
                                                 {
                                                     "key": "C",
-                                                    "label": "Upaya dan\/atau inovasi yang dilakukan belum sesuai kebutuhan",
+                                                    "label": "Upaya dan/atau inovasi yang dilakukan belum sesuai kebutuhan",
                                                     "multiplier": 0.33
                                                 },
                                                 {
@@ -4240,8 +4240,8 @@
                                         },
                                         {
                                             "id": 122,
-                                            "teks_pertanyaan": "Jumlah perijinan\/pelayanan yang terdata\/terdaftar",
-                                            "kriteria_nilai": "Upaya dan\/atau inovasi pada perijinan\/pelayanan telah dipermudah:\n1. Waktu lebih cepat\n2. Pelayanan Publik yang terpadu\n3. Alur lebih pendek\/singkat\n4 Terintegrasi dengan aplikasi\nPersentase diperoleh dari Jumlah perijinan\/pelayanan yang telah dipermudah dibagi dengan Jumlah perijinan\/pelayanan yang terdata\/terdaftar",
+                                            "teks_pertanyaan": "Jumlah perijinan/pelayanan yang terdata/terdaftar",
+                                            "kriteria_nilai": "Upaya dan/atau inovasi pada perijinan/pelayanan telah dipermudah:\n1. Waktu lebih cepat\n2. Pelayanan Publik yang terpadu\n3. Alur lebih pendek/singkat\n4 Terintegrasi dengan aplikasi\nPersentase diperoleh dari Jumlah perijinan/pelayanan yang telah dipermudah dibagi dengan Jumlah perijinan/pelayanan yang terdata/terdaftar",
                                             "jenis_jawaban": "jumlah",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [],
@@ -4255,8 +4255,8 @@
                                         },
                                         {
                                             "id": 123,
-                                            "teks_pertanyaan": "Jumlah perijinan\/pelayanan yang telah dipermudah",
-                                            "kriteria_nilai": "Upaya dan\/atau inovasi pada perijinan\/pelayanan telah dipermudah:\n1. Waktu lebih cepat\n2. Pelayanan Publik yang terpadu\n3. Alur lebih pendek\/singkat\n4 Terintegrasi dengan aplikasi\nPersentase diperoleh dari Jumlah perijinan\/pelayanan yang telah dipermudah dibagi dengan Jumlah perijinan\/pelayanan yang terdata\/terdaftar",
+                                            "teks_pertanyaan": "Jumlah perijinan/pelayanan yang telah dipermudah",
+                                            "kriteria_nilai": "Upaya dan/atau inovasi pada perijinan/pelayanan telah dipermudah:\n1. Waktu lebih cepat\n2. Pelayanan Publik yang terpadu\n3. Alur lebih pendek/singkat\n4 Terintegrasi dengan aplikasi\nPersentase diperoleh dari Jumlah perijinan/pelayanan yang telah dipermudah dibagi dengan Jumlah perijinan/pelayanan yang terdata/terdaftar",
                                             "jenis_jawaban": "jumlah",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [],
@@ -4280,29 +4280,29 @@
                                     "soals": [
                                         {
                                             "id": 124,
-                                            "teks_pertanyaan": "Penanganan pengaduan pelayanan dilakukan melalui berbagai kanal\/media secara responsive dan bertanggung jawab",
-                                            "kriteria_nilai": "a. Pengaduan pelayanan  dan konsultasi telah direspon dengan cepat melalui berbagai kanal\/media\nb. Pengaduan pelayanan dan konsultasi telah direspon dengan cepat melalui kanal\/media yang terbatas\nc. Pengaduan pelayanan dan konsultasi direspon lambat melalui berbagai kanal\/media\nd. Pengaduan pelayanan dan konsultasi direspon lambat dan kanal\/media terbatas",
+                                            "teks_pertanyaan": "Penanganan pengaduan pelayanan dilakukan melalui berbagai kanal/media secara responsive dan bertanggung jawab",
+                                            "kriteria_nilai": "a. Pengaduan pelayanan  dan konsultasi telah direspon dengan cepat melalui berbagai kanal/media\nb. Pengaduan pelayanan dan konsultasi telah direspon dengan cepat melalui kanal/media yang terbatas\nc. Pengaduan pelayanan dan konsultasi direspon lambat melalui berbagai kanal/media\nd. Pengaduan pelayanan dan konsultasi direspon lambat dan kanal/media terbatas",
                                             "jenis_jawaban": "ABCD",
                                             "bobot_maksimal": 0,
                                             "skema_penilaian": [
                                                 {
                                                     "key": "A",
-                                                    "label": "Pengaduan pelayanan  dan konsultasi telah direspon dengan cepat melalui berbagai kanal\/media",
+                                                    "label": "Pengaduan pelayanan  dan konsultasi telah direspon dengan cepat melalui berbagai kanal/media",
                                                     "multiplier": 1
                                                 },
                                                 {
                                                     "key": "B",
-                                                    "label": "Pengaduan pelayanan dan konsultasi telah direspon dengan cepat melalui kanal\/media yang terbatas",
+                                                    "label": "Pengaduan pelayanan dan konsultasi telah direspon dengan cepat melalui kanal/media yang terbatas",
                                                     "multiplier": 0.67
                                                 },
                                                 {
                                                     "key": "C",
-                                                    "label": "Pengaduan pelayanan dan konsultasi direspon lambat melalui berbagai kanal\/media",
+                                                    "label": "Pengaduan pelayanan dan konsultasi direspon lambat melalui berbagai kanal/media",
                                                     "multiplier": 0.33
                                                 },
                                                 {
                                                     "key": "D",
-                                                    "label": "Pengaduan pelayanan dan konsultasi direspon lambat dan kanal\/media terbatas",
+                                                    "label": "Pengaduan pelayanan dan konsultasi direspon lambat dan kanal/media terbatas",
                                                     "multiplier": 0
                                                 }
                                             ],
@@ -4343,7 +4343,7 @@
                         {
                             "id": 125,
                             "teks_pertanyaan": "Nilai Survey Persepsi Korupsi (Survei Eksternal)",
-                            "kriteria_nilai": "Diisi dengan nilai hasil Survei Eksternal atas Persepsi Anti Korupsi (Indeks Persepsi Anti Korupsi \/ IPAK)",
+                            "kriteria_nilai": "Diisi dengan nilai hasil Survei Eksternal atas Persepsi Anti Korupsi (Indeks Persepsi Anti Korupsi / IPAK)",
                             "jenis_jawaban": "0-4",
                             "bobot_maksimal": 17.5,
                             "skema_penilaian": [],
@@ -4358,13 +4358,13 @@
                         {
                             "id": 126,
                             "teks_pertanyaan": "Capaian Kinerja Lebih Baik dari pada Capaian Kinerja Sebelumnya",
-                            "kriteria_nilai": "a. Target kinerja utama tercapai lebih dari 100% dan lebih baik dari capaian kinerja utama tahun sebelumnya serta lebih baik dari capaian kinerja nasional\/rata-rata capaian kinerja unit yang sejenis;\nb.Target kinerja utama tercapai 100% dan lebih baik dari capaian kinerja utama tahun sebelumnya;\nc.Target kinerja utama tercapai 100% atau lebih, namun tidak lebih baik dari capaian kinerja utama tahun sebelumnya;\nd. Kinerja utama sudah orientasi hasil akan tetapi masih terdapat target kinerja utama yang tidak tercapai;\ne. Kinerja utama tidak berorientasi hasil",
+                            "kriteria_nilai": "a. Target kinerja utama tercapai lebih dari 100% dan lebih baik dari capaian kinerja utama tahun sebelumnya serta lebih baik dari capaian kinerja nasional/rata-rata capaian kinerja unit yang sejenis;\nb.Target kinerja utama tercapai 100% dan lebih baik dari capaian kinerja utama tahun sebelumnya;\nc.Target kinerja utama tercapai 100% atau lebih, namun tidak lebih baik dari capaian kinerja utama tahun sebelumnya;\nd. Kinerja utama sudah orientasi hasil akan tetapi masih terdapat target kinerja utama yang tidak tercapai;\ne. Kinerja utama tidak berorientasi hasil",
                             "jenis_jawaban": "ABCDE",
                             "bobot_maksimal": 5,
                             "skema_penilaian": [
                                 {
                                     "key": "A",
-                                    "label": "Target kinerja utama tercapai lebih dari 100% dan lebih baik dari capaian kinerja utama tahun sebelumnya serta lebih baik dari capaian kinerja nasional\/rata-rata capaian kinerja unit yang sejenis;",
+                                    "label": "Target kinerja utama tercapai lebih dari 100% dan lebih baik dari capaian kinerja utama tahun sebelumnya serta lebih baik dari capaian kinerja nasional/rata-rata capaian kinerja unit yang sejenis;",
                                     "multiplier": 1
                                 },
                                 {
@@ -4409,7 +4409,7 @@
                         {
                             "id": 127,
                             "teks_pertanyaan": "Nilai Persepsi Kualitas Pelayanan (Survei Eksternal)",
-                            "kriteria_nilai": "Diisi dengan Nilai Hasil Survei Eksternal Kualitas Pelayanan (Indeks Persepsi Kualitas Pelayanan Publik \/ IPKP)",
+                            "kriteria_nilai": "Diisi dengan Nilai Hasil Survei Eksternal Kualitas Pelayanan (Indeks Persepsi Kualitas Pelayanan Publik / IPKP)",
                             "jenis_jawaban": "0-4",
                             "bobot_maksimal": 17.5,
                             "skema_penilaian": [],

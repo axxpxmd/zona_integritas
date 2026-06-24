@@ -251,7 +251,7 @@ class PengusulanController extends Controller
                     $kategori = $isAfirmasi ? 'WBK-AFIRMASI' : 'WBK';
 
                     $eligibleUnits[] = [
-                        'id' => \base64_encode($opd->id),
+                        'id' => (string) $opd->id,
                         'nama' => $opd->n_opd,
                         'kategori' => $kategori,
                         'afirmasi' => $isAfirmasi,
@@ -505,7 +505,7 @@ class PengusulanController extends Controller
                     $kategori = $isAfirmasi ? 'WBBM-AFIRMASI' : 'WBBM';
 
                     $eligibleUnits[] = [
-                        'id' => \base64_encode($opd->id),
+                        'id' => (string) $opd->id,
                         'nama' => $opd->n_opd,
                         'kategori' => $kategori,
                         'afirmasi' => $isAfirmasi,
