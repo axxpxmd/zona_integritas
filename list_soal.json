@@ -530,14 +530,14 @@
     {
         "soal_id": 89,
         "n_pertanyaan": "Jumlah Perubahan yang dibuat",
-        "pertanyaan_id": 88,
-        "sub_pertanyaan_id": 2
+        "pertanyaan_id": 89,
+        "sub_pertanyaan_id": 3
     },
     {
         "soal_id": 90,
         "n_pertanyaan": "Jumlah Perubahan yang dibuat",
-        "pertanyaan_id": 89,
-        "sub_pertanyaan_id": 3
+        "pertanyaan_id": 88,
+        "sub_pertanyaan_id": 2
     },
     {
         "soal_id": 91,
@@ -673,25 +673,25 @@
     },
     {
         "soal_id": 113,
-        "n_pertanyaan": "Kepala satuan kerja",
+        "n_pertanyaan": "Jumlah Kepala satuan kerja yang harus melaporkan",
         "pertanyaan_id": 106,
         "sub_pertanyaan_id": 14
     },
     {
         "soal_id": 114,
-        "n_pertanyaan": "Pejabat yang diwajibkan menyampaikan LHKPN",
+        "n_pertanyaan": "Jumlah Pejabat yang diwajibkan menyampaikan LHKPN",
         "pertanyaan_id": 106,
         "sub_pertanyaan_id": 15
     },
     {
         "soal_id": 115,
-        "n_pertanyaan": "Lainnya",
+        "n_pertanyaan": "Jumlah Lainnya",
         "pertanyaan_id": 106,
         "sub_pertanyaan_id": 16
     },
     {
         "soal_id": 116,
-        "n_pertanyaan": "Jumlah yang sudah melaporkan",
+        "n_pertanyaan": "JJumlah Lainnya yang sudah melaporkann",
         "pertanyaan_id": 106,
         "sub_pertanyaan_id": 17
     },
