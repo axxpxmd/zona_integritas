@@ -267,6 +267,261 @@ class PengusulanController extends Controller
         ]);
     }
 
+    /**
+     * Get the list of work units (OPD) proposed/eligible for WBBM.
+     * GET /pengusulan/unit-wbbm
+     */
+    public function getUnitWbbm(Request $request)
+    {
+        $areaOrder = [
+            'MANAJEMEN PERUBAHAN',
+            'PENATAAN TATALAKSANA',
+            'PENATAAN SISTEM MANAJEMEN SDM APARATUR',
+            'PENGUATAN AKUNTABILITAS',
+            'PENGUATAN PENGAWASAN',
+            'PENINGKATAN KUALITAS PELAYANAN PUBLIK',
+        ];
+
+        // Find active/target period
+        $tahun = $request->query('tahun');
+        if ($tahun) {
+            $activePeriode = Periode::where('tahun', $tahun)
+                ->where('is_template', false)
+                ->first();
+
+            if (!$activePeriode) {
+                return response()->json([
+                    'tahun' => (int) $tahun,
+                    'units' => []
+                ]);
+            }
+        } else {
+            $activePeriode = Periode::where('status', 'aktif')
+                ->where('is_template', false)
+                ->orderBy('tahun', 'desc')
+                ->first();
+
+            // Fallback to the latest non-template period if none found
+            if (!$activePeriode) {
+                $activePeriode = Periode::where('is_template', false)
+                    ->orderBy('tahun', 'desc')
+                    ->first();
+            }
+        }
+
+        if (!$activePeriode) {
+            return response()->json([
+                'tahun' => (int) ($tahun ?: date('Y')),
+                'units' => []
+            ]);
+        }
+
+        $komponens = Komponen::where('status', 1)
+            ->with([
+                'kategoris' => fn ($q) => $q->where('status', 1)->orderBy('urutan'),
+                'kategoris.subKategoris' => fn ($q) => $q->where('status', 1)->orderBy('urutan'),
+                'kategoris.subKategoris.indikators' => fn ($q) => $q->where('status', 1),
+                'kategoris.subKategoris.indikators.pertanyaans' => fn ($q) => $q->where('status', 1)->orderBy('urutan'),
+                'kategoris.subKategoris.indikators.pertanyaans.subPertanyaans' => fn ($q) => $q->where('status', 1)->orderBy('urutan'),
+            ])
+            ->orderBy('urutan')
+            ->get();
+
+        $bobotMeta = $this->getRekapBobotMeta($komponens, $areaOrder);
+
+        // Fetch all active OPDs
+        $assignedOpdIds = Opd::where('status', 1)->pluck('id');
+
+        $eligibleUnits = [];
+
+        if ($assignedOpdIds->isNotEmpty()) {
+            // Find OPDs that have final submissions
+            $query = Jawaban::where('periode_id', $activePeriode->id)
+                ->whereNull('sub_pertanyaan_id')
+                ->whereIn('opd_id', $assignedOpdIds)
+                ->where('status', 'final');
+
+            $submittedOpdIds = $query->distinct()->pluck('opd_id');
+
+            $opds = Opd::whereIn('id', $submittedOpdIds)
+                ->orderBy('n_opd')
+                ->get();
+
+            // Default evaluate role to 'verifikator' (TPI / internal reviewer assessment)
+            $role = $request->query('role', 'verifikator');
+            if (!in_array($role, ['operator', 'verifikator', 'menpan'])) {
+                $role = 'verifikator';
+            }
+
+            foreach ($opds as $opd) {
+                // Fetch answers map
+                $jawabans = Jawaban::where('periode_id', $activePeriode->id)
+                    ->where('opd_id', $opd->id)
+                    ->get();
+
+                $jawabanMap = [];
+                foreach ($jawabans as $j) {
+                    $key = $j->sub_pertanyaan_id ? "{$j->pertanyaan_id}_{$j->sub_pertanyaan_id}" : $j->pertanyaan_id;
+                    $jawabanMap[$key] = $j;
+                }
+
+                $progressSet = $this->buildProgressRekapRole($role, $komponens, $jawabanMap);
+                $rekap = $this->buildRekapFromProgress($progressSet, $komponens);
+
+                $areaData = [];
+                $totalPengungkitBobot = 0;
+                $totalPengungkitNilai = 0;
+                foreach ($areaOrder as $areaName) {
+                    $area = $rekap['rekapPengungkit'][$areaName] ?? [
+                        'pemenuhan_bobot' => 0,
+                        'pemenuhan_nilai' => 0,
+                        'reform_bobot' => 0,
+                        'reform_nilai' => 0,
+                    ];
+                    $bobotArea = (float) $area['pemenuhan_bobot'] + (float) $area['reform_bobot'];
+                    $nilaiArea = (float) $area['pemenuhan_nilai'] + (float) $area['reform_nilai'];
+                    $persenArea = $bobotArea > 0 ? ($nilaiArea / $bobotArea) * 100 : 0;
+
+                    $areaData[] = [
+                        'nama' => $areaName,
+                        'bobot' => $bobotArea,
+                        'nilai' => $nilaiArea,
+                        'persen' => $persenArea,
+                    ];
+
+                    $totalPengungkitBobot += $bobotArea;
+                    $totalPengungkitNilai += $nilaiArea;
+                }
+
+                $hasilMap = collect($rekap['rekapHasil'] ?? [])->keyBy('nama');
+                $birokrasi = $hasilMap->get('BIROKRASI YANG BERSIH DAN AKUNTABEL', [
+                    'nilai' => 0,
+                    'bobot' => $bobotMeta['hasil']['birokrasi'],
+                    'subs' => [],
+                ]);
+                $pelayanan = $hasilMap->get('PELAYANAN PUBLIK YANG PRIMA', [
+                    'nilai' => 0,
+                    'bobot' => $bobotMeta['hasil']['pelayanan'],
+                    'subs' => [],
+                ]);
+
+                $birokrasiSubs = collect($birokrasi['subs'] ?? []);
+                $spak = $birokrasiSubs->firstWhere('nama', 'Nilai Survey Persepsi Korupsi (Survei Eksternal)')
+                    ?? ['nilai' => 0, 'bobot' => $bobotMeta['hasil']['spak']];
+                $capaian = $birokrasiSubs->firstWhere('nama', 'Capaian Kinerja Lebih Baik dari pada Capaian Kinerja Sebelumnya')
+                    ?? ['nilai' => 0, 'bobot' => $bobotMeta['hasil']['capaian']];
+
+                $pelayananSubs = collect($pelayanan['subs'] ?? []);
+                $spp = $pelayananSubs->firstWhere('nama', 'Nilai Persepsi Kualitas Pelayanan (Survei Eksternal)')
+                    ?? ['nilai' => 0, 'bobot' => $bobotMeta['hasil']['pelayanan']];
+
+                $birokrasiNilai = (float) ($birokrasi['nilai'] ?? 0);
+                $birokrasiBobot = (float) ($birokrasi['bobot'] ?? $bobotMeta['hasil']['birokrasi']);
+
+                $spakNilai = (float) ($spak['nilai'] ?? 0);
+                $spakBobot = (float) ($spak['bobot'] ?? $bobotMeta['hasil']['spak']);
+
+                $capaianNilai = (float) ($capaian['nilai'] ?? 0);
+                $capaianBobot = (float) ($capaian['bobot'] ?? $bobotMeta['hasil']['capaian']);
+
+                $pelayananNilai = (float) ($spp['nilai'] ?? $pelayanan['nilai'] ?? 0);
+                $pelayananBobot = (float) ($pelayanan['bobot'] ?? $bobotMeta['hasil']['pelayanan']);
+
+                $totalHasilNilai = (float) ($birokrasiNilai + (float) ($pelayanan['nilai'] ?? $pelayananNilai));
+
+                $grandTotalNilai = $totalPengungkitNilai + $totalHasilNilai;
+
+                $areaCompliance = [];
+                foreach ($areaData as $area) {
+                    $areaCompliance[$area['nama']] = [
+                        'nilai' => (float) $area['nilai'],
+                        'bobot' => (float) $area['bobot'],
+                        'persen' => (float) $area['persen'],
+                        'threshold' => (float) ($area['bobot'] * 0.75),
+                        'is_passed' => $area['bobot'] == 0 || $area['persen'] >= 75,
+                    ];
+                }
+
+                $compliance = [
+                    'total_zi' => [
+                        'nilai' => (float) $grandTotalNilai,
+                        'threshold' => 85.00,
+                        'is_passed' => $grandTotalNilai >= 85.00,
+                    ],
+                    'total_pengungkit' => [
+                        'nilai' => (float) $totalPengungkitNilai,
+                        'threshold' => 48.00,
+                        'is_passed' => $totalPengungkitNilai >= 48.00,
+                    ],
+                    'areas' => $areaCompliance,
+                    'birokrasi_total' => [
+                        'nilai' => (float) $birokrasiNilai,
+                        'threshold' => 18.25,
+                        'is_passed' => $birokrasiNilai >= 18.25,
+                    ],
+                    'spak' => [
+                        'nilai' => (float) $spakNilai,
+                        'threshold' => 15.75,
+                        'is_passed' => $spakNilai >= 15.75,
+                    ],
+                    'capaian' => [
+                        'nilai' => (float) $capaianNilai,
+                        'threshold' => 2.50,
+                        'is_passed' => $capaianNilai >= 2.50,
+                    ],
+                    'pelayanan' => [
+                        'nilai' => (float) $pelayananNilai,
+                        'threshold' => 15.75,
+                        'is_passed' => $pelayananNilai >= 15.75,
+                    ],
+                ];
+
+                $meetsArea = collect($areaCompliance)->every(function ($area) {
+                    return $area['is_passed'];
+                });
+
+                $meetsWbbm = $compliance['total_zi']['is_passed']
+                    && $compliance['total_pengungkit']['is_passed']
+                    && $meetsArea
+                    && $compliance['birokrasi_total']['is_passed']
+                    && $compliance['spak']['is_passed']
+                    && $compliance['capaian']['is_passed']
+                    && $compliance['pelayanan']['is_passed'];
+
+                if ($meetsWbbm) {
+                    // Check if OPD is affirmation based on name keywords
+                    $isAfirmasi = false;
+                    $nameLower = strtolower($opd->n_opd);
+                    if (
+                        str_contains($nameLower, 'rsu') ||
+                        str_contains($nameLower, 'rsud') ||
+                        str_contains($nameLower, 'rsup') ||
+                        str_contains($nameLower, 'sd') ||
+                        str_contains($nameLower, 'smp') ||
+                        str_contains($nameLower, 'labkesda')
+                    ) {
+                        $isAfirmasi = true;
+                    }
+
+                    $kategori = $isAfirmasi ? 'WBBM-AFIRMASI' : 'WBBM';
+
+                    $eligibleUnits[] = [
+                        'id' => (string) $opd->id,
+                        'nama' => $opd->n_opd,
+                        'kategori' => $kategori,
+                        'afirmasi' => $isAfirmasi,
+                    ];
+                }
+            }
+        }
+
+        return response()->json([
+            'tahun' => (int) $activePeriode->tahun,
+            'units' => $eligibleUnits
+        ]);
+    }
+
+
     private function buildProgressRekapRole(string $role, $komponens, array $jawabanMap): array
     {
         $progress = [];
