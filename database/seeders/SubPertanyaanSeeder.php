@@ -377,7 +377,7 @@ class SubPertanyaanSeeder extends Seeder
                 'status' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]
+            ],
         ];
 
         DB::table('tm_sub_pertanyaan')->insert($subPertanyaans);

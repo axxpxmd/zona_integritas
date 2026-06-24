@@ -805,7 +805,7 @@
                                     "soals": [
                                         {
                                             "id": 22,
-                                            "teks_pertanyaan": "Kebutuhan pegawai yang disusun oleh unit kerja mengacu kepada peta jabatan dan hasil analisis beban kerja untuk masing-masing jabatan",
+                                            "teks_pertanyaan": "Kebutuhan pegawai yang disusun oleh unit kerja mengacu kepada peta jabatan dan hasil analisis beban kerja",
                                             "kriteria_nilai": "Ya, jika kebutuhan pegawai yang disusun oleh unit kerja mengacu kepada peta jabatan dan hasil analisis beban kerja untuk masing-masing jabatan.",
                                             "jenis_jawaban": "YA_TIDAK",
                                             "bobot_maksimal": 0,
@@ -867,7 +867,7 @@
                                         },
                                         {
                                             "id": 24,
-                                            "teks_pertanyaan": "Telah dilakukan monitoring dan dan evaluasi terhadap penempatan pegawai rekrutmen untuk memenuhi kebutuhan jabatan dalam organisasi telah memberikan perbaikan terhadap kinerja unit kerja",
+                                            "teks_pertanyaan": "Telah dilakukan monitoring dan dan evaluasi terhadap penempatan pegawai rekrutmen untuk memenuhi kebutuhan jabatan",
                                             "kriteria_nilai": "Ya, jika sudah dilakukan monitoring dan evaluasi terhadap penempatan pegawai hasil rekrutmen untuk memenuhi kebutuhan jabatan dalam organisasi telah memberikan perbaikan terhadap kinerja unit kerja.",
                                             "jenis_jawaban": "YA_TIDAK",
                                             "bobot_maksimal": 0,
