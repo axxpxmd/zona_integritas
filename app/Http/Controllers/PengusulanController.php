@@ -245,10 +245,10 @@ class PengusulanController extends Controller
                         str_contains($nameLower, 'smp') ||
                         str_contains($nameLower, 'labkesda')
                     ) {
-                        $isAfirmasi = false;
+                        $isAfirmasi = true;
                     }
 
-                    $kategori = $isAfirmasi ? 'WBK' : 'WBK';
+                    $kategori = $isAfirmasi ? 'WBK-AFIRMASI' : 'WBK';
 
                     $eligibleUnits[] = [
                         'id' => sprintf('UNIT-%03d', $opd->id),
@@ -499,10 +499,10 @@ class PengusulanController extends Controller
                         str_contains($nameLower, 'smp') ||
                         str_contains($nameLower, 'labkesda')
                     ) {
-                        $isAfirmasi = false;
+                        $isAfirmasi = true;
                     }
 
-                    $kategori = $isAfirmasi ? 'WBBM' : 'WBBM';
+                    $kategori = $isAfirmasi ? 'WBBM-AFIRMASI' : 'WBBM';
 
                     $eligibleUnits[] = [
                         'id' => sprintf('UNIT-%03d', $opd->id),
