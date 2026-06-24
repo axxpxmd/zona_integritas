@@ -697,68 +697,68 @@
     },
     {
         "soal_id": 117,
-        "n_pertanyaan": "Upaya dan/atau inovasi telah mendorong perbaikan pelayanan publik pada: 1. Kesesuaian Persyaratan 2. Kemudahan Sistem, Mekanisme, dan Prosedur 3. Kecepatan Waktu Penyelesaian 4. Kejelasan Biaya/Tarif, Gratis 5. Kualitas Produk Spesifikasi Jenis Pelayanan 6. Kompetensi Pelaksana/Web 7. Perilaku Pelaksana/Web 8. Kualitas Sarana dan prasarana 9. Penanganan Pengaduan, Saran dan Masukan",
-        "pertanyaan_id": 107,
-        "sub_pertanyaan_id": null
-    },
-    {
-        "soal_id": 118,
-        "n_pertanyaan": "Jumlah perijinan/pelayanan yang terdata/terdaftar",
-        "pertanyaan_id": 108,
-        "sub_pertanyaan_id": 18
-    },
-    {
-        "soal_id": 119,
-        "n_pertanyaan": "Jumlah perijinan/pelayanan yang telah dipermudah",
-        "pertanyaan_id": 108,
-        "sub_pertanyaan_id": 19
-    },
-    {
-        "soal_id": 120,
-        "n_pertanyaan": "Penanganan pengaduan pelayanan dilakukan melalui berbagai kanal/media secara responsive dan bertanggung jawab",
-        "pertanyaan_id": 109,
-        "sub_pertanyaan_id": null
-    },
-    {
-        "soal_id": 121,
-        "n_pertanyaan": "Nilai Survey Persepsi Korupsi (Survei Eksternal)",
-        "pertanyaan_id": 110,
-        "sub_pertanyaan_id": null
-    },
-    {
-        "soal_id": 122,
-        "n_pertanyaan": "Capaian Kinerja Lebih Baik dari pada Capaian Kinerja Sebelumnya",
-        "pertanyaan_id": 111,
-        "sub_pertanyaan_id": null
-    },
-    {
-        "soal_id": 123,
-        "n_pertanyaan": "Nilai Persepsi Kualitas Pelayanan (Survei Eksternal)",
-        "pertanyaan_id": 112,
-        "sub_pertanyaan_id": null
-    },
-    {
-        "soal_id": 124,
         "n_pertanyaan": "Jumlah Pejabat administrator (eselon III) yang harus menyampaikan Non LHKPN",
         "pertanyaan_id": 113,
         "sub_pertanyaan_id": 21
     },
     {
-        "soal_id": 125,
+        "soal_id": 118,
         "n_pertanyaan": "Jumlah Pejabat Penawas (eselon IV) yang harus menyampaikan Non LHKPN",
         "pertanyaan_id": 113,
         "sub_pertanyaan_id": 22
     },
     {
-        "soal_id": 126,
+        "soal_id": 119,
         "n_pertanyaan": "Jumlah Fungsional dan Pelaksana yang harus menyampaikan Non LHKPN",
         "pertanyaan_id": 113,
         "sub_pertanyaan_id": 23
     },
     {
-        "soal_id": 127,
+        "soal_id": 120,
         "n_pertanyaan": "Jumlah Total yang sudah melaporkan Non LHKPN",
         "pertanyaan_id": 113,
         "sub_pertanyaan_id": 24
+    },
+    {
+        "soal_id": 121,
+        "n_pertanyaan": "Upaya dan/atau inovasi telah mendorong perbaikan pelayanan publik pada: 1. Kesesuaian Persyaratan 2. Kemudahan Sistem, Mekanisme, dan Prosedur 3. Kecepatan Waktu Penyelesaian 4. Kejelasan Biaya/Tarif, Gratis 5. Kualitas Produk Spesifikasi Jenis Pelayanan 6. Kompetensi Pelaksana/Web 7. Perilaku Pelaksana/Web 8. Kualitas Sarana dan prasarana 9. Penanganan Pengaduan, Saran dan Masukan",
+        "pertanyaan_id": 107,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 122,
+        "n_pertanyaan": "Jumlah perijinan/pelayanan yang terdata/terdaftar",
+        "pertanyaan_id": 108,
+        "sub_pertanyaan_id": 18
+    },
+    {
+        "soal_id": 123,
+        "n_pertanyaan": "Jumlah perijinan/pelayanan yang telah dipermudah",
+        "pertanyaan_id": 108,
+        "sub_pertanyaan_id": 19
+    },
+    {
+        "soal_id": 124,
+        "n_pertanyaan": "Penanganan pengaduan pelayanan dilakukan melalui berbagai kanal/media secara responsive dan bertanggung jawab",
+        "pertanyaan_id": 109,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 125,
+        "n_pertanyaan": "Nilai Survey Persepsi Korupsi (Survei Eksternal)",
+        "pertanyaan_id": 110,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 126,
+        "n_pertanyaan": "Capaian Kinerja Lebih Baik dari pada Capaian Kinerja Sebelumnya",
+        "pertanyaan_id": 111,
+        "sub_pertanyaan_id": null
+    },
+    {
+        "soal_id": 127,
+        "n_pertanyaan": "Nilai Persepsi Kualitas Pelayanan (Survei Eksternal)",
+        "pertanyaan_id": 112,
+        "sub_pertanyaan_id": null
     }
 ]
