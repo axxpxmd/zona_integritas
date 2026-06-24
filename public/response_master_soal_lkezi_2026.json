@@ -723,7 +723,7 @@
                                     "soals": [
                                         {
                                             "id": 20,
-                                            "teks_pertanyaan": "Kebijakan tentang keterbukaan informasi publik telah diterapkan",
+                                            "teks_pertanyaan": "Kebijakan tentang  keterbukaan informasi publik telah diterapkan",
                                             "kriteria_nilai": "a. Jika sudah terdapat Pejabat Pengelola Informasi Publik (PPID) yang menyebarkan seluruh informasi yang dapat diakses secara mutakhir dan lengkap\nb. Jika sudah terdapat PPID yang menyebarkan sebagian informasi yang dapat diakses secara mutakhir dan lengkap\nc. Jika belum ada PPID dan belum melakukan penyebaran informasi publik",
                                             "jenis_jawaban": "ABC",
                                             "bobot_maksimal": 0,
@@ -805,7 +805,7 @@
                                     "soals": [
                                         {
                                             "id": 22,
-                                            "teks_pertanyaan": "Kebutuhan pegawai yang disusun oleh unit kerja mengacu kepada peta jabatan dan hasil analisis beban kerja",
+                                            "teks_pertanyaan": "Kebutuhan pegawai yang disusun oleh unit kerja mengacu kepada peta jabatan dan hasil analisis beban kerja untuk masing-masing jabatan",
                                             "kriteria_nilai": "Ya, jika kebutuhan pegawai yang disusun oleh unit kerja mengacu kepada peta jabatan dan hasil analisis beban kerja untuk masing-masing jabatan.",
                                             "jenis_jawaban": "YA_TIDAK",
                                             "bobot_maksimal": 0,
@@ -867,7 +867,7 @@
                                         },
                                         {
                                             "id": 24,
-                                            "teks_pertanyaan": "Telah dilakukan monitoring dan dan evaluasi terhadap penempatan pegawai rekrutmen untuk memenuhi kebutuhan jabatan",
+                                            "teks_pertanyaan": "Telah dilakukan monitoring dan dan evaluasi terhadap penempatan pegawai rekrutmen untuk memenuhi kebutuhan jabatan dalam organisasi telah memberikan perbaikan terhadap kinerja unit kerja",
                                             "kriteria_nilai": "Ya, jika sudah dilakukan monitoring dan evaluasi terhadap penempatan pegawai hasil rekrutmen untuk memenuhi kebutuhan jabatan dalam organisasi telah memberikan perbaikan terhadap kinerja unit kerja.",
                                             "jenis_jawaban": "YA_TIDAK",
                                             "bobot_maksimal": 0,
@@ -2179,7 +2179,7 @@
                                     "soals": [
                                         {
                                             "id": 61,
-                                            "teks_pertanyaan": "Whistle Blowing System telah diterapkan",
+                                            "teks_pertanyaan": "Whistle-Blowing System telah diterapkan",
                                             "kriteria_nilai": "a. Jika unit kerja menerapkan seluruh kebijakan Whistle Blowing System sesuai dengan yang ditetapkan organisasi dan juga membuat inovasi terkait pelaksanaan Whistle Blowing System yang sesuai dengan karakteristik unit kerja\nb. Jika unit kerja menerapkan kebijakan Whistle Blowing System sesuai dengan yang ditetapkan organisasi\nc. Jika unit kerja belum menerapkan kebijakan Whistle Blowing System",
                                             "jenis_jawaban": "ABC",
                                             "bobot_maksimal": 0,
@@ -4204,7 +4204,7 @@
                                     "soals": [
                                         {
                                             "id": 121,
-                                            "teks_pertanyaan": "Upaya dan/atau inovasi telah mendorong perbaikan pelayanan publik pada: 1. Kesesuaian Persyaratan 2. Kemudahan Sistem, Mekanisme, dan Prosedur 3. Kecepatan Waktu Penyelesaian 4. Kejelasan Biaya/Tarif, Gratis 5. Kualitas Produk Spesifikasi Jenis Pelayanan 6. Kompetensi Pelaksana/Web 7. Perilaku Pelaksana/Web 8. Kualitas Sarana dan prasarana 9. Penanganan Pengaduan, Saran dan Masukan",
+                                            "teks_pertanyaan": "Upaya dan/atau inovasi telah mendorong perbaikan pelayanan publik pada:\n1. Kesesuaian Persyaratan\n2. Kemudahan Sistem, Mekanisme, dan Prosedur\n3. Kecepatan Waktu Penyelesaian\n4. Kejelasan Biaya/Tarif, Gratis\n5. Kualitas Produk Spesifikasi Jenis Pelayanan\n6. Kompetensi Pelaksana/Web\n7. Perilaku Pelaksana/Web\n8. Kualitas Sarana dan prasarana\n9. Penanganan Pengaduan, Saran dan Masukan",
                                             "kriteria_nilai": "a. Upaya dan/atau inovasi yang dilakukan telah mendorong perbaikan seluruh pelayanan publik yang prima (lebih Cepat dan mudah)\nb. Upaya dan/atau inovasi yang dilakukan belum seluruhnya memberikan dampak pada perbaikan pelayanan public yang prima (Cepat dan mudah)\nc. Upaya dan/atau inovasi yang dilakukan belum sesuai kebutuhan\nd. Belum ada inovasi",
                                             "jenis_jawaban": "ABCD",
                                             "bobot_maksimal": 0,
@@ -4240,7 +4240,7 @@
                                         },
                                         {
                                             "id": 122,
-                                            "teks_pertanyaan": "Upaya dan/atau inovasi telah mendorong perbaikan pelayanan publik pada: 1. Kesesuaian Persyaratan 2. Kemudahan Sistem, Mekanisme, dan Prosedur 3. Kecepatan Waktu Penyelesaian 4. Kejelasan Biaya/Tarif, Gratis 5. Kualitas Produk Spesifikasi Jenis Pelayanan 6. Kompetensi Pelaksana/Web 7. Perilaku Pelaksana/Web 8. Kualitas Sarana dan prasarana 9. Penanganan Pengaduan, Saran dan Masukan",
+                                            "teks_pertanyaan": "Jumlah perijinan/pelayanan yang terdata/terdaftar",
                                             "kriteria_nilai": "Upaya dan/atau inovasi pada perijinan/pelayanan telah dipermudah:\n1. Waktu lebih cepat\n2. Pelayanan Publik yang terpadu\n3. Alur lebih pendek/singkat\n4 Terintegrasi dengan aplikasi\nPersentase diperoleh dari Jumlah perijinan/pelayanan yang telah dipermudah dibagi dengan Jumlah perijinan/pelayanan yang terdata/terdaftar",
                                             "jenis_jawaban": "jumlah",
                                             "bobot_maksimal": 0,
@@ -4255,7 +4255,7 @@
                                         },
                                         {
                                             "id": 123,
-                                            "teks_pertanyaan": "Upaya dan/atau inovasi pada perijinan/pelayanan telah dipermudah: 1. Waktu lebih cepat 2. Pelayanan Publik yang terpadu 3. Alur lebih pendek/singkat 4 Terintegrasi dengan aplikasi",
+                                            "teks_pertanyaan": "Jumlah perijinan/pelayanan yang telah dipermudah",
                                             "kriteria_nilai": "Upaya dan/atau inovasi pada perijinan/pelayanan telah dipermudah:\n1. Waktu lebih cepat\n2. Pelayanan Publik yang terpadu\n3. Alur lebih pendek/singkat\n4 Terintegrasi dengan aplikasi\nPersentase diperoleh dari Jumlah perijinan/pelayanan yang telah dipermudah dibagi dengan Jumlah perijinan/pelayanan yang terdata/terdaftar",
                                             "jenis_jawaban": "jumlah",
                                             "bobot_maksimal": 0,
