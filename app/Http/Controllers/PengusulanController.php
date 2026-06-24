@@ -248,7 +248,7 @@ class PengusulanController extends Controller
                         $isAfirmasi = true;
                     }
 
-                    $kategori = $isAfirmasi ? 'WBK-AFIRMASI' : 'WBK';
+                    $kategori = $isAfirmasi ? 'WBK' : 'WBK';
 
                     $eligibleUnits[] = [
                         'id' => sprintf('UNIT-%03d', $opd->id),
@@ -502,7 +502,7 @@ class PengusulanController extends Controller
                         $isAfirmasi = true;
                     }
 
-                    $kategori = $isAfirmasi ? 'WBBM-AFIRMASI' : 'WBBM';
+                    $kategori = $isAfirmasi ? 'WBBM' : 'WBBM';
 
                     $eligibleUnits[] = [
                         'id' => sprintf('UNIT-%03d', $opd->id),
@@ -871,32 +871,32 @@ class PengusulanController extends Controller
         if (str_starts_with(strtoupper($unit_id), 'UNIT-')) {
             $cleanId = (int) substr($unit_id, 5);
         }
-        
+
         $opd = Opd::find($cleanId);
-        if (!$opd) {
+        if (! $opd) {
             return response()->json([
                 'error' => true,
                 'code' => 'DATA_NOT_FOUND',
-                'message' => 'Data yang diminta tidak ditemukan'
+                'message' => 'Data yang diminta tidak ditemukan',
             ], 404);
         }
 
         $tahun = date('Y');
         $periode = Periode::where('tahun', $tahun)->first();
-        if (!$periode) {
+        if (! $periode) {
             return response()->json([
                 'error' => true,
                 'code' => 'DATA_NOT_FOUND',
-                'message' => 'Data yang diminta tidak ditemukan'
+                'message' => 'Data yang diminta tidak ditemukan',
             ], 404);
         }
 
         $listSoalPath = base_path('list_soal.json');
-        if (!file_exists($listSoalPath)) {
+        if (! file_exists($listSoalPath)) {
             return response()->json([
                 'error' => true,
                 'code' => 'INTERNAL_SERVER_ERROR',
-                'message' => 'Error di sisi instansi'
+                'message' => 'Error di sisi instansi',
             ], 500);
         }
 
@@ -910,16 +910,16 @@ class PengusulanController extends Controller
 
         $jawabanMap = [];
         foreach ($jawabans as $j) {
-            $key = $j->sub_pertanyaan_id !== null 
-                ? "{$j->pertanyaan_id}_{$j->sub_pertanyaan_id}" 
+            $key = $j->sub_pertanyaan_id !== null
+                ? "{$j->pertanyaan_id}_{$j->sub_pertanyaan_id}"
                 : "{$j->pertanyaan_id}_null";
             $jawabanMap[$key] = $j;
         }
 
         $answers = [];
         foreach ($listSoal as $item) {
-            $key = $item['sub_pertanyaan_id'] !== null 
-                ? "{$item['pertanyaan_id']}_{$item['sub_pertanyaan_id']}" 
+            $key = $item['sub_pertanyaan_id'] !== null
+                ? "{$item['pertanyaan_id']}_{$item['sub_pertanyaan_id']}"
                 : "{$item['pertanyaan_id']}_null";
 
             $j = $jawabanMap[$key] ?? null;
@@ -961,7 +961,7 @@ class PengusulanController extends Controller
             }
 
             $answers[] = [
-                'soal_id' => (int)$item['soal_id'],
+                'soal_id' => (int) $item['soal_id'],
                 'jawaban_unit' => $jawabanUnit,
                 'jawaban_tpi' => $jawabanTpi,
                 'catatan_unit' => $catatanUnit,
@@ -973,7 +973,7 @@ class PengusulanController extends Controller
         return response()->json([
             'unit_id' => sprintf('UNIT-%03d', $opd->id),
             'nama_unit' => $opd->n_opd,
-            'tahun' => (int)$periode->tahun,
+            'tahun' => (int) $periode->tahun,
             'answers' => $answers,
         ]);
     }
