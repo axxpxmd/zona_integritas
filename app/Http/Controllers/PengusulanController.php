@@ -940,7 +940,9 @@ class PengusulanController extends Controller
 
                 // Rule 6: bukti_dukung_unit
                 if ($j->files->isNotEmpty()) {
-                    $buktiDukungUnit = $j->files->pluck('file_path')->filter()->implode(';');
+                    $buktiDukungUnit = $j->files->map(function ($file) {
+                        return route('kuesioner.file.item.view', $file->id);
+                    })->filter()->implode(';');
                 }
                 if ($buktiDukungUnit === '') {
                     $buktiDukungUnit = null;
