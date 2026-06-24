@@ -127,7 +127,7 @@
     },
     {
         "soal_id": 22,
-        "n_pertanyaan": "Kebutuhan pegawai yang disusun oleh unit kerja mengacu kepada peta jabatan dan hasil analisis beban kerja",
+        "n_pertanyaan": "Kebutuhan pegawai yang disusun oleh unit kerja mengacu kepada peta jabatan dan hasil analisis beban kerja untuk masing-masing jabatan",
         "pertanyaan_id": 22,
         "sub_pertanyaan_id": null
     },
@@ -139,7 +139,7 @@
     },
     {
         "soal_id": 24,
-        "n_pertanyaan": "Telah dilakukan monitoring dan dan evaluasi terhadap penempatan pegawai rekrutmen untuk memenuhi kebutuhan jabatan",
+        "n_pertanyaan": "Telah dilakukan monitoring dan dan evaluasi terhadap penempatan pegawai rekrutmen untuk memenuhi kebutuhan jabatan dalam organisasi telah memberikan perbaikan terhadap kinerja unit kerja",
         "pertanyaan_id": 24,
         "sub_pertanyaan_id": null
     },
@@ -361,7 +361,7 @@
     },
     {
         "soal_id": 61,
-        "n_pertanyaan": "Whistle Blowing System telah diterapkan",
+        "n_pertanyaan": "Whistle-Blowing System telah diterapkan",
         "pertanyaan_id": 61,
         "sub_pertanyaan_id": null
     },
