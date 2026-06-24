@@ -860,4 +860,108 @@ class PengusulanController extends Controller
 
         return null;
     }
+
+    /**
+     * Get the LKE answers and verifications for a specific work unit.
+     * GET /lke/jawaban-unit/{unit_id}
+     */
+    public function getJawabanUnit($unit_id, Request $request)
+    {
+        $opd = Opd::find($unit_id);
+        if (!$opd) {
+            return response()->json([
+                'message' => 'OPD not found.'
+            ], 404);
+        }
+
+        $tahun = date('Y');
+        $periode = Periode::where('tahun', $tahun)->first();
+        if (!$periode) {
+            return response()->json([
+                'message' => "Periode untuk tahun $tahun tidak ditemukan."
+            ], 404);
+        }
+
+        $listSoalPath = base_path('list_soal.json');
+        if (!file_exists($listSoalPath)) {
+            return response()->json([
+                'message' => 'list_soal.json not found.'
+            ], 500);
+        }
+
+        $listSoal = json_decode(file_get_contents($listSoalPath), true);
+
+        // Fetch all answers for this OPD and period
+        $jawabans = Jawaban::where('opd_id', $opd->id)
+            ->where('periode_id', $periode->id)
+            ->with('files')
+            ->get();
+
+        $jawabanMap = [];
+        foreach ($jawabans as $j) {
+            $key = $j->sub_pertanyaan_id !== null 
+                ? "{$j->pertanyaan_id}_{$j->sub_pertanyaan_id}" 
+                : "{$j->pertanyaan_id}_null";
+            $jawabanMap[$key] = $j;
+        }
+
+        $answers = [];
+        foreach ($listSoal as $item) {
+            $key = $item['sub_pertanyaan_id'] !== null 
+                ? "{$item['pertanyaan_id']}_{$item['sub_pertanyaan_id']}" 
+                : "{$item['pertanyaan_id']}_null";
+
+            $j = $jawabanMap[$key] ?? null;
+
+            $jawabanUnit = null;
+            $jawabanTpi = null;
+            $catatanUnit = null;
+            $catatanTpi = null;
+            $buktiDukungUnit = null;
+
+            if ($j) {
+                // Rule 2: jawaban_unit
+                $jawabanUnit = $j->jawaban_text !== null && $j->jawaban_text !== '' ? $j->jawaban_text : $j->jawaban_angka;
+                if ($jawabanUnit === '') {
+                    $jawabanUnit = null;
+                }
+
+                // Rule 3: jawaban_tpi
+                $jawabanTpi = $j->verifikator_jawaban_text !== null && $j->verifikator_jawaban_text !== '' ? $j->verifikator_jawaban_text : $j->verifikator_jawaban_angka;
+                if ($jawabanTpi === '') {
+                    $jawabanTpi = null;
+                }
+
+                // Rule 4: catatan_unit
+                $catatanUnit = $j->keterangan !== '' ? $j->keterangan : null;
+
+                // Rule 5: catatan_tpi
+                $catatanTpi = $j->catatan_verifikator !== '' ? $j->catatan_verifikator : null;
+
+                // Rule 6: bukti_dukung_unit
+                if ($j->files->isNotEmpty()) {
+                    $buktiDukungUnit = $j->files->pluck('file_path')->filter()->implode(';');
+                }
+                if ($buktiDukungUnit === '') {
+                    $buktiDukungUnit = null;
+                }
+            }
+
+            $answers[] = [
+                'soal_id' => (int)$item['soal_id'],
+                'jawaban_unit' => $jawabanUnit,
+                'jawaban_tpi' => $jawabanTpi,
+                'catatan_unit' => $catatanUnit,
+                'bukti_dukung_unit' => $buktiDukungUnit,
+                'catatan_tpi' => $catatanTpi,
+            ];
+        }
+
+        return response()->json([
+            'unit_id' => (string)$opd->id,
+            'nama_unit' => $opd->n_opd,
+            'tahun' => (int)$periode->tahun,
+            'answers' => $answers,
+        ]);
+    }
 }
