@@ -9,7 +9,6 @@ use App\Models\Opd;
 use App\Models\Periode;
 use App\Models\Pertanyaan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class PengusulanController extends Controller
 {
@@ -35,10 +34,10 @@ class PengusulanController extends Controller
                 ->where('is_template', false)
                 ->first();
 
-            if (!$activePeriode) {
+            if (! $activePeriode) {
                 return response()->json([
                     'tahun' => (int) $tahun,
-                    'units' => []
+                    'units' => [],
                 ]);
             }
         } else {
@@ -48,17 +47,17 @@ class PengusulanController extends Controller
                 ->first();
 
             // Fallback to the latest non-template period if none found
-            if (!$activePeriode) {
+            if (! $activePeriode) {
                 $activePeriode = Periode::where('is_template', false)
                     ->orderBy('tahun', 'desc')
                     ->first();
             }
         }
 
-        if (!$activePeriode) {
+        if (! $activePeriode) {
             return response()->json([
                 'tahun' => (int) ($tahun ?: date('Y')),
-                'units' => []
+                'units' => [],
             ]);
         }
 
@@ -95,7 +94,7 @@ class PengusulanController extends Controller
 
             // Default evaluate role to 'verifikator' (TPI / internal reviewer assessment)
             $role = $request->query('role', 'verifikator');
-            if (!in_array($role, ['operator', 'verifikator', 'menpan'])) {
+            if (! in_array($role, ['operator', 'verifikator', 'menpan'])) {
                 $role = 'verifikator';
             }
 
@@ -252,7 +251,7 @@ class PengusulanController extends Controller
                     $kategori = $isAfirmasi ? 'WBK-AFIRMASI' : 'WBK';
 
                     $eligibleUnits[] = [
-                        'id' => (string) $opd->id,
+                        'id' => \base64_encode($opd->id),
                         'nama' => $opd->n_opd,
                         'kategori' => $kategori,
                         'afirmasi' => $isAfirmasi,
@@ -263,7 +262,7 @@ class PengusulanController extends Controller
 
         return response()->json([
             'tahun' => (int) $activePeriode->tahun,
-            'units' => $eligibleUnits
+            'units' => $eligibleUnits,
         ]);
     }
 
@@ -289,10 +288,10 @@ class PengusulanController extends Controller
                 ->where('is_template', false)
                 ->first();
 
-            if (!$activePeriode) {
+            if (! $activePeriode) {
                 return response()->json([
                     'tahun' => (int) $tahun,
-                    'units' => []
+                    'units' => [],
                 ]);
             }
         } else {
@@ -302,17 +301,17 @@ class PengusulanController extends Controller
                 ->first();
 
             // Fallback to the latest non-template period if none found
-            if (!$activePeriode) {
+            if (! $activePeriode) {
                 $activePeriode = Periode::where('is_template', false)
                     ->orderBy('tahun', 'desc')
                     ->first();
             }
         }
 
-        if (!$activePeriode) {
+        if (! $activePeriode) {
             return response()->json([
                 'tahun' => (int) ($tahun ?: date('Y')),
-                'units' => []
+                'units' => [],
             ]);
         }
 
@@ -349,7 +348,7 @@ class PengusulanController extends Controller
 
             // Default evaluate role to 'verifikator' (TPI / internal reviewer assessment)
             $role = $request->query('role', 'verifikator');
-            if (!in_array($role, ['operator', 'verifikator', 'menpan'])) {
+            if (! in_array($role, ['operator', 'verifikator', 'menpan'])) {
                 $role = 'verifikator';
             }
 
@@ -506,7 +505,7 @@ class PengusulanController extends Controller
                     $kategori = $isAfirmasi ? 'WBBM-AFIRMASI' : 'WBBM';
 
                     $eligibleUnits[] = [
-                        'id' => (string) $opd->id,
+                        'id' => \base64_encode($opd->id),
                         'nama' => $opd->n_opd,
                         'kategori' => $kategori,
                         'afirmasi' => $isAfirmasi,
@@ -517,10 +516,9 @@ class PengusulanController extends Controller
 
         return response()->json([
             'tahun' => (int) $activePeriode->tahun,
-            'units' => $eligibleUnits
+            'units' => $eligibleUnits,
         ]);
     }
-
 
     private function buildProgressRekapRole(string $role, $komponens, array $jawabanMap): array
     {
@@ -557,7 +555,7 @@ class PengusulanController extends Controller
             if ($pertanyaan->has_sub_pertanyaan) {
                 $jawabanSub = [];
                 foreach ($pertanyaan->subPertanyaans as $subPertanyaan) {
-                    $key = $pertanyaan->id . '_' . $subPertanyaan->id;
+                    $key = $pertanyaan->id.'_'.$subPertanyaan->id;
                     $jawabanSubModel = $jawabanMap[$key] ?? null;
                     if ($jawabanSubModel) {
                         $value = null;
