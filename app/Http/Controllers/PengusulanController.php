@@ -245,7 +245,7 @@ class PengusulanController extends Controller
                         str_contains($nameLower, 'smp') ||
                         str_contains($nameLower, 'labkesda')
                     ) {
-                        $isAfirmasi = true;
+                        $isAfirmasi = false;
                     }
 
                     $kategori = $isAfirmasi ? 'WBK' : 'WBK';
@@ -499,7 +499,7 @@ class PengusulanController extends Controller
                         str_contains($nameLower, 'smp') ||
                         str_contains($nameLower, 'labkesda')
                     ) {
-                        $isAfirmasi = true;
+                        $isAfirmasi = false;
                     }
 
                     $kategori = $isAfirmasi ? 'WBBM' : 'WBBM';
