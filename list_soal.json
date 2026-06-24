@@ -511,14 +511,14 @@
     },
     {
         "soal_id": 86,
-        "n_pertanyaan": "Telah dilakukan perbaikan secara terus menerus",
-        "pertanyaan_id": 86,
+        "n_pertanyaan": "Telah membangun database pelayanan yang terintegrasi",
+        "pertanyaan_id": 87,
         "sub_pertanyaan_id": null
     },
     {
         "soal_id": 87,
-        "n_pertanyaan": "Telah membangun database pelayanan yang terintegrasi",
-        "pertanyaan_id": 87,
+        "n_pertanyaan": "Telah dilakukan perbaikan secara terus menerus",
+        "pertanyaan_id": 86,
         "sub_pertanyaan_id": null
     },
     {
@@ -530,14 +530,14 @@
     {
         "soal_id": 89,
         "n_pertanyaan": "Jumlah Perubahan yang dibuat",
-        "pertanyaan_id": 89,
-        "sub_pertanyaan_id": 3
+        "pertanyaan_id": 88,
+        "sub_pertanyaan_id": 2
     },
     {
         "soal_id": 90,
         "n_pertanyaan": "Jumlah Perubahan yang dibuat",
-        "pertanyaan_id": 88,
-        "sub_pertanyaan_id": 2
+        "pertanyaan_id": 89,
+        "sub_pertanyaan_id": 3
     },
     {
         "soal_id": 91,
