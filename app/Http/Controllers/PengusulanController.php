@@ -251,7 +251,7 @@ class PengusulanController extends Controller
                     $kategori = $isAfirmasi ? 'WBK-AFIRMASI' : 'WBK';
 
                     $eligibleUnits[] = [
-                        'id' => (string) $opd->id,
+                        'id' => sprintf('UNIT-%03d', $opd->id),
                         'nama' => $opd->n_opd,
                         'kategori' => $kategori,
                         'afirmasi' => $isAfirmasi,
@@ -505,7 +505,7 @@ class PengusulanController extends Controller
                     $kategori = $isAfirmasi ? 'WBBM-AFIRMASI' : 'WBBM';
 
                     $eligibleUnits[] = [
-                        'id' => (string) $opd->id,
+                        'id' => sprintf('UNIT-%03d', $opd->id),
                         'nama' => $opd->n_opd,
                         'kategori' => $kategori,
                         'afirmasi' => $isAfirmasi,
@@ -867,7 +867,12 @@ class PengusulanController extends Controller
      */
     public function getJawabanUnit($unit_id, Request $request)
     {
-        $opd = Opd::find($unit_id);
+        $cleanId = $unit_id;
+        if (str_starts_with(strtoupper($unit_id), 'UNIT-')) {
+            $cleanId = (int) substr($unit_id, 5);
+        }
+        
+        $opd = Opd::find($cleanId);
         if (!$opd) {
             return response()->json([
                 'error' => true,
@@ -966,7 +971,7 @@ class PengusulanController extends Controller
         }
 
         return response()->json([
-            'unit_id' => (string)$opd->id,
+            'unit_id' => sprintf('UNIT-%03d', $opd->id),
             'nama_unit' => $opd->n_opd,
             'tahun' => (int)$periode->tahun,
             'answers' => $answers,
