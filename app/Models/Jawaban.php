@@ -9,6 +9,7 @@ class Jawaban extends Model
     protected $table = 'jawaban';
 
     protected $fillable = [
+        'id',
         'periode_id',
         'opd_id',
         'pertanyaan_id',
@@ -18,14 +19,27 @@ class Jawaban extends Model
         'nilai',
         'keterangan',
         'file_path',
+        'status_verifikasi',
+        'verifikator_jawaban_text',
+        'verifikator_jawaban_angka',
+        'catatan_verifikator',
+        'revisi_count',
+        'revised_at',
+        'revised_by',
+        'menunggu_dicek_ulang',
+        'verified_by',
+        'verified_at',
         'status_verifikasi_menpan',
         'menpan_jawaban_text',
         'menpan_jawaban_angka',
-        'menpan_verified_by',
-        'menpan_verified_at',
         'status',
         'created_by',
         'updated_by',
+        'created_at',
+        'updated_at',
+        'catatan_revisi',
+        'menpan_verified_by',
+        'menpan_verified_at',
     ];
 
     protected $casts = [
