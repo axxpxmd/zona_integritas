@@ -58,7 +58,7 @@
             margin-top: 5px;
         }
         table.data-table th, table.data-table td {
-            border: 1px solid #c8d7e6;
+            border: 1px solid #e2e8f0;
             padding: 4px 3px;
             vertical-align: middle;
             text-align: center;
@@ -142,13 +142,13 @@
         }
 
         .border-r-double {
-            border-right: 2px solid #0150A8 !important;
+            border-right: 1px solid #cbd5e1 !important;
         }
         .border-r-bold {
-            border-right: 1.5px solid #4B5563 !important;
+            border-right: 1px solid #cbd5e1 !important;
         }
         .border-r-light {
-            border-right: 1.5px solid #9CA3AF !important;
+            border-right: 1px solid #e2e8f0 !important;
         }
     </style>
 </head>
