@@ -71,13 +71,25 @@
         table.data-table thead tr.main-header th {
             background-color: #0164CA;
             color: #ffffff;
-            border: 1px solid #0150A8;
+            border: 1px solid #0150A8 !important;
+        }
+        table.data-table thead tr.main-header th.border-r-bold {
+            border-right: 1px solid #013e7c !important;
+        }
+        table.data-table thead tr.main-header th.border-r-light {
+            border-right: 1px solid #0150A8 !important;
         }
         table.data-table thead tr.sub-header th {
             background-color: #0257B2;
             color: #ffffff;
             font-size: 7px;
-            border: 1px solid #01418F;
+            border: 1px solid #01418F !important;
+        }
+        table.data-table thead tr.sub-header th.border-r-bold {
+            border-right: 1px solid #013170 !important;
+        }
+        table.data-table thead tr.sub-header th.border-r-light {
+            border-right: 1px solid #01418F !important;
         }
         
         /* Ambang Batas Row styling */
@@ -213,14 +225,14 @@
             <tr class="threshold-row">
                 <td colspan="2" class="opd-name border-r-bold" style="font-weight: bold; color: #92400E; text-align: center !important;">Ambang Batas WBK</td>
                 @foreach ($areaOrder as $areaName)
-                    <td class="border-r-light">&ge; {{ number_format($thresholds['area'][$areaName], 2) }}</td>
+                    <td class="border-r-light">&gt;= {{ number_format($thresholds['area'][$areaName], 2) }}</td>
                 @endforeach
-                <td class="border-r-bold">&ge; {{ number_format($thresholds['pengungkit_total'], 2) }}</td>
-                <td class="border-r-light">&ge; {{ number_format($thresholds['spak'], 2) }}</td>
-                <td class="border-r-light">&ge; {{ number_format($thresholds['capaian'], 2) }}</td>
-                <td class="border-r-light">&ge; 18.25</td>
-                <td class="border-r-bold">&ge; {{ number_format($thresholds['pelayanan'], 2) }}</td>
-                <td class="border-r-bold">&ge; {{ number_format($thresholds['total'], 2) }}</td>
+                <td class="border-r-bold">&gt;= {{ number_format($thresholds['pengungkit_total'], 2) }}</td>
+                <td class="border-r-light">&gt;= {{ number_format($thresholds['spak'], 2) }}</td>
+                <td class="border-r-light">&gt;= {{ number_format($thresholds['capaian'], 2) }}</td>
+                <td class="border-r-light">&gt;= 18.25</td>
+                <td class="border-r-bold">&gt;= {{ number_format($thresholds['pelayanan'], 2) }}</td>
+                <td class="border-r-bold">&gt;= {{ number_format($thresholds['total'], 2) }}</td>
                 <td>-</td>
             </tr>
 
