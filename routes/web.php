@@ -94,6 +94,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('verifikasi')->name('verifikasi.')->group(function () {
         Route::get('/', [VerifikasiController::class, 'index'])->name('index');
         Route::get('/rekap', [VerifikasiController::class, 'rekapDashboard'])->name('rekap');
+        Route::get('/rekap/pdf', [VerifikasiController::class, 'exportPdf'])->name('rekap.pdf');
         Route::get('/{periode}/{opd}', [VerifikasiController::class, 'show'])->name('show');
         Route::post('/{periode}/{opd}/kirim-menpan', [VerifikasiController::class, 'kirimMenpan'])->name('kirim-menpan');
         Route::post('/{periode}/{opd}/verify-all-dev', [VerifikasiController::class, 'verifyAllDev'])->name('verify-all-dev');

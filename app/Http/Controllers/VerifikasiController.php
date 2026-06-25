@@ -395,6 +395,327 @@ class VerifikasiController extends Controller
         ));
     }
 
+    public function exportPdf(Request $request)
+    {
+        if (! in_array(Auth::user()->role, ['admin', 'verifikator', 'operator'])) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $periodes = Periode::whereIn('status', ['aktif', 'selesai'])
+            ->where('is_template', false)
+            ->orderBy('tahun', 'desc')
+            ->get();
+
+        $periodeId = $request->periode_id ?? ($periodes->first()->id ?? null);
+        $activePeriode = $periodeId ? Periode::find($periodeId) : null;
+
+        if (!$activePeriode) {
+            return redirect()->back()->with('error', 'Periode tidak ditemukan.');
+        }
+
+        $role = $request->role ?? 'operator';
+        if (!in_array($role, ['operator', 'verifikator', 'menpan'])) {
+            $role = 'operator';
+        }
+
+        $areaOrder = [
+            'MANAJEMEN PERUBAHAN',
+            'PENATAAN TATALAKSANA',
+            'PENATAAN SISTEM MANAJEMEN SDM APARATUR',
+            'PENGUATAN AKUNTABILITAS',
+            'PENGUATAN PENGAWASAN',
+            'PENINGKATAN KUALITAS PELAYANAN PUBLIK',
+        ];
+
+        $bobotMeta = [
+            'area' => array_fill_keys($areaOrder, 0),
+            'pengungkit_total' => 0,
+            'hasil' => [
+                'birokrasi' => 0,
+                'spak' => 0,
+                'capaian' => 0,
+                'pelayanan' => 0,
+            ],
+            'hasil_total' => 0,
+            'total' => 100.0,
+        ];
+        $thresholds = [
+            'area' => array_fill_keys($areaOrder, 0),
+            'pengungkit_total' => 40.00,
+            'spak' => 15.75,
+            'capaian' => 2.50,
+            'pelayanan' => 14.00,
+            'hasil_total' => 32.25,
+            'total' => 75.00,
+        ];
+
+        $komponens = Komponen::where('status', 1)
+            ->with([
+                'kategoris' => fn ($q) => $q->where('status', 1)->orderBy('urutan'),
+                'kategoris.subKategoris' => fn ($q) => $q->where('status', 1)->orderBy('urutan'),
+                'kategoris.subKategoris.indikators' => fn ($q) => $q->where('status', 1),
+                'kategoris.subKategoris.indikators.pertanyaans' => fn ($q) => $q->where('status', 1)->orderBy('urutan'),
+                'kategoris.subKategoris.indikators.pertanyaans.subPertanyaans' => fn ($q) => $q->where('status', 1)->orderBy('urutan'),
+            ])
+            ->orderBy('urutan')
+            ->get();
+
+        $bobotMeta = $this->getRekapBobotMeta($komponens, $areaOrder);
+        foreach ($bobotMeta['area'] as $areaName => $bobot) {
+            $thresholds['area'][$areaName] = $bobot * 0.60;
+        }
+
+        $verifiedStatuses = ['disetujui', 'terkirim'];
+
+        if (Auth::user()->role === 'admin') {
+            $assignedOpdIds = Opd::where('status', 1)->pluck('id');
+        } elseif (Auth::user()->role === 'operator') {
+            $assignedOpdIds = collect([Auth::user()->opd_id]);
+        } else {
+            $assignedOpdIds = \Illuminate\Support\Facades\DB::table('opd_verifikator')
+                ->where('user_id', Auth::id())
+                ->pluck('opd_id');
+        }
+
+        $rekapRows = collect();
+
+        if ($assignedOpdIds->isNotEmpty()) {
+            $query = Jawaban::where('periode_id', $activePeriode->id)
+                ->whereNull('sub_pertanyaan_id')
+                ->whereIn('opd_id', $assignedOpdIds);
+
+            if (! in_array(Auth::user()->role, ['operator', 'verifikator', 'admin'])) {
+                $query->where('status', 'final');
+            }
+
+            $submittedOpdIds = $query->distinct()->pluck('opd_id');
+
+            $opds = Opd::whereIn('id', $submittedOpdIds)
+                ->orderBy('n_opd')
+                ->get();
+
+            foreach ($opds as $opd) {
+                $opdBase = Jawaban::where('periode_id', $activePeriode->id)
+                    ->where('opd_id', $opd->id)
+                    ->whereNull('sub_pertanyaan_id');
+
+                $totalJawaban = (clone $opdBase)->count();
+                $totalVerified = (clone $opdBase)->whereIn('status_verifikasi', $verifiedStatuses)->count();
+
+                if (! in_array(Auth::user()->role, ['operator', 'verifikator', 'admin'])) {
+                    if ($totalJawaban === 0 || $totalVerified < $totalJawaban) {
+                        continue;
+                    }
+                } else {
+                    if ($totalJawaban === 0) {
+                        continue;
+                    }
+                }
+
+                $jawabans = Jawaban::where('periode_id', $activePeriode->id)
+                    ->where('opd_id', $opd->id)
+                    ->get();
+
+                $jawabanMap = [];
+                foreach ($jawabans as $j) {
+                    $key = $j->sub_pertanyaan_id ? "{$j->pertanyaan_id}_{$j->sub_pertanyaan_id}" : $j->pertanyaan_id;
+                    $jawabanMap[$key] = $j;
+                }
+
+                $progressSet = $this->buildProgressRekapRole($role, $komponens, $jawabanMap);
+                $rekap = $this->buildRekapFromProgress($progressSet, $komponens);
+
+                $areaData = [];
+                $totalPengungkitBobot = 0;
+                $totalPengungkitNilai = 0;
+                foreach ($areaOrder as $areaName) {
+                    $area = $rekap['rekapPengungkit'][$areaName] ?? [
+                        'pemenuhan_bobot' => 0,
+                        'pemenuhan_nilai' => 0,
+                        'reform_bobot' => 0,
+                        'reform_nilai' => 0,
+                    ];
+                    $bobotArea = (float) $area['pemenuhan_bobot'] + (float) $area['reform_bobot'];
+                    $nilaiArea = (float) $area['pemenuhan_nilai'] + (float) $area['reform_nilai'];
+                    $persenArea = $bobotArea > 0 ? ($nilaiArea / $bobotArea) * 100 : 0;
+
+                    $areaData[] = [
+                        'nama' => $areaName,
+                        'bobot' => $bobotArea,
+                        'nilai' => $nilaiArea,
+                        'persen' => $persenArea,
+                    ];
+
+                    $totalPengungkitBobot += $bobotArea;
+                    $totalPengungkitNilai += $nilaiArea;
+                }
+
+                $pengungkitPersen = $totalPengungkitBobot > 0
+                    ? ($totalPengungkitNilai / $totalPengungkitBobot) * 100
+                    : 0;
+
+                $hasilMap = collect($rekap['rekapHasil'] ?? [])->keyBy('nama');
+                $birokrasi = $hasilMap->get('BIROKRASI YANG BERSIH DAN AKUNTABEL', [
+                    'nilai' => 0,
+                    'bobot' => $bobotMeta['hasil']['birokrasi'],
+                    'subs' => [],
+                ]);
+                $pelayanan = $hasilMap->get('PELAYANAN PUBLIK YANG PRIMA', [
+                    'nilai' => 0,
+                    'bobot' => $bobotMeta['hasil']['pelayanan'],
+                    'subs' => [],
+                ]);
+
+                $birokrasiSubs = collect($birokrasi['subs'] ?? []);
+                $spak = $birokrasiSubs->firstWhere('nama', 'Nilai Survey Persepsi Korupsi (Survei Eksternal)')
+                    ?? ['nilai' => 0, 'bobot' => $bobotMeta['hasil']['spak']];
+                $capaian = $birokrasiSubs->firstWhere('nama', 'Capaian Kinerja Lebih Baik dari pada Capaian Kinerja Sebelumnya')
+                    ?? ['nilai' => 0, 'bobot' => $bobotMeta['hasil']['capaian']];
+
+                $pelayananSubs = collect($pelayanan['subs'] ?? []);
+                $spp = $pelayananSubs->firstWhere('nama', 'Nilai Persepsi Kualitas Pelayanan (Survei Eksternal)')
+                    ?? ['nilai' => 0, 'bobot' => $bobotMeta['hasil']['pelayanan']];
+
+                $birokrasiNilai = (float) ($birokrasi['nilai'] ?? 0);
+                $birokrasiBobot = (float) ($birokrasi['bobot'] ?? $bobotMeta['hasil']['birokrasi']);
+                $birokrasiPersen = $birokrasiBobot > 0 ? ($birokrasiNilai / $birokrasiBobot) * 100 : 0;
+
+                $spakNilai = (float) ($spak['nilai'] ?? 0);
+                $spakBobot = (float) ($spak['bobot'] ?? $bobotMeta['hasil']['spak']);
+                $spakPersen = $spakBobot > 0 ? ($spakNilai / $spakBobot) * 100 : 0;
+
+                $capaianNilai = (float) ($capaian['nilai'] ?? 0);
+                $capaianBobot = (float) ($capaian['bobot'] ?? $bobotMeta['hasil']['capaian']);
+                $capaianPersen = $capaianBobot > 0 ? ($capaianNilai / $capaianBobot) * 100 : 0;
+
+                $pelayananNilai = (float) ($spp['nilai'] ?? $pelayanan['nilai'] ?? 0);
+                $pelayananBobot = (float) ($pelayanan['bobot'] ?? $bobotMeta['hasil']['pelayanan']);
+                $pelayananPersen = $pelayananBobot > 0 ? ($pelayananNilai / $pelayananBobot) * 100 : 0;
+
+                $totalHasilNilai = (float) ($birokrasiNilai + (float) ($pelayanan['nilai'] ?? $pelayananNilai));
+                $totalHasilBobot = (float) ($birokrasiBobot + $pelayananBobot);
+                $hasilPersen = $totalHasilBobot > 0 ? ($totalHasilNilai / $totalHasilBobot) * 100 : 0;
+
+                $grandTotalBobot = $totalPengungkitBobot + $totalHasilBobot;
+                $grandTotalNilai = $totalPengungkitNilai + $totalHasilNilai;
+                $grandTotalPersen = $grandTotalBobot > 0 ? ($grandTotalNilai / $grandTotalBobot) * 100 : 0;
+
+                $areaCompliance = [];
+                foreach ($areaData as $area) {
+                    $areaCompliance[$area['nama']] = [
+                        'nilai' => (float) $area['nilai'],
+                        'bobot' => (float) $area['bobot'],
+                        'persen' => (float) $area['persen'],
+                        'threshold' => (float) ($area['bobot'] * 0.60),
+                        'is_passed' => $area['bobot'] == 0 || $area['persen'] >= 60,
+                    ];
+                }
+
+                $compliance = [
+                    'total_zi' => [
+                        'nilai' => (float) $grandTotalNilai,
+                        'threshold' => 75.00,
+                        'is_passed' => $grandTotalNilai >= 75.00,
+                    ],
+                    'total_pengungkit' => [
+                        'nilai' => (float) $totalPengungkitNilai,
+                        'threshold' => 40.00,
+                        'is_passed' => $totalPengungkitNilai >= 40.00,
+                    ],
+                    'areas' => $areaCompliance,
+                    'birokrasi_total' => [
+                        'nilai' => (float) $birokrasiNilai,
+                        'threshold' => 18.25,
+                        'is_passed' => $birokrasiNilai >= 18.25,
+                    ],
+                    'spak' => [
+                        'nilai' => (float) $spakNilai,
+                        'threshold' => 15.75,
+                        'is_passed' => $spakNilai >= 15.75,
+                    ],
+                    'capaian' => [
+                        'nilai' => (float) $capaianNilai,
+                        'threshold' => 2.50,
+                        'is_passed' => $capaianNilai >= 2.50,
+                    ],
+                    'pelayanan' => [
+                        'nilai' => (float) $pelayananNilai,
+                        'threshold' => 14.00,
+                        'is_passed' => $pelayananNilai >= 14.00,
+                    ],
+                ];
+
+                $meetsArea = collect($areaCompliance)->every(function ($area) {
+                    return $area['is_passed'];
+                });
+
+                $meetsWbk = $compliance['total_zi']['is_passed']
+                    && $compliance['total_pengungkit']['is_passed']
+                    && $meetsArea
+                    && $compliance['birokrasi_total']['is_passed']
+                    && $compliance['spak']['is_passed']
+                    && $compliance['capaian']['is_passed']
+                    && $compliance['pelayanan']['is_passed'];
+
+                $rekapRows->push([
+                    'opd_id' => $opd->id,
+                    'opd' => $opd->n_opd,
+                    'areas' => $areaData,
+                    'pengungkit' => [
+                        'bobot' => $totalPengungkitBobot,
+                        'nilai' => $totalPengungkitNilai,
+                        'persen' => $pengungkitPersen,
+                    ],
+                    'birokrasi' => [
+                        'bobot' => $birokrasiBobot,
+                        'nilai' => $birokrasiNilai,
+                        'persen' => $birokrasiPersen,
+                    ],
+                    'spak' => [
+                        'bobot' => $spakBobot,
+                        'nilai' => $spakNilai,
+                        'persen' => $spakPersen,
+                    ],
+                    'capaian' => [
+                        'bobot' => $capaianBobot,
+                        'nilai' => $capaianNilai,
+                        'persen' => $capaianPersen,
+                    ],
+                    'pelayanan' => [
+                        'bobot' => $pelayananBobot,
+                        'nilai' => $pelayananNilai,
+                        'persen' => $pelayananPersen,
+                    ],
+                    'hasil' => [
+                        'bobot' => $totalHasilBobot,
+                        'nilai' => $totalHasilNilai,
+                        'persen' => $hasilPersen,
+                    ],
+                    'total' => [
+                        'bobot' => $grandTotalBobot,
+                        'nilai' => $grandTotalNilai,
+                        'persen' => $grandTotalPersen,
+                    ],
+                    'meets_wbk' => $meetsWbk,
+                    'compliance' => $compliance,
+                ]);
+            }
+        }
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('page.verifikasi.rekap_dashboard_pdf', [
+            'activePeriode' => $activePeriode,
+            'role' => $role,
+            'rekapRows' => $rekapRows,
+            'areaOrder' => $areaOrder,
+            'bobotMeta' => $bobotMeta,
+            'thresholds' => $thresholds,
+        ])->setPaper('a4', 'landscape');
+
+        $roleTitle = $role == 'operator' ? 'Unit_Kerja' : ($role == 'verifikator' ? 'TPI' : 'TPE');
+
+        return $pdf->download("Rekap_Evaluasi_ZI_{$roleTitle}_{$activePeriode->tahun}.pdf");
+    }
+
     public function show(Periode $periode, Opd $opd)
     {
         if (! in_array(Auth::user()->role, ['admin', 'verifikator'])) {
@@ -1007,7 +1328,7 @@ class VerifikasiController extends Controller
             if ($pertanyaan->has_sub_pertanyaan) {
                 $jawabanSub = [];
                 foreach ($pertanyaan->subPertanyaans as $subPertanyaan) {
-                    $key = $pertanyaan->id . '_' . $subPertanyaan->id;
+                    $key = $pertanyaan->id.'_'.$subPertanyaan->id;
                     $jawabanSubModel = $jawabanMap[$key] ?? null;
                     if ($jawabanSubModel) {
                         $value = null;
