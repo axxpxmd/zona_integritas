@@ -297,39 +297,6 @@
                                                     </div>
                                                 @endif
                                             @endif
-
-                                            {{-- Catatan / Keterangan --}}
-                                            @if ($jParent && $jParent->keterangan)
-                                                <div class="keterangan-text">
-                                                    <strong>Keterangan Opr:</strong> {{ $jParent->keterangan }}
-                                                </div>
-                                            @endif
-                                            @if ($jParent && $jParent->catatan_verifikator)
-                                                <div class="keterangan-text" style="color: #0E7C7B;">
-                                                    <strong>Catatan Verif:</strong> {{ $jParent->catatan_verifikator }}
-                                                </div>
-                                            @endif
-
-                                            {{-- Dokumen Pendukung --}}
-                                            @if ($jParent)
-                                                @php
-                                                    $uploadedFiles = $jParent->files ?? collect();
-                                                @endphp
-                                                @if ($uploadedFiles->count() > 0)
-                                                    <div style="margin-top: 4px; font-size: 7.5px;">
-                                                        <strong>Dokumen:</strong>
-                                                        @foreach ($uploadedFiles as $file)
-                                                            <span style="display: inline-block; margin-right: 5px;">
-                                                                [{{ $file->original_name ?? basename($file->file_path) }}]
-                                                            </span>
-                                                        @endforeach
-                                                    </div>
-                                                @elseif($jParent->file_path)
-                                                    <div style="margin-top: 4px; font-size: 7.5px;">
-                                                        <strong>Dokumen:</strong> [{{ basename($jParent->file_path) }}]
-                                                    </div>
-                                                @endif
-                                            @endif
                                         </td>
                                         <td>
                                             @if (!$pertanyaan->has_sub_pertanyaan)

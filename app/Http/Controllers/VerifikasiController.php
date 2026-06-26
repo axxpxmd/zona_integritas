@@ -1779,8 +1779,8 @@ class VerifikasiController extends Controller
             'jawabanMap' => $jawabanMap,
             'progress' => $progress,
             'indikatorResults' => $indikatorResults,
-        ])->setPaper('a4', 'portrait');
+        ])->setPaper('a4', 'landscape');
 
-        return $pdf->download("Detail_LKE_" . str_replace(' ', '_', $opd->n_opd) . "_{$periode->tahun}.pdf");
+        return $pdf->download('Detail_LKE_'.str_replace(' ', '_', $opd->n_opd)."_{$periode->tahun}.pdf");
     }
 }
