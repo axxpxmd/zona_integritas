@@ -409,12 +409,12 @@ class VerifikasiController extends Controller
         $periodeId = $request->periode_id ?? ($periodes->first()->id ?? null);
         $activePeriode = $periodeId ? Periode::find($periodeId) : null;
 
-        if (!$activePeriode) {
+        if (! $activePeriode) {
             return redirect()->back()->with('error', 'Periode tidak ditemukan.');
         }
 
         $role = $request->role ?? 'operator';
-        if (!in_array($role, ['operator', 'verifikator', 'menpan'])) {
+        if (! in_array($role, ['operator', 'verifikator', 'menpan'])) {
             $role = 'operator';
         }
 

@@ -226,7 +226,7 @@
                                             <th colspan="7"
                                                 class="px-3 py-2 text-center font-bold uppercase tracking-wider border-b border-white/10 border-r border-white/10">
                                                 Pengungkit ({{ number_format($bobotMeta['pengungkit_total'], 2) }}%)</th>
-                                            <th colspan="4"
+                                            <th colspan="5"
                                                 class="px-3 py-2 text-center font-bold uppercase tracking-wider border-b border-white/10 border-r border-white/10">
                                                 Hasil ({{ number_format($bobotMeta['hasil_total'], 2) }}%)</th>
                                             <th rowspan="2"
@@ -276,6 +276,12 @@
                                                 <div class="text-[8px] text-white/70 mt-0.5">
                                                     ({{ number_format($bobotMeta['hasil']['pelayanan'], 2) }}%)</div>
                                             </th>
+                                            <th
+                                                class="px-2 py-2 text-center text-[9px] font-bold uppercase border-r border-white/10">
+                                                Jumlah Hasil
+                                                <div class="text-[8px] text-white/70 mt-0.5">
+                                                    ({{ number_format($bobotMeta['hasil']['birokrasi'] + $bobotMeta['hasil']['pelayanan'], 2) }}%)</div>
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-100">
@@ -298,6 +304,8 @@
                                             </td>
                                             <td class="px-2 py-2 text-center border-r border-gray-200">&ge;
                                                 {{ number_format($thresholds['pelayanan'], 2) }}</td>
+                                            <td class="px-2 py-2 text-center border-r border-gray-200 bg-amber-100/40">&ge;
+                                                32.25</td>
                                             <td class="px-2 py-2 text-center border-r border-gray-200">&ge;
                                                 {{ number_format($thresholds['total'], 2) }}</td>
                                             <td class="px-2 py-2 text-center">-</td>
@@ -412,12 +420,31 @@
                                                 <td
                                                     class="px-2 py-3.5 text-center border-r border-gray-200 transition-colors {{ !$isPelayananPassed ? 'bg-red-50/50 text-red-700' : '' }}">
                                                     <div
-                                                        class="font-bold {{ !$isPelayananPassed ? 'text-red-700' : 'text-gray-850' }}">
+                                                        class="font-bold {{ !$isPelayananPassed ? 'text-red-700' : 'text-gray-855' }}">
                                                         {{ number_format($row['pelayanan']['nilai'], 2) }}
                                                     </div>
                                                     <div
                                                         class="text-[9px] {{ !$isPelayananPassed ? 'text-red-500 font-semibold' : 'text-gray-400' }}">
                                                         {{ number_format($row['pelayanan']['persen'], 1) }}%
+                                                    </div>
+                                                </td>
+
+                                                <!-- Jumlah Hasil -->
+                                                @php
+                                                    $jumlahHasilNilai = $row['birokrasi']['nilai'] + $row['pelayanan']['nilai'];
+                                                    $jumlahHasilBobot = $row['birokrasi']['bobot'] + $row['pelayanan']['bobot'];
+                                                    $jumlahHasilPersen = $jumlahHasilBobot > 0 ? ($jumlahHasilNilai / $jumlahHasilBobot) * 100 : 0;
+                                                    $isJumlahHasilPassed = $row['compliance']['birokrasi_total']['is_passed'] && $row['compliance']['pelayanan']['is_passed'];
+                                                @endphp
+                                                <td
+                                                    class="px-2 py-3.5 text-center border-r border-gray-200 bg-gray-50/40 transition-colors {{ !$isJumlahHasilPassed ? 'bg-red-50/50 text-red-700' : '' }}">
+                                                    <div
+                                                        class="font-extrabold {{ !$isJumlahHasilPassed ? 'text-red-700' : 'text-gray-900' }}">
+                                                        {{ number_format($jumlahHasilNilai, 2) }}
+                                                    </div>
+                                                    <div
+                                                        class="text-[9px] {{ !$isJumlahHasilPassed ? 'text-red-500 font-semibold' : 'text-gray-400' }}">
+                                                        {{ number_format($jumlahHasilPersen, 1) }}%
                                                     </div>
                                                 </td>
 

@@ -202,7 +202,7 @@
                 <th rowspan="2" style="width: 3%;" class="border-r-light">No</th>
                 <th rowspan="2" style="width: 17%;" class="border-r-bold">Unit Kerja</th>
                 <th colspan="7" style="width: 45%;" class="border-r-bold">Pengungkit ({{ number_format($bobotMeta['pengungkit_total'], 2) }}%)</th>
-                <th colspan="4" style="width: 25%;" class="border-r-bold">Hasil ({{ number_format($bobotMeta['hasil_total'], 2) }}%)</th>
+                <th colspan="5" style="width: 25%;" class="border-r-bold">Hasil ({{ number_format($bobotMeta['hasil_total'], 2) }}%)</th>
                 <th rowspan="2" style="width: 5%;" class="border-r-bold">Total (100%)</th>
                 <th rowspan="2" style="width: 5%;">Simpulan</th>
             </tr>
@@ -218,6 +218,7 @@
                 <th style="width: 6%;" class="border-r-light">Capaian<br><div style="font-size: 5.5px; opacity: 0.85;">({{ number_format($bobotMeta['hasil']['capaian'], 2) }}%)</div></th>
                 <th style="width: 6%;" class="border-r-light">Birokrasi Bersih<br><div style="font-size: 5.5px; opacity: 0.85;">({{ number_format($bobotMeta['hasil']['birokrasi'], 2) }}%)</div></th>
                 <th style="width: 7%;" class="border-r-bold">SPP / Pelayanan<br><div style="font-size: 5.5px; opacity: 0.85;">({{ number_format($bobotMeta['hasil']['pelayanan'], 2) }}%)</div></th>
+                <th style="width: 7%;" class="border-r-bold">Jumlah Hasil<br><div style="font-size: 5.5px; opacity: 0.85;">({{ number_format($bobotMeta['hasil']['birokrasi'] + $bobotMeta['hasil']['pelayanan'], 2) }}%)</div></th>
             </tr>
         </thead>
         <tbody>
@@ -232,13 +233,14 @@
                 <td class="border-r-light">&gt;= {{ number_format($thresholds['capaian'], 2) }}</td>
                 <td class="border-r-light">&gt;= 18.25</td>
                 <td class="border-r-bold">&gt;= {{ number_format($thresholds['pelayanan'], 2) }}</td>
+                <td class="border-r-bold">&gt;= 32.25</td>
                 <td class="border-r-bold">&gt;= {{ number_format($thresholds['total'], 2) }}</td>
                 <td>-</td>
             </tr>
 
             @if ($rekapRows->isEmpty())
                 <tr>
-                    <td colspan="15" style="text-align: center; padding: 15px; font-style: italic; color: #666; font-size: 9px;">
+                    <td colspan="16" style="text-align: center; padding: 15px; font-style: italic; color: #666; font-size: 9px;">
                         Belum ada data rekapan hasil verifikasi untuk periode ini.
                     </td>
                 </tr>
@@ -304,6 +306,18 @@
                         <td class="border-r-bold {{ !$isPelayananPassed ? 'failed-cell' : '' }}">
                             <div class="val-num">{{ number_format($row['pelayanan']['nilai'], 2) }}</div>
                             <div class="val-pct">{{ number_format($row['pelayanan']['persen'], 1) }}%</div>
+                        </td>
+
+                        <!-- Jumlah Hasil -->
+                        @php
+                            $jumlahHasilNilai = $row['birokrasi']['nilai'] + $row['pelayanan']['nilai'];
+                            $jumlahHasilBobot = $row['birokrasi']['bobot'] + $row['pelayanan']['bobot'];
+                            $jumlahHasilPersen = $jumlahHasilBobot > 0 ? ($jumlahHasilNilai / $jumlahHasilBobot) * 100 : 0;
+                            $isJumlahHasilPassed = $row['compliance']['birokrasi_total']['is_passed'] && $row['compliance']['pelayanan']['is_passed'];
+                        @endphp
+                        <td class="border-r-bold {{ !$isJumlahHasilPassed ? 'failed-cell' : '' }}">
+                            <div class="val-num" style="font-weight: 800;">{{ number_format($jumlahHasilNilai, 2) }}</div>
+                            <div class="val-pct">{{ number_format($jumlahHasilPersen, 1) }}%</div>
                         </td>
 
                         <!-- Total (100%) -->
