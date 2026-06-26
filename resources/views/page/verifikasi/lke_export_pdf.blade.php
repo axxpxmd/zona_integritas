@@ -249,11 +249,10 @@
                         <table class="pertanyaan-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 45%;">Pertanyaan / Pilihan Jawaban</th>
-                                    <th style="width: 15%;">Jawaban Operator</th>
-                                    <th style="width: 15%;">Jawaban Verifikator</th>
-                                    <th style="width: 15%;">Jawaban Menpan</th>
-                                    <th style="width: 10%; text-align: right;">Nilai</th>
+                                    <th style="width: 55%;">Pertanyaan / Pilihan Jawaban</th>
+                                    <th style="width: 18%;">Jawaban Operator</th>
+                                    <th style="width: 18%;">Jawaban Verifikator</th>
+                                    <th style="width: 9%; text-align: right;">Nilai</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -277,7 +276,7 @@
                                                         <li class="sub-pertanyaan-item">
                                                             - {{ $sp->pertanyaan }}:
                                                             <span style="color: #111827; font-weight: 500;">
-                                                                (Opr: {{ $jSub->jawaban_angka ?? '-' }} | Verif: {{ $jSub->verifikator_jawaban_angka ?? $jSub->jawaban_angka ?? '-' }} | Menpan: {{ $jSub->menpan_jawaban_angka ?? '-' }}) {{ $sp->satuan }}
+                                                                (Opr: {{ $jSub->jawaban_angka ?? '-' }} | Verif: {{ $jSub->verifikator_jawaban_angka ?? $jSub->jawaban_angka ?? '-' }}) {{ $sp->satuan }}
                                                             </span>
                                                         </li>
                                                     @endforeach
@@ -315,17 +314,6 @@
                                                     {{ $jParent->verifikator_jawaban_angka ?? $jParent->jawaban_angka ?? '-' }}
                                                 @else
                                                     {{ $jParent->verifikator_jawaban_text ?? $jParent->jawaban_text ?? '-' }}
-                                                @endif
-                                            @else
-                                                -
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if (!$pertanyaan->has_sub_pertanyaan)
-                                                @if ($pertanyaan->tipe_jawaban === 'angka')
-                                                    {{ $jParent->menpan_jawaban_angka ?? '-' }}
-                                                @else
-                                                    {{ $jParent->menpan_jawaban_text ?? '-' }}
                                                 @endif
                                             @else
                                                 -
