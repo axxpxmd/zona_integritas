@@ -1355,6 +1355,10 @@ class KuesionerController extends Controller
         $nilaiAcuan = floatval($jawabanSubArray[$idAcuan] ?? 0);
         $nilaiRealisasi = floatval($jawabanSubArray[$idRealisasi] ?? 0);
 
+        if ($nilaiAcuan == 0 && $nilaiRealisasi == 0) {
+            return 1.0;
+        }
+
         if ($nilaiAcuan > 0) {
             // Khusus untuk Penurunan pelanggaran disiplin pegawai
             if (str_contains($pertanyaan->pertanyaan, 'Penurunan pelanggaran disiplin pegawai')) {
