@@ -96,6 +96,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/rekap', [VerifikasiController::class, 'rekapDashboard'])->name('rekap');
         Route::get('/rekap/pdf', [VerifikasiController::class, 'exportPdf'])->name('rekap.pdf');
         Route::get('/{periode}/{opd}', [VerifikasiController::class, 'show'])->name('show');
+        Route::get('/{periode}/{opd}/export-pdf', [VerifikasiController::class, 'exportLkePdf'])->name('export-pdf');
         Route::post('/{periode}/{opd}/kirim-menpan', [VerifikasiController::class, 'kirimMenpan'])->name('kirim-menpan');
         Route::post('/{periode}/{opd}/verify-all-dev', [VerifikasiController::class, 'verifyAllDev'])->name('verify-all-dev');
         Route::get('/{periode}/{opd}/kategori/{subKategori}', [VerifikasiController::class, 'detail'])->name('detail');

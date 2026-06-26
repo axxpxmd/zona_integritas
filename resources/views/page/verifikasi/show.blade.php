@@ -25,24 +25,26 @@
                     <p class="text-sm text-gray-500 mt-0.5">{{ $opd->n_opd }}</p>
                 </div>
             </div>
-            <div class="flex flex-col items-start sm:items-end gap-1">
+            <div class="flex flex-col items-start sm:items-end gap-2">
                 <div class="text-sm text-gray-600">
                     <span class="font-medium">Waktu Verifikasi:</span> {{ $start->format('d M Y') }} -
                     {{ $end->format('d M Y') }}
                 </div>
-                @if ($now->lt($start))
-                    <span
-                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Belum
-                        Dimulai</span>
-                @elseif($now->gt($end))
-                    <span
-                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Waktu
-                        Habis</span>
-                @else
-                    <span
-                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Sedang
-                        Berjalan</span>
-                @endif
+                <div class="flex items-center gap-2 flex-wrap">
+                    @if ($now->lt($start))
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Belum
+                            Dimulai</span>
+                    @elseif($now->gt($end))
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Waktu
+                            Habis</span>
+                    @else
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Sedang
+                            Berjalan</span>
+                    @endif
+                </div>
             </div>
         </div>
 
@@ -520,20 +522,34 @@
             </script>
         @endif
 
-        @if (config('app.debug') || env('APP_ENV') === 'local')
-            <form action="{{ route('verifikasi.verify-all-dev', [$periode->id, $opd->id]) }}" method="POST"
-                onsubmit="return confirm('Yakin ingin verifikasi semua pertanyaan untuk OPD ini secara otomatis (DEV ONLY)?');">
-                @csrf
-                <button type="submit"
-                    class="shrink-0 inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-sm gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    [DEV] Verifikasi Semua
-                </button>
-            </form>
-        @endif
+        <div class="flex items-center gap-3">
+            @if (config('app.debug') || env('APP_ENV') === 'local')
+                <form action="{{ route('verifikasi.verify-all-dev', [$periode->id, $opd->id]) }}" method="POST"
+                    onsubmit="return confirm('Yakin ingin verifikasi semua pertanyaan untuk OPD ini secara otomatis (DEV ONLY)?');"
+                    class="inline-block m-0">
+                    @csrf
+                    <button type="submit"
+                        class="shrink-0 inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-sm gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        [DEV] Verifikasi Semua
+                    </button>
+                </form>
+            @endif
+
+            <a href="{{ route('verifikasi.export-pdf', ['periode' => $periode->id, 'opd' => $opd->id]) }}"
+                class="inline-flex items-center justify-center bg-red-600 hover:bg-red-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-sm gap-2"
+                target="_blank">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Ekspor Jawaban (PDF)
+            </a>
+        </div>
 
         {{-- Komponen Loop --}}
         @foreach ($komponens as $komponen)

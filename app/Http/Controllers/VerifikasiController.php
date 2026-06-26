@@ -1727,4 +1727,60 @@ class VerifikasiController extends Controller
 
         return null;
     }
+
+    public function exportLkePdf(Periode $periode, Opd $opd)
+    {
+        if (! in_array(Auth::user()->role, ['admin', 'verifikator'])) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $komponens = Komponen::where('status', 1)
+            ->with([
+                'kategoris' => fn ($q) => $q->where('status', 1)->orderBy('urutan'),
+                'kategoris.subKategoris' => fn ($q) => $q->where('status', 1)->orderBy('urutan'),
+                'kategoris.subKategoris.indikators' => fn ($q) => $q->where('status', 1)->orderBy('urutan'),
+                'kategoris.subKategoris.indikators.pertanyaans' => fn ($q) => $q->where('status', 1)->orderBy('urutan'),
+                'kategoris.subKategoris.indikators.pertanyaans.subPertanyaans' => fn ($q) => $q->where('status', 1)->orderBy('urutan'),
+            ])
+            ->orderBy('urutan')
+            ->get();
+
+        $jawabans = Jawaban::where('periode_id', $periode->id)
+            ->where('opd_id', $opd->id)
+            ->with('files')
+            ->get();
+
+        $jawabanMap = [];
+        foreach ($jawabans as $j) {
+            $key = $j->sub_pertanyaan_id ? "{$j->pertanyaan_id}_{$j->sub_pertanyaan_id}" : $j->pertanyaan_id;
+            $jawabanMap[$key] = $j;
+        }
+
+        $progress = [];
+        $indikatorResults = [];
+        foreach ($komponens as $komponen) {
+            foreach ($komponen->kategoris as $kategori) {
+                foreach ($kategori->subKategoris as $subKategori) {
+                    $totalNilaiSubKategori = 0;
+                    foreach ($subKategori->indikators as $indikator) {
+                        $nilaiIndikatorData = $this->hitungNilaiIndikatorVerifikasi($indikator, $jawabanMap);
+                        $totalNilaiSubKategori += $nilaiIndikatorData['nilai_indikator'];
+                        $indikatorResults[$indikator->id] = $nilaiIndikatorData;
+                    }
+                    $progress[$subKategori->id] = $totalNilaiSubKategori;
+                }
+            }
+        }
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('page.verifikasi.lke_export_pdf', [
+            'periode' => $periode,
+            'opd' => $opd,
+            'komponens' => $komponens,
+            'jawabanMap' => $jawabanMap,
+            'progress' => $progress,
+            'indikatorResults' => $indikatorResults,
+        ])->setPaper('a4', 'portrait');
+
+        return $pdf->download("Detail_LKE_" . str_replace(' ', '_', $opd->n_opd) . "_{$periode->tahun}.pdf");
+    }
 }
