@@ -17,7 +17,7 @@ class ApiKeyMiddleware
     {
         $expectedKey = '6a60009b36df646dc553e7c5bc5ab904';
         
-        $apiKey = $request->header('X-API-KEY') ?? $request->query('api_key');
+        $apiKey = $request->bearerToken();
 
         if ($apiKey !== $expectedKey) {
             return response()->json([
