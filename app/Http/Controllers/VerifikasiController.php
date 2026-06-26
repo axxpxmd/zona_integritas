@@ -1397,7 +1397,7 @@ class VerifikasiController extends Controller
             'pertanyaan_terjawab' => $pertanyaanTerjawab,
             'rata_rata_nilai' => round($rataRataNilai, 2),
             'bobot' => $indikator->bobot,
-            'nilai_indikator' => round($nilaiIndikator, 2),
+            'nilai_indikator' => $nilaiIndikator,
             'persen_capaian' => round($persenCapaian, 2),
             'nilai_per_pertanyaan' => $nilaiPerPertanyaan,
         ];
@@ -1597,7 +1597,7 @@ class VerifikasiController extends Controller
             'pertanyaan_terverifikasi' => $pertanyaanTerverifikasi,
             'rata_rata_nilai' => round($rataRataNilai, 2),
             'bobot' => $indikator->bobot,
-            'nilai_indikator' => round($nilaiIndikator, 2),
+            'nilai_indikator' => $nilaiIndikator,
             'persen_capaian' => round($persenCapaian, 2),
             'nilai_per_pertanyaan' => $nilaiPerPertanyaan,
         ];
